@@ -21,18 +21,20 @@ import javax.imageio.ImageIO;
  *
  */
 public class PhotoCanvasControl implements Runnable, Observer {
-
+	private ArrayList<PhotoCanvas> _photoCanvases = null;
 	private PhotoCanvas _photoCanvas = null;
 	private PhotosFrom _photoFrom = null; 
 	
 	private ArrayList<Photo> _photos;
 
-	public PhotoCanvasControl( PhotoCanvas pc, PhotosFrom pff )
+	public PhotoCanvasControl( ArrayList<PhotoCanvas> pcs, PhotosFrom pff )
 	{
 		_photoFrom = pff;
 		_photoFrom.addObserver( this );
 		
-		_photoCanvas = pc;
+		_photoCanvas = pcs.get(0); // TODO change
+		_photoCanvases = pcs;
+		
 		_photos = new ArrayList<Photo>();
 	}
 	
@@ -72,8 +74,11 @@ public class PhotoCanvasControl implements Runnable, Observer {
 				{
 					photoNext.setImage( ImageIO.read ( new ByteArrayInputStream ( photoNext.getBytes() ) ) );
 		
-					_photoCanvas.setNextPhoto( photoNext );
-					_photoCanvas.switchPhoto();
+					for( PhotoCanvas pc : _photoCanvases )
+						pc.setNextPhoto( photoNext );
+					
+					for( PhotoCanvas pc : _photoCanvases )
+						pc.switchPhoto();
 				}
 				catch (IOException e)
 				{

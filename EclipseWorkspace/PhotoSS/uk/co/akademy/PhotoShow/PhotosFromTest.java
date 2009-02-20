@@ -7,7 +7,7 @@ public class PhotosFromTest extends PhotosFrom {
 	@Override
 	public boolean initilise()
 	{
-		String fileName1 = "test.jpg";
+		String fileName1 = "test1.jpg";
 		String fileName2 = "test2.jpg";
 		
         File file = new File(fileName1);
