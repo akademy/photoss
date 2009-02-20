@@ -30,7 +30,8 @@ public class FullScreenShow {
 
 	public FullScreenShow()
 	{
-	    ArrayList<PhotoCanvas> aPhotoCanvases = new ArrayList<PhotoCanvas>();
+	    ArrayList<PhotoCanvas> photoCanvasList = new ArrayList<PhotoCanvas>();
+	    
 	    _frames = new ArrayList<JFrame>();
 	     
 	    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -73,7 +74,7 @@ public class FullScreenShow {
     	   pc.setBackground( Color.black );
 	       pc.setBounds(0, 0, dm.getWidth(), dm.getHeight());
 	       
-	       aPhotoCanvases.add( pc );
+	       photoCanvasList.add( pc );
 	       
     	   frame.add( pc, SpringLayout.WEST );
 	       frame.pack();
@@ -84,17 +85,26 @@ public class FullScreenShow {
 	    }
 	    
 	    // Loop around to blank screens
-	    for( int i=0;i<gs.length;i++ )
+	    for( int i=0; i<gs.length; i++ )
 	    {
 	    	gs[i].setFullScreenWindow( _frames.get(i) );
 	    }
-       
-	    PhotosFrom pf;
-	    pf = new PhotosFromTest();
-		//pf = new PhotosFromFolder();
-		//pf = new PhotosFromFlickr();
 
-		PhotoCanvasControl pcc = new PhotoCanvasControl( aPhotoCanvases, pf );
+	    
+	    //
+	    // Create a list of "PhotoFrom"
+	    //
+	    ArrayList<PhotosFrom> photosFromList = new ArrayList<PhotosFrom>();
+
+	    photosFromList.add( new PhotosFromTest() );
+	    //photosFromList.add( new PhotosFromFolder() );
+	    photosFromList.add( new PhotosFromFlickr() );
+	    
+	    
+	    //
+	    // Create the PhotoCanvasControl and start getting photos
+	    //
+		PhotoCanvasControl pcc = new PhotoCanvasControl( photoCanvasList, photosFromList );
 		pcc.initilise();
    
 		//

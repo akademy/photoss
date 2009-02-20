@@ -20,113 +20,132 @@ import javax.imageio.ImageIO;
  * @author matthew
  *
  */
-public class PhotoCanvasControl implements Runnable, Observer {
-	private ArrayList<PhotoCanvas> _photoCanvases = null;
-	private PhotoCanvas _photoCanvas = null;
-	private PhotosFrom _photoFrom = null; 
+public class PhotoCanvasControl implements Runnable, Observer
+{
+	private ArrayList<PhotoCanvas> _photoCanvasList = null;
+	private ArrayList<PhotosFrom> _photosFromList = null;
 	
+	private PhotosFrom _photoFrom = null; 
+
 	private ArrayList<Photo> _photos;
 
-	public PhotoCanvasControl( ArrayList<PhotoCanvas> pcs, PhotosFrom pff )
+	/**
+	 * PhotoCanvasControl 
+	 * @param pcs PhotoCanvas list to show the photos in
+	 * @param pff PhotosFrom Where we are getting the photos from 
+	 */
+	public PhotoCanvasControl( ArrayList<PhotoCanvas> photoCanvasList, ArrayList<PhotosFrom> photosFromList )
 	{
-		_photoFrom = pff;
-		_photoFrom.addObserver( this );
-		
-		_photoCanvas = pcs.get(0); // TODO change
-		_photoCanvases = pcs;
-		
 		_photos = new ArrayList<Photo>();
+		
+		_photosFromList = photosFromList;
+		
+		for( PhotosFrom pf : _photosFromList )
+			pf.addObserver( this );
+
+		_photoCanvasList = photoCanvasList;
+
 	}
-	
+
+	/**
+	 * Initilise all the PhotosFrom list
+	 */
 	public void initilise()
 	{
-		if( !_photoFrom.initilise() )
-			_photoFrom.deleteObserver( this );
-		
+		for( PhotosFrom pf : _photosFromList )
+		{
+			if( !pf.initilise() )
+				pf.deleteObserver( this );
+		}
+
 		start();
 	}
-	
+
 	/* (non-Javadoc)
+	 * Swap the displayed photos around
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run()
 	{	
+		while( _photos.isEmpty() )
+		{
+			// Haven't got an image yet sleep for a bit.
+			try {
+				Thread.sleep( 50 );
+			} catch (InterruptedException e) { }
+		}
+
 		Random rand = new Random();
 		Photo photoPrevious = null;
-		
-		while( true )
+		ArrayList<Photo> photosToShow =  null;
+
+		for(;;)
 		{
-			if( !_photos.isEmpty() )
+			photosToShow = clonePhotos( _photos );
+
+			while( !photosToShow.isEmpty() )
 			{
-				int iNextPhoto = rand.nextInt( _photos.size() );
-				Photo photoNext = _photos.get( iNextPhoto );
-				
-				// Check we have a different one.
-				if( photoNext == photoPrevious )
-				{
-					if( iNextPhoto + 1 ==  _photos.size() )
-						photoNext = _photos.get( 0 );
-					else
-						photoNext = _photos.get( iNextPhoto + 1  );
-				}
-				
+				Photo photo = photosToShow.remove( rand.nextInt( photosToShow.size() ) );
+
 				try
 				{
-					photoNext.setImage( ImageIO.read ( new ByteArrayInputStream ( photoNext.getBytes() ) ) );
-		
-					for( PhotoCanvas pc : _photoCanvases )
-						pc.setNextPhoto( photoNext );
-					
-					for( PhotoCanvas pc : _photoCanvases )
+					photo.setImage( ImageIO.read( new ByteArrayInputStream ( photo.getBytes() ) ) );
+
+					for( PhotoCanvas pc : _photoCanvasList )
+					{
+						pc.setNextPhoto( photo );
 						pc.switchPhoto();
+					}
 				}
 				catch (IOException e)
 				{
-					photoNext = null;
+					photo = null;
 				}
-				
-				// dereference the previous image.
-				if( photoPrevious != null )
-					photoPrevious.setImage(null);
-				
-				photoPrevious = photoNext;
-				
+
+				if( photoPrevious != photo /*&& photoPrevious != null*/ )
+					photoPrevious.setImage(null); // dereference the previous image.
+
+				photoPrevious = photo;
+
 				try {
-					Thread.sleep( 10000 );
-				} catch (InterruptedException e) {
-					//System.exit(0);
-				}
-			}
-			else
-			{
-				// Haven't got an image yet sleep for a bit.
-				try {
-					Thread.sleep( 100 );
-				} catch (InterruptedException e) {
-					//System.exit(0);
-				}
+					Thread.sleep( 1000 );
+				} catch (InterruptedException e) { }
 			}
 		}
 	}
 	
+	/**
+	 * Return a shallow copy (clone) of a photo arraylist. This avoids a warning but keeps in to a small area
+	 * @param photos the arraylist to clone
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private ArrayList<Photo> clonePhotos( ArrayList<Photo> photos )
+	{
+		return (ArrayList<Photo>) photos.clone();
+	}
+
+	/**
+	 * Start up the main loop
+	 */
 	private void start()
 	{
 		Thread thread = new Thread(this);
 		thread.start();
 	}
-	
-	/* (non-Javadoc)
+
+	/* (non-Javadoc) Add a photo to the list
 	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
 	 */
 	public void update(Observable oPhotosFrom, Object oPhoto )
 	{
 		//PhotosFrom pff = (PhotosFrom)o;
 		Photo photo = (Photo)oPhoto;
-		
+
 		try
 		{
 			photo.setBytes( getBytesFromFile( photo.getFile() ) );
-			
+
 			_photos.add( photo ); // TODO... technically we should be taking a deep copy of the photo, but as this is a pretty simple (with only one watcher) we can ignore this... until... we can't...
 		} 
 		catch (IOException e)
@@ -134,40 +153,46 @@ public class PhotoCanvasControl implements Runnable, Observer {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Get the bytes of a file
+	 * @param file The file to load
+	 * @return An array of bytes
+	 * @throws IOException 
+	 */
     public static byte[] getBytesFromFile(File file) throws IOException
     {
         InputStream is = new FileInputStream(file);
-    
+
         // Get the size of the file
         long length = file.length();
     
         if (length > Integer.MAX_VALUE) {
             // File is too large
         }
-    
+
         // Create the byte array to hold the data
         byte[] bytes = new byte[(int)length];
-    
+
         // Read in the bytes
         int offset = 0;
         int numRead = 0;
         while (offset < bytes.length && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
             offset += numRead;
         }
-    
+
         // Ensure all the bytes have been read in
         if (offset < bytes.length) {
             throw new IOException("Could not completely read file "+ file.getName());
         }
-    
+
         // Close the input stream and return bytes
         is.close();
-        
+
         // TODO Compress images with no built in compression: BMP, TIF
-        //Deflater compressor = new Deflater();
-        //compressor.setLevel(Deflater.BEST_SPEED);
-        
+        // Deflater compressor = new Deflater();
+        // compressor.setLevel(Deflater.BEST_SPEED);
+
         return bytes;
     }
 }
