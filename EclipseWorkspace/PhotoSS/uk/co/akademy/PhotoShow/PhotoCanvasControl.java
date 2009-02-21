@@ -24,11 +24,10 @@ public class PhotoCanvasControl implements Runnable, Observer
 {
 	private ArrayList<PhotoCanvas> _photoCanvasList = null;
 	private ArrayList<PhotosFrom> _photosFromList = null;
-	
-	private PhotosFrom _photoFrom = null; 
 
-	private ArrayList<Photo> _photos;
+	private ArrayList<Photo> _photos = null;
 
+	private boolean _debug = false;
 	/**
 	 * PhotoCanvasControl 
 	 * @param pcs PhotoCanvas list to show the photos in
@@ -44,7 +43,10 @@ public class PhotoCanvasControl implements Runnable, Observer
 			pf.addObserver( this );
 
 		_photoCanvasList = photoCanvasList;
-
+		
+		//_debug = true;
+		for( PhotoCanvas pc : _photoCanvasList )
+			pc.setDebug( _debug );
 	}
 
 	/**
@@ -79,14 +81,24 @@ public class PhotoCanvasControl implements Runnable, Observer
 		Photo photoPrevious = null;
 		ArrayList<Photo> photosToShow =  null;
 
+		String error = "";
+		
 		for(;;)
 		{
 			photosToShow = clonePhotos( _photos );
 
 			while( !photosToShow.isEmpty() )
 			{
-				Photo photo = photosToShow.remove( rand.nextInt( photosToShow.size() ) );
+				int nPhoto = rand.nextInt( photosToShow.size() );
+				Photo photo = photosToShow.remove( nPhoto );
 
+				if( _debug )
+				{
+					error += nPhoto + " ";
+					for( PhotoCanvas pc : _photoCanvasList )			
+						pc.setDebugText(error);
+				}
+				
 				try
 				{
 					photo.setImage( ImageIO.read( new ByteArrayInputStream ( photo.getBytes() ) ) );
@@ -102,7 +114,7 @@ public class PhotoCanvasControl implements Runnable, Observer
 					photo = null;
 				}
 
-				if( photoPrevious != photo /*&& photoPrevious != null*/ )
+				if( photoPrevious != null && photoPrevious != photo )
 					photoPrevious.setImage(null); // dereference the previous image.
 
 				photoPrevious = photo;

@@ -115,7 +115,7 @@ public class Photo
 	 */
 	public void setFile(File file)
 	{
-		this._file = _file;
+		this._file = file;
 	}
 
 	/**

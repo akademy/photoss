@@ -3,6 +3,7 @@
 	<name>PhotoSS</name>
 	<comment></comment>
 	<projects>
+		<project>FlickrJ</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

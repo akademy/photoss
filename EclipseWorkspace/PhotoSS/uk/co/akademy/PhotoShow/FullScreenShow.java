@@ -25,7 +25,8 @@ import javax.swing.SpringLayout;
  * @author matthew
  *
  */
-public class FullScreenShow {
+public class FullScreenShow
+{
 	ArrayList<JFrame> _frames = null;
 
 	public FullScreenShow()
@@ -47,41 +48,39 @@ public class FullScreenShow {
 	            }
 	        } ); 
 	        
-			frame.addKeyListener( new KeyListener()
-				{
-					public void keyPressed(KeyEvent event) {}
-					public void keyReleased(KeyEvent event) {
-						//if (event.getKeyChar() == KeyEvent.VK_ESCAPE)
-						{
-							System.exit(0);
-						}
+			frame.addKeyListener( new KeyListener() {
+				public void keyPressed(KeyEvent event) {}
+				public void keyReleased(KeyEvent event) {
+					//if (event.getKeyChar() == KeyEvent.VK_ESCAPE)
+					{
+						System.exit(0);
 					}
-					public void keyTyped(KeyEvent event) {}
 				}
-			);
+				public void keyTyped(KeyEvent event) {}
+			} );
 	        
 	
-		   frame.setBackground(Color.black);
-	       frame.setUndecorated(true);
-	       frame.setTitle("Photo Show" + i);
-	       // _frame.setAlwaysOnTop(true); // Hard to debug!
+			frame.setBackground(Color.black);
+			frame.setUndecorated(true);
+			frame.setTitle("Photo Show" + i);
+			// _frame.setAlwaysOnTop(true); // Hard to debug!
 	       
-	       DisplayMode dm = gs[i].getDisplayMode();
-	       frame.setSize(dm.getWidth(), dm.getHeight());
-	       
-    	   PhotoCanvas pc = new PhotoCanvas();
-    	   
-    	   pc.setBackground( Color.black );
-	       pc.setBounds(0, 0, dm.getWidth(), dm.getHeight());
-	       
-	       photoCanvasList.add( pc );
-	       
-    	   frame.add( pc, SpringLayout.WEST );
-	       frame.pack();
-	       
-	       frame.setAlwaysOnTop(true);
-    	   
-	       _frames.add( frame );
+			DisplayMode dm = gs[i].getDisplayMode();
+			frame.setSize(dm.getWidth(), dm.getHeight());
+
+			PhotoCanvas pc = new PhotoCanvas();
+
+			pc.setBackground( Color.black );
+			pc.setBounds(0, 0, dm.getWidth(), dm.getHeight());
+
+			photoCanvasList.add( pc );
+
+			frame.add( pc, SpringLayout.WEST );
+			frame.pack();
+
+			frame.setAlwaysOnTop(true);
+
+			_frames.add( frame );
 	    }
 	    
 	    // Loop around to blank screens

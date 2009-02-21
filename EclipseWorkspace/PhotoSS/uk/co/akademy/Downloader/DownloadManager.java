@@ -13,7 +13,9 @@ import javax.swing.event.*;
 // The Download Manager.
 public class DownloadManager extends JFrame implements Observer
 {
-  // Add download text field.
+	private static final long serialVersionUID = -5670659873149729724L;
+
+// Add download text field.
   private JTextField addTextField;
 
   // Download table's data model.

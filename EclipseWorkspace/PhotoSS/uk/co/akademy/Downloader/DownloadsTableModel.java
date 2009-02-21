@@ -10,6 +10,8 @@ import javax.swing.table.*;
 //This class manages the download table's data.
 class DownloadsTableModel extends AbstractTableModel implements Observer
 {
+	private static final long serialVersionUID = 5090838333612274638L;
+
 	// These are the names for the table's columns.
 	private static final String[] columnNames = {"URL", "Size", "Progress", "Status"};
 

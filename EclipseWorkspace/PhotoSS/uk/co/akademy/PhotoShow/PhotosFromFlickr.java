@@ -72,8 +72,8 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 		catch (IOException e1)
 		{
 			// Set defaults then
-			props.setProperty("apiSecret","SECRET" ); // Do not submit these values to subversion!!!
-			props.setProperty("apiKey","APIKEY");
+			props.setProperty("apiSecret","SECRET" ); // Do not submit to subversion!!!
+			props.setProperty("apiKey","APIKEY"); // Do not submit to subversion!!!
 			props.setProperty("userToken","USERTOKEN");
 			props.setProperty("photoCount","25" );
 			props.setProperty("daysToReconnect","7");

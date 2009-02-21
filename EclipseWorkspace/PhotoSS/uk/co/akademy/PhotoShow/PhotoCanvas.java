@@ -13,13 +13,29 @@ import java.awt.Graphics;
  */
 public class PhotoCanvas extends Canvas
 {
+	private static final long serialVersionUID = 8302867124480794953L;
+	
+	private String _debugText = ""; 
+	
 	private Photo _photoCurrent = null;
 	private Photo _photoNext = null;
+
+	private boolean _debug = false;
 	
 	public PhotoCanvas()
 	{
 		this.setBackground(Color.black);
 		this.setEnabled(false);
+	}
+	
+	public void setDebug( boolean debug )
+	{
+		_debug = debug;
+	}
+	
+	public void setDebugText( String debugText )
+	{
+		_debugText = debugText;
 	}
 	
 	public void setNextPhoto(Photo photo )
@@ -33,9 +49,9 @@ public class PhotoCanvas extends Canvas
 		
 		this.repaint();
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.awt.Canvas#paint(java.awt.Graphics)
+
+	/**
+	 *  @see java.awt.Canvas#paint(java.awt.Graphics)
 	 */
 	@Override
 	public void paint(Graphics graphic)
@@ -69,5 +85,21 @@ public class PhotoCanvas extends Canvas
 			graphic.drawString( "Getting photos...", 20, 20 );
 			graphic.setColor( Color.black );
 		}
+		
+		if( _debug )
+		{	
+			graphic.setXORMode( Color.white );
+			graphic.drawString( _debugText, 20, 40 );
+			graphic.setColor( Color.black );
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void update( Graphics g )
+	{
+		paint(g);
 	}
 }
