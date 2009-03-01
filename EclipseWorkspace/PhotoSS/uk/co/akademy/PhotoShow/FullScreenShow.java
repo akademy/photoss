@@ -31,15 +31,15 @@ public class FullScreenShow
 
 	public FullScreenShow()
 	{
-	    ArrayList<PhotoCanvas> photoCanvasList = new ArrayList<PhotoCanvas>();
-	    
-	    _frames = new ArrayList<JFrame>();
-	     
-	    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-	    GraphicsDevice[] gs = ge.getScreenDevices();
-	        
-	    for( int i=0;i<gs.length;i++ )
-	    {
+		ArrayList<PhotoCanvas> photoCanvasList = new ArrayList<PhotoCanvas>();
+
+		_frames = new ArrayList<JFrame>();
+
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice[] gs = ge.getScreenDevices();
+
+		for( int i=0;i<gs.length;i++ )
+		{
 			JFrame frame = new JFrame("My Frame");
 			
 	        frame.addWindowListener( new WindowAdapter() {
@@ -64,7 +64,7 @@ public class FullScreenShow
 			frame.setUndecorated(true);
 			frame.setTitle("Photo Show" + i);
 			// _frame.setAlwaysOnTop(true); // Hard to debug!
-	       
+
 			DisplayMode dm = gs[i].getDisplayMode();
 			frame.setSize(dm.getWidth(), dm.getHeight());
 
@@ -81,31 +81,35 @@ public class FullScreenShow
 			frame.setAlwaysOnTop(true);
 
 			_frames.add( frame );
-	    }
+		}
 	    
-	    // Loop around to blank screens
-	    for( int i=0; i<gs.length; i++ )
-	    {
-	    	gs[i].setFullScreenWindow( _frames.get(i) );
-	    }
+	    
+		//
+		// Loop around and blank screens seemingly at once
+		//
+		for( int i=0; i<gs.length; i++ )
+		{
+			gs[i].setFullScreenWindow( _frames.get(i) );
+		}
 
 	    
-	    //
-	    // Create a list of "PhotoFrom"
-	    //
-	    ArrayList<PhotosFrom> photosFromList = new ArrayList<PhotosFrom>();
+		//
+		// Create a list of "PhotoFrom"
+		//
+		ArrayList<PhotosFrom> photosFromList = new ArrayList<PhotosFrom>();
 
-	    photosFromList.add( new PhotosFromTest() );
-	    //photosFromList.add( new PhotosFromFolder() );
-	    photosFromList.add( new PhotosFromFlickr() );
-	    
-	    
-	    //
-	    // Create the PhotoCanvasControl and start getting photos
-	    //
+		photosFromList.add( new PhotosFromTest() );
+		//photosFromList.add( new PhotosFromFolder() );
+		photosFromList.add( new PhotosFromFlickr() );
+
+
+		//
+		// Create the PhotoCanvasControl and start getting photos
+		//
 		PhotoCanvasControl pcc = new PhotoCanvasControl( photoCanvasList, photosFromList );
 		pcc.initilise();
-   
+
+
 		//
 		// Hide cursor (From http://sevensoft.livejournal.com/23460.html)
 		// Set the mouse cursor to a transparent image.
@@ -117,7 +121,7 @@ public class FullScreenShow
 
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		transCursorImage = toolkit.getImage("./1pxtrans_cursor.gif");
-		
+
 		MediaTracker mediaTracker = new MediaTracker( _frames.get(0) );
 		mediaTracker.addImage(transCursorImage, 0);
 		try
@@ -130,9 +134,9 @@ public class FullScreenShow
 			System.exit(1);
 		}
 
-        transCursor = toolkit.createCustomCursor(transCursorImage, new Point(0,0), transCursorName);
-        
-        for( JFrame frame : _frames )
-        	frame.setCursor(transCursor);
+		transCursor = toolkit.createCustomCursor(transCursorImage, new Point(0,0), transCursorName);
+
+		for( JFrame frame : _frames )
+			frame.setCursor( transCursor );
 	}
 }

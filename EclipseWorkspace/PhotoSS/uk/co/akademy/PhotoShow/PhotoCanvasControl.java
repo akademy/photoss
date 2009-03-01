@@ -106,7 +106,7 @@ public class PhotoCanvasControl implements Runnable, Observer
 					for( PhotoCanvas pc : _photoCanvasList )
 					{
 						pc.setNextPhoto( photo );
-						pc.switchPhoto();
+						pc.switchPhotoStart( 500 );
 					}
 				}
 				catch (IOException e)
@@ -114,13 +114,13 @@ public class PhotoCanvasControl implements Runnable, Observer
 					photo = null;
 				}
 
-				if( photoPrevious != null && photoPrevious != photo )
-					photoPrevious.setImage(null); // dereference the previous image.
+				//if( photoPrevious != null && photoPrevious != photo )
+				//	photoPrevious.setImage(null); // dereference the previous image.
 
 				photoPrevious = photo;
 
 				try {
-					Thread.sleep( 1000 );
+					Thread.sleep( 5000 );
 				} catch (InterruptedException e) { }
 			}
 		}

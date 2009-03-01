@@ -3,9 +3,14 @@
  */
 package uk.co.akademy.PhotoShow;
 
+import java.awt.AlphaComposite;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * @author matthew
@@ -14,40 +19,81 @@ import java.awt.Graphics;
 public class PhotoCanvas extends Canvas
 {
 	private static final long serialVersionUID = 8302867124480794953L;
-	
+
+	private enum Fading
+	{
+		None,
+		Out,
+		In
+	}
+
+	private Fading _fading;
+
 	private String _debugText = ""; 
-	
+
 	private Photo _photoCurrent = null;
 	private Photo _photoNext = null;
 
 	private boolean _debug = false;
-	
+
+	private int _fadeLength = 0;
+	private int _width = 0,
+				_height = 0;
+
+	private float _opacity = 1.0f;
+	private Timer _timerFade = null;
+
+	private Image _screenBuffer = null;
+
 	public PhotoCanvas()
 	{
 		this.setBackground(Color.black);
 		this.setEnabled(false);
-	}
-	
-	public void setDebug( boolean debug )
-	{
-		_debug = debug;
-	}
-	
-	public void setDebugText( String debugText )
-	{
-		_debugText = debugText;
-	}
-	
-	public void setNextPhoto(Photo photo )
-	{
-		_photoNext = photo;
-	}
-	
-	public void switchPhoto()
-	{
-		_photoCurrent = _photoNext;
 		
-		this.repaint();
+		_fading = Fading.None;
+	}
+
+	public void setDebug( boolean debug ) { _debug = debug; }
+
+	public void setDebugText( String debugText ) { _debugText = debugText; }
+
+	public void setNextPhoto( Photo photo ) { _photoNext = photo; }
+
+	public void switchPhotoStart( int fadeLength )
+	{
+		_fadeLength = fadeLength;
+		
+		if( _photoCurrent != null )
+		{
+			startFade( Fading.Out );
+		}
+		else
+		{
+			// First time switch
+			_photoCurrent = _photoNext;
+			startFade( Fading.In );
+		}
+	}
+
+	public void startFade( Fading fading )
+	{
+		_fading = fading;
+		
+		_timerFade = new Timer();
+		_timerFade.schedule( new Fader( fading == Fading.Out ), 0, 35 );
+	}
+
+	public void endFade( boolean fadeOut )
+	{
+		if( _timerFade != null )
+			_timerFade.cancel();
+
+		if( fadeOut )
+		{
+			// Now fade in next one
+			_photoCurrent = _photoNext;
+			startFade( Fading.In );
+		}
 	}
 
 	/**
@@ -55,44 +101,81 @@ public class PhotoCanvas extends Canvas
 	 */
 	@Override
 	public void paint(Graphics graphic)
-	{
-		int width = this.getWidth();
-		int height = this.getHeight();
-		
-		super.paint(graphic);
-		
-		graphic.setColor( Color.black );
-		graphic.drawRect( 0, 0, width, height );
-		
+	{	
+		if( _width != this.getWidth() || _height != this.getHeight() )
+		{
+			_width = this.getWidth();
+			_height = this.getHeight();
+
+			if( _screenBuffer != null )
+			{
+				_screenBuffer.flush();
+				_screenBuffer = null;
+			}
+
+			_screenBuffer = createImage( _width,_height );
+		}
+
+		Graphics screenBufferGraphic = _screenBuffer.getGraphics();
+
+		//
+		// Draw the stuff
+		//
+		super.paint(screenBufferGraphic);
+
+		screenBufferGraphic.clearRect( 0, 0, _width, _height );
+
 		if( _photoCurrent != null && _photoCurrent.isReady() )
 		{
 			//
 			// Just draw it from top left
 			//
 			// graphic.drawImage(_photoCurrent.getImage(), 0, 0, null);
-
+			
+			
+			//
+			// Fading
+			//
+			Graphics2D g2d = (Graphics2D) screenBufferGraphic;
+			g2d.setComposite( makeComposite( _opacity ) );
+			
+			
 			//
 			// Centre image
 			//
-			int 	iPosX = (width - _photoCurrent.getWidth() ) / 2,
-					iPosY = (height - _photoCurrent.getHeight() ) / 2;
-			
-			graphic.drawImage( _photoCurrent.getImage(), iPosX, iPosY, null );
+			int 	iPosX = ( _width - _photoCurrent.getWidth() ) / 2,
+					iPosY = ( _height - _photoCurrent.getHeight() ) / 2;
+
+			screenBufferGraphic.drawImage( _photoCurrent.getImage(), iPosX, iPosY, null );
 		}
 		else
 		{
-			graphic.setColor( Color.white );
-			graphic.drawString( "Getting photos...", 20, 20 );
-			graphic.setColor( Color.black );
+			screenBufferGraphic.setColor( Color.white );
+			screenBufferGraphic.drawString( "Getting photos...", 20, 20 );
+			//screenBufferGraphic.setColor( Color.black );
 		}
 		
 		if( _debug )
-		{	
-			graphic.setXORMode( Color.white );
-			graphic.drawString( _debugText, 20, 40 );
-			graphic.setColor( Color.black );
+		{
+			screenBufferGraphic.setXORMode( Color.white );
+			screenBufferGraphic.drawString( _debugText, 20, 40 );
+			//screenBufferGraphic.setColor( Color.black );
 		}
+		
+		//
+		// Paint to off screen
+		//
+		graphic.drawImage( _screenBuffer, 0, 0, this );
+		screenBufferGraphic.dispose();
 	}
+	
+    /*
+     * Set alpha composite.  For example, pass in 1.0f to have 100% opacity pass in 0.25f to have 25% opacity.
+     */
+    private AlphaComposite makeComposite( float alpha )
+    {
+        return (AlphaComposite.getInstance( AlphaComposite.SRC_OVER, alpha ));
+    }
 	
 	/**
 	 * 
@@ -101,5 +184,45 @@ public class PhotoCanvas extends Canvas
 	public void update( Graphics g )
 	{
 		paint(g);
+	}
+	
+	class Fader extends TimerTask
+	{
+		private boolean _fadingOut = false;
+		private long _start = 0;
+		
+		public Fader( boolean fadingOut )
+		{
+			//_debugText = "";
+			
+			_start = System.currentTimeMillis();
+			_fadingOut = fadingOut;
+		}
+		
+		public void run()
+		{
+			float passed = System.currentTimeMillis() - _start;
+			float newOpacity = ( passed / _fadeLength);
+			
+			if( _fadingOut )
+			{
+				newOpacity = 1.0f - newOpacity;
+				if( newOpacity <= 0.0f )
+					newOpacity = 0.0f;
+			}
+			else
+			{
+				if( newOpacity >= 1.0f )
+					newOpacity = 1.0f;
+			}
+			
+			
+			_opacity = newOpacity;
+			
+			repaint();
+			
+			if( ( !_fadingOut && _opacity == 1.0f) || ( _fadingOut && _opacity == 0.0f) )
+				endFade( _fadingOut );
+		}
 	}
 }
