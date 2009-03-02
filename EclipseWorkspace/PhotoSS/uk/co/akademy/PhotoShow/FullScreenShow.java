@@ -98,7 +98,7 @@ public class FullScreenShow
 		//
 		ArrayList<PhotosFrom> photosFromList = new ArrayList<PhotosFrom>();
 
-		photosFromList.add( new PhotosFromTest() );
+		//photosFromList.add( new PhotosFromTest() );
 		//photosFromList.add( new PhotosFromFolder() );
 		photosFromList.add( new PhotosFromFlickr() );
 

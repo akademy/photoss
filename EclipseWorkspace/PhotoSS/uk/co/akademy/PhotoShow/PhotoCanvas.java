@@ -70,7 +70,7 @@ public class PhotoCanvas extends Canvas
 		else
 		{
 			// First time switch
-			_photoCurrent = _photoNext;
+			showNextPhoto();
 			startFade( Fading.In );
 		}
 	}
@@ -91,11 +91,25 @@ public class PhotoCanvas extends Canvas
 		if( fadeOut )
 		{
 			// Now fade in next one
-			_photoCurrent = _photoNext;
+			showNextPhoto();
 			startFade( Fading.In );
 		}
 	}
 
+	private void showNextPhoto()
+	{
+		Photo photoPrevious = _photoCurrent;
+		
+		_photoCurrent = _photoNext;
+		
+		if( photoPrevious != null && photoPrevious != _photoCurrent )
+		{		
+			// TODO: alert PhotoCanvasControl that we've done with this photo.
+			// we should not be free thins in PhotoCanvas... 
+			photoPrevious.setImage( null );
+		}
+	}
+	
 	/**
 	 *  @see java.awt.Canvas#paint(java.awt.Graphics)
 	 */
