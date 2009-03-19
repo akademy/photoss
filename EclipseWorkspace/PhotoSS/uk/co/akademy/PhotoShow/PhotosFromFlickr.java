@@ -79,8 +79,8 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 			props.setProperty("photoCount","25" );
 			props.setProperty("daysToReconnect","7");
 			props.setProperty("lastConnection","");
-			props.setProperty("myProxyHost","");
-			props.setProperty("myProxyPort","8080");
+			props.setProperty("proxyHost","");
+			props.setProperty("proxyPort","8080");
 			
 			props.saveProperties( propertiesFile );
 		}
