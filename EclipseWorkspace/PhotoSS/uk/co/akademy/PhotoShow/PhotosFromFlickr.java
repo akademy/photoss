@@ -22,6 +22,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Properties;
 import java.util.TimeZone;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -72,12 +73,16 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 		catch (IOException e1)
 		{
 			// Set defaults then
-			props.setProperty("apiSecret","SECRET" ); // Do not submit to subversion!!!
-			props.setProperty("apiKey","APIKEY"); // Do not submit to subversion!!!
-			props.setProperty("userToken","USERTOKEN");
+			props.setProperty("apiSecret","<NEED_SECRET>" ); // Warning: Do not submit to subversion!!!
+			props.setProperty("apiKey","<NEED_APIKEY>"); // Warning: Do not submit to subversion!!!
+			props.setProperty("userToken","<NEED_USERTOKEN>");
 			props.setProperty("photoCount","25" );
 			props.setProperty("daysToReconnect","7");
 			props.setProperty("lastConnection","");
+			props.setProperty("myProxyHost","");
+			props.setProperty("myProxyPort","8080");
+			
+			props.saveProperties( propertiesFile );
 		}
 		
 		PhotoList pl = null;
@@ -207,7 +212,8 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 			}
 			
 			REST rest = null;
-			try{
+			try
+			{
 				rest = new REST();
 			}
 			catch (ParserConfigurationException e)
@@ -215,6 +221,40 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 				e.printStackTrace();
 				return false;
 			}
+			
+		    Properties systemSettings = System.getProperties();
+		    
+		    //
+		    // Look for a proxy setting
+		    //
+		    
+		    String proxyHost = props.getProperty("proxyHost");
+		    String proxyPortString;
+		    
+		    if( proxyHost != null && proxyHost != "" )
+		    {
+		    	proxyPortString = props.getProperty("proxyPort");
+		    }
+		    else
+		    {
+		    	proxyHost = (String) systemSettings.get("http.proxyHost" );
+		    	proxyPortString = (String) systemSettings.get("http.proxyPort");
+		    }
+		    
+		    if( proxyHost != null && proxyHost != "" )
+		    {
+				int proxyPort;
+				try
+				{
+					proxyPort = Integer.parseInt(proxyPortString);
+				}
+				catch (NumberFormatException e1)
+				{
+					proxyPort = 8080; // Try a default.
+				}
+		    	
+		    	rest.setProxy(proxyHost, proxyPort);
+		    }
 			
 			// TODO Check Flickr only if we haven't done it since time ended. Only check once a week or some time.
 			Flickr f = new Flickr( apiKey, apiSecret, rest );

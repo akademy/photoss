@@ -38,7 +38,10 @@ public class FullScreenShow
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice[] gs = ge.getScreenDevices();
 
-		for( int i=0;i<gs.length;i++ )
+		int screens = gs.length;
+		// screens = 1;
+		
+		for( int i = 0; i < screens; i++ )
 		{
 			JFrame frame = new JFrame("My Frame");
 			
@@ -87,7 +90,7 @@ public class FullScreenShow
 		//
 		// Loop around and blank screens seemingly at once
 		//
-		for( int i=0; i<gs.length; i++ )
+		for( int i=0; i<screens; i++ )
 		{
 			gs[i].setFullScreenWindow( _frames.get(i) );
 		}
