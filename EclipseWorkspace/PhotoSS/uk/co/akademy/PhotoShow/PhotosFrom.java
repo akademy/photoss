@@ -13,7 +13,7 @@ public abstract class PhotosFrom extends Observable
 	/**
 	 * Do anything that needs doing to get the photos
 	 */
-	abstract boolean initilise();
+	abstract boolean Initilise();
 	
 	/**
 	 * Notify anything that is watching that we have a photo.

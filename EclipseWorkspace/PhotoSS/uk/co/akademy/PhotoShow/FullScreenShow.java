@@ -117,13 +117,10 @@ public class FullScreenShow
 		// Hide cursor (From http://sevensoft.livejournal.com/23460.html)
 		// Set the mouse cursor to a transparent image.
 		//
-		Image transCursorImage;
-		Cursor transCursor;
 		String transCursorName = new String("transparentCursor");
 
-
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		transCursorImage = toolkit.getImage("./1pxtrans_cursor.gif");
+		Image transCursorImage = toolkit.getImage("./1pxtrans_cursor.gif");
 
 		MediaTracker mediaTracker = new MediaTracker( _frames.get(0) );
 		mediaTracker.addImage(transCursorImage, 0);
@@ -137,7 +134,7 @@ public class FullScreenShow
 			System.exit(1);
 		}
 
-		transCursor = toolkit.createCustomCursor(transCursorImage, new Point(0,0), transCursorName);
+		Cursor transCursor = toolkit.createCustomCursor(transCursorImage, new Point(0,0), transCursorName);
 
 		for( JFrame frame : _frames )
 			frame.setCursor( transCursor );

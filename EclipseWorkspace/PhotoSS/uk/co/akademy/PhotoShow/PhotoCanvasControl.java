@@ -56,7 +56,7 @@ public class PhotoCanvasControl implements Runnable, Observer
 	{
 		for( PhotosFrom pf : _photosFromList )
 		{
-			if( !pf.initilise() )
+			if( !pf.Initilise() )
 				pf.deleteObserver( this );
 		}
 
@@ -78,7 +78,6 @@ public class PhotoCanvasControl implements Runnable, Observer
 		}
 
 		Random rand = new Random();
-		Photo photoPrevious = null;
 		ArrayList<Photo> photosToShow =  null;
 
 		String error = "";
@@ -113,8 +112,6 @@ public class PhotoCanvasControl implements Runnable, Observer
 				{
 					photo = null;
 				}
-
-				photoPrevious = photo;
 
 				try {
 					Thread.sleep( 10000 );

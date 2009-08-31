@@ -5,7 +5,7 @@ import java.io.File;
 public class PhotosFromTest extends PhotosFrom {
 
 	@Override
-	public boolean initilise()
+	public boolean Initilise()
 	{
 		String fileName1 = "test1.jpg";
 		String fileName2 = "test2.jpg";

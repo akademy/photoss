@@ -11,9 +11,10 @@ public class PhotosFromFolder extends PhotosFrom
 {
 	public PhotosFromFolder()
 	{
+		super();
 	}
 	
-	public boolean initilise()
+	public boolean Initilise()
 	{
 		return false;
 	}

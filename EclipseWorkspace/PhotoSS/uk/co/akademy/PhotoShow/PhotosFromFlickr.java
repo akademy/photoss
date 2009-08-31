@@ -40,7 +40,6 @@ import com.aetrion.flickr.photos.PhotoList;
  */
 public class PhotosFromFlickr extends PhotosFrom implements Observer
 {
-	static String PROPERTY_FILE = "PhotosFromFlickr.properties";
 	static String DATA_FILE = "FlickrPhotos.data";
 	static String DOWNLOADS_FOLDER = "PhotosFromFlickrDownloads" + File.separator;
 	
@@ -59,287 +58,82 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 	/* (non-Javadoc)
 	 * @see uk.co.akademy.PhotoShow.PhotosFrom#initilise(uk.co.akademy.PhotoShow.PhotoCanvas)
 	 */
-	public boolean initilise()
-	{
+	public boolean Initilise()
+	{				
 		String programWorkingFolder = Program.getFolder();
-		
-		PropertyFetcher props = new PropertyFetcher();
-		String propertiesFile = programWorkingFolder + PROPERTY_FILE;
-		
-		try
-		{
-			props.loadProperties( propertiesFile );
-		}
-		catch (IOException e1)
-		{
-			// Set defaults then
-			props.setProperty("apiSecret","<NEED_SECRET>" ); // Warning: Do not submit to subversion!!!
-			props.setProperty("apiKey","<NEED_APIKEY>"); // Warning: Do not submit to subversion!!!
-			props.setProperty("userToken","<NEED_USERTOKEN>");
-			props.setProperty("photoCount","25" );
-			props.setProperty("daysToReconnect","7");
-			props.setProperty("lastConnection","");
-			props.setProperty("proxyHost","");
-			props.setProperty("proxyPort","8080");
-			
-			props.saveProperties( propertiesFile );
-		}
-		
-		PhotoList pl = null;
 		File dataFile = new File(programWorkingFolder + DATA_FILE);
 		
-		if( dataFile.exists() )
-		{
-			// Read the saved photolist if it exists.
-			FileInputStream f_in = null;
-			
-			try
-			{
-				f_in = new FileInputStream( dataFile );
-			} catch (FileNotFoundException e3)
-			{
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
-			}
-	
-			// Read object using ObjectInputStream
-			ObjectInputStream obj_in = null;
-			try
-			{
-				obj_in = new ObjectInputStream (f_in);
-			} catch (IOException e3)
-			{
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
-			}
-
-			Object obj = null;
-			try
-			{
-				obj = obj_in.readObject();
-			} catch (IOException e3)
-			{
-				e3.printStackTrace();
-			} catch (ClassNotFoundException e3)
-			{
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
-			}
-	
-			if (obj instanceof PhotoList)
-			{
-				pl = (PhotoList) obj;
-			}
-			
-			try
-			{
-				if( f_in != null)
-					f_in.close();
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
+		PhotoList photoListPrevious = GetPreviousPhotoList( dataFile );
+		PhotoList newPhotoList = null;
 		
 		boolean contactFlickr = false;
-		
-		if( pl == null )
-		{
-			// No saved photo list found
+
+		// No saved photo list found, must access flickr data.
+		if( photoListPrevious == null )
 			contactFlickr = true;
-		}
 		
 		if( !contactFlickr )
 		{
-			// Check if we need to update the list.
-			String lastConnectionProp = props.getProperty("lastConnection");
+			String lastConnectionProp = Program.getProperty("flickr.lastConnection");				
+			String daysToReconnectProp = Program.getProperty("flickr.daysToReconnect");
 			
-			if( lastConnectionProp == "" )
-			{
-				// No date of last connections
-				contactFlickr = true;
-			}
-			else
-			{
-				TimeZone tz = null;//TimeZone.getTimeZone( "UTC" ); // This causes the debugger to wrongly stop, so lets use the default one for now...
-				tz = TimeZone.getDefault();
-				
-				DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd");
-				Date lastConnectionDate;
-				
-				try
-				{
-					lastConnectionDate = dfm.parse(lastConnectionProp);	
-					
-					String daysToReconnectProp = props.getProperty("daysToReconnect");
-					int daysToReconnect = Integer.parseInt(daysToReconnectProp);
-					
-					Calendar calLastConnection = new GregorianCalendar( tz );
-					calLastConnection.setTime(lastConnectionDate);
-					
-					Calendar calNextConnection = (Calendar) calLastConnection.clone();
-					calNextConnection.add(Calendar.DAY_OF_MONTH, daysToReconnect);
-					
-					Calendar calNow = new GregorianCalendar( tz );
-					calNow.setTime(new Date() );
-					
-					if( calNextConnection.before(calNow) )
-					{
-						contactFlickr = true;
-					}
-				}
-				catch (ParseException e)
-				{
-					contactFlickr = true;
-				}
-			}
+			contactFlickr = CheckPastUpdateDate( lastConnectionProp, daysToReconnectProp );
 		}
-		
 		
 		if( contactFlickr )
 		{
-			// Contact Flickr for new photo list
-			String apiKey = props.getProperty( "apiKey" );
-			String apiSecret = props.getProperty( "apiSecret" );
-			
-			if( apiKey == null || apiSecret == null )
+			newPhotoList = GetPhotoListFromFlickr();
+
+			if( newPhotoList != null )
 			{
-				// TODO: Missing properties
-				return false;
-			}
-			
-			REST rest = null;
-			try
-			{
-				rest = new REST();
-			}
-			catch (ParserConfigurationException e)
-			{
-				e.printStackTrace();
-				return false;
-			}
-			
-		    Properties systemSettings = System.getProperties();
-		    
-		    //
-		    // Look for a proxy setting
-		    //
-		    
-		    String proxyHost = props.getProperty("proxyHost");
-		    String proxyPortString;
-		    
-		    if( proxyHost != null && proxyHost != "" )
-		    {
-		    	proxyPortString = props.getProperty("proxyPort");
-		    }
-		    else
-		    {
-		    	proxyHost = (String) systemSettings.get("http.proxyHost" );
-		    	proxyPortString = (String) systemSettings.get("http.proxyPort");
-		    }
-		    
-		    if( proxyHost != null && proxyHost != "" )
-		    {
-				int proxyPort;
-				try
-				{
-					proxyPort = Integer.parseInt(proxyPortString);
-				}
-				catch (NumberFormatException e1)
-				{
-					proxyPort = 8080; // Try a default.
-				}
-		    	
-		    	rest.setProxy(proxyHost, proxyPort);
-		    }
-			
-			// TODO Check Flickr only if we haven't done it since time ended. Only check once a week or some time.
-			Flickr f = new Flickr( apiKey, apiSecret, rest );
-			
-			PeopleInterface pi = f.getPeopleInterface();
-			
-			String userToken = props.getProperty( "userToken" );
-			String sPhotoCount = props.getProperty( "photoCount" );
-			
-			int photoCount;
-			try
-			{
-				photoCount = Integer.parseInt(sPhotoCount);
-			}
-			catch (NumberFormatException e1)
-			{
-				// TODO Integer is not a number.
-				e1.printStackTrace();
-				return false;
-			}
-			
-			if( photoCount > 500 )
-				photoCount = 500;
-			else if( photoCount < 1 )
-				photoCount = 1;
-				
-			try
-			{
-				pl = pi.getPublicPhotos(userToken, photoCount,1);
-				
+				//
+				// Set the new contact date.
+				//
 				DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd");
 				String today = dfm.format(new Date());
 				
-				props.setProperty("lastConnection", today);
-			}
-			catch( Exception e) //catch (IOException e), catch (SAXException e), catch (FlickrException e)
-			{
-				e.printStackTrace();
-				return false;
-			}
-			
-			// Write to disk with FileOutputStream
-			FileOutputStream f_out = null;
-			try
-			{
-				f_out = new FileOutputStream( programWorkingFolder + DATA_FILE );
-			} catch (FileNotFoundException e2)
-			{
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			}
-	
-			// Write object with ObjectOutputStream
-			ObjectOutputStream obj_out = null;
-			try
-			{
-				obj_out = new ObjectOutputStream (f_out);
-			} catch (IOException e1)
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-			// Write object out to disk
-			try
-			{
-				obj_out.writeObject ( pl );
-			} catch (IOException e1)
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-			try
-			{
-				if( f_out != null )
-					f_out.close();
-			} catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Program.setProperty("flickr.lastConnection", today);
+				
+				//
+				// Save the new list of photos
+				//
+				FileOutputStream f_out = null;
+				try
+				{
+					f_out = new FileOutputStream( programWorkingFolder + DATA_FILE );
+					ObjectOutputStream obj_out = new ObjectOutputStream (f_out);
+					obj_out.writeObject ( newPhotoList );
+				}
+				catch (FileNotFoundException e2)
+				{
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}catch (IOException e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				finally
+				{
+					if( f_out != null )
+					{
+						try {
+							f_out.close();
+						} catch (IOException e) {}
+					}
+				}
 			}
 		}
 
-    	String downloadFolder = programWorkingFolder + DOWNLOADS_FOLDER;
+		PhotoList photoListToShow = photoListPrevious;
+		
+		if( newPhotoList != null )
+			photoListToShow = newPhotoList;
+			
+		//
+		// Add the photos, download if necessary?
+		//
+		String downloadFolder = programWorkingFolder + DOWNLOADS_FOLDER;
 		File downloads = new File( downloadFolder );
 		if( !downloads.exists() )
 			downloads.mkdirs();
@@ -347,7 +141,7 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 		// TODO: Check if file already exists, but delete ones we aren't using any more.
 		// Should only be less than the number of photos allowed to be downloaded some 
 		// may need to delete before downloading 
-	    for (Iterator<com.aetrion.flickr.photos.Photo> i = (Iterator<com.aetrion.flickr.photos.Photo>)pl.iterator(); i.hasNext();)
+	    for (Iterator<com.aetrion.flickr.photos.Photo> i = (Iterator<com.aetrion.flickr.photos.Photo>)photoListToShow.iterator(); i.hasNext();)
 	    {
 	    	com.aetrion.flickr.photos.Photo photo = i.next();
 	    	
@@ -361,10 +155,6 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 			{
 				e.printStackTrace();
 			}
-	    	/*catch (FlickrException e)
-			{
-				e.printStackTrace();
-			}*/
 	    	
 			String fileName = url.getFile();
 			fileName = fileName.substring( fileName.lastIndexOf('/') + 1 );
@@ -379,12 +169,206 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 				dl.download();
 			}
 	    }
-	    
-		props.saveProperties( propertiesFile );
+
 	    
 		return true;
 	}
 	
+	// Contact Flickr for new photo list
+	private PhotoList GetPhotoListFromFlickr()
+	{	
+		String apiKey = Program.getProperty( "flickr.apiKey" );
+		String apiSecret = Program.getProperty( "flickr.apiSecret" );
+		
+		if( (apiKey == null ) || ( apiSecret == null ) ||
+				( apiSecret == "" ) || ( apiKey == "" ) )
+		{
+			// TODO: Missing properties error handle.
+			return null;
+		}
+		
+		REST rest = null;
+		try
+		{
+			rest = new REST();
+		}
+		catch (ParserConfigurationException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		
+	    Properties systemSettings = System.getProperties();
+	    
+	    //
+	    // Look for a proxy setting
+	    //		    
+	    String proxyHost = Program.getProperty("general.proxyHost");
+	    String proxyPortString = "";
+	    
+	    if( proxyHost != null && proxyHost != "" )
+	    {
+	    	proxyPortString = Program.getProperty("general.proxyPort");
+	    }
+	    else
+	    {
+	    	proxyHost = (String) systemSettings.get("http.proxyHost" );
+	    	proxyPortString = (String) systemSettings.get("http.proxyPort");
+	    }
+	    
+	    if( proxyHost != null && proxyHost != "" )
+	    {
+			int proxyPort;
+			try
+			{
+				proxyPort = Integer.parseInt(proxyPortString);
+			}
+			catch (NumberFormatException e1)
+			{
+				proxyPort = 8080; // Try a default.
+			}
+	    	
+	    	rest.setProxy(proxyHost, proxyPort);
+		}
+	    
+		//
+	    // Connect to flickr
+	    //
+		Flickr f = new Flickr( apiKey, apiSecret, rest );
+		
+		PeopleInterface pi = f.getPeopleInterface();
+		
+		String userToken = Program.getProperty( "flickr.userToken" );
+		String sPhotoCount = Program.getProperty( "flickr.photoCount" );
+		
+		int photoCount;
+		try
+		{
+			photoCount = Integer.parseInt(sPhotoCount);
+		}
+		catch (NumberFormatException e1)
+		{
+			// TODO Integer is not a number.
+			e1.printStackTrace();
+			return null;
+		}
+		
+		if( photoCount > 500 )
+			photoCount = 500;
+		else if( photoCount < 1 )
+			photoCount = 1;
+		
+		PhotoList newPhotoList = null;
+		try
+		{
+			newPhotoList = pi.getPublicPhotos(userToken, photoCount,1);
+		}
+		catch( Exception e) //catch (IOException e), catch (SAXException e), catch (FlickrException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		
+		return newPhotoList;
+	}
+
+	// Check if we need to update the list.
+	private boolean CheckPastUpdateDate( String lastConnection, String daysToConnect )
+	{
+		boolean pastDate = false;
+		
+		if( lastConnection == "" )
+		{
+			// No date of last connections
+			pastDate = true;
+		}
+		else
+		{
+			TimeZone tz = null;//TimeZone.getTimeZone( "UTC" ); // This causes the debugger to wrongly stop, so lets use the default one for now...
+			tz = TimeZone.getDefault();
+			
+			DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd");
+			Date lastConnectionDate;
+			
+			try
+			{
+				lastConnectionDate = dfm.parse(lastConnection);	
+				
+				int daysToReconnect = Integer.parseInt(daysToConnect);
+				
+				Calendar calLastConnection = new GregorianCalendar( tz );
+				calLastConnection.setTime(lastConnectionDate);
+				
+				Calendar calNextConnection = (Calendar) calLastConnection.clone();
+				calNextConnection.add(Calendar.DAY_OF_MONTH, daysToReconnect);
+				
+				Calendar calNow = new GregorianCalendar( tz );
+				calNow.setTime(new Date() );
+				
+				if( calNextConnection.before(calNow) )
+				{
+					pastDate = true;
+				}
+			}
+			catch (ParseException e)
+			{
+				// Date error, try an update.
+				pastDate = true;
+			}
+		}
+		
+		return pastDate;
+	}
+
+	private PhotoList GetPreviousPhotoList(File dataFile)
+	{
+		PhotoList photoList = null;
+		
+		if( dataFile != null && dataFile.exists() )
+		{
+			//
+			// Read the saved photolist if it exists.
+			//
+			FileInputStream fileStream = null;
+			try
+			{
+				fileStream = new FileInputStream( dataFile );
+				ObjectInputStream objectStream = new ObjectInputStream(fileStream);
+				
+				Object object = objectStream.readObject();
+				
+				if (object instanceof PhotoList)
+					photoList = (PhotoList) object;
+			} 
+			catch (FileNotFoundException e3)
+			{
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
+			}
+			catch (IOException e3)
+			{
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
+			} 
+			catch (ClassNotFoundException e3)
+			{
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
+			}
+			finally
+			{
+				if( fileStream != null )
+				{
+					try {
+						fileStream.close();
+					} catch (IOException e) {}
+				}
+			}
+		}
+		
+		return photoList;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
 	 */
