@@ -26,6 +26,8 @@ public class PhotoCanvasControl implements Runnable, Observer
 	private ArrayList<PhotosFrom> _photosFromList = null;
 
 	private ArrayList<Photo> _photos = null;
+	
+	private int _photoShowTime = 0;
 
 	private boolean _debug = false;
 	/**
@@ -47,6 +49,13 @@ public class PhotoCanvasControl implements Runnable, Observer
 		//_debug = true;
 		for( PhotoCanvas pc : _photoCanvasList )
 			pc.setDebug( _debug );
+		
+		String imageShowTimeString = Program.getProperty("general.photoShowTime");
+		try
+		{
+			_photoShowTime = Integer.parseInt(imageShowTimeString);
+		}
+		catch (NumberFormatException e1) { _photoShowTime = 8000; }
 	}
 
 	/**
@@ -54,13 +63,18 @@ public class PhotoCanvasControl implements Runnable, Observer
 	 */
 	public void initilise()
 	{
+		int photosFromInitilised = 0;
+		
 		for( PhotosFrom pf : _photosFromList )
 		{
-			if( !pf.Initilise() )
+			if( pf.Initilise() )
+				photosFromInitilised++;
+			else
 				pf.deleteObserver( this );
 		}
-
-		start();
+		 
+		if( photosFromInitilised > 0 )
+			start();
 	}
 
 	/* (non-Javadoc)
@@ -71,7 +85,8 @@ public class PhotoCanvasControl implements Runnable, Observer
 	{	
 		while( _photos.isEmpty() )
 		{
-			// Haven't got an image yet sleep for a bit.
+			// Haven't got an image yet so sleep for a bit.
+			// TODO: with no photos this could hang forever. (well until someone presses a button.)
 			try {
 				Thread.sleep( 50 );
 			} catch (InterruptedException e) { }
@@ -114,7 +129,7 @@ public class PhotoCanvasControl implements Runnable, Observer
 				}
 
 				try {
-					Thread.sleep( 10000 );
+					Thread.sleep( _photoShowTime );
 				} catch (InterruptedException e) { }
 			}
 		}

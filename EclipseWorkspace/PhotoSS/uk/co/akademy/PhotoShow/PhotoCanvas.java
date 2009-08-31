@@ -30,13 +30,14 @@ public class PhotoCanvas extends Canvas
 	private Fading _fading;
 
 	private String _debugText = ""; 
-
+	private boolean _debug = false;
+	
 	private Photo _photoCurrent = null;
 	private Photo _photoNext = null;
 
-	private boolean _debug = false;
-
+	private boolean _fadeOn = false;
 	private int _fadeLength = 0;
+	
 	private int _width = 0,
 				_height = 0;
 
@@ -54,24 +55,33 @@ public class PhotoCanvas extends Canvas
 	}
 
 	public void setDebug( boolean debug ) { _debug = debug; }
-
 	public void setDebugText( String debugText ) { _debugText = debugText; }
 
+	public void setFadeOn( boolean fade ) { _fadeOn = fade; }
+	
 	public void setNextPhoto( Photo photo ) { _photoNext = photo; }
 
 	public void switchPhotoStart( int fadeLength )
 	{
 		_fadeLength = fadeLength;
 		
-		if( _photoCurrent != null )
+		if( _fadeOn )
 		{
-			startFade( Fading.Out );
+			if( _photoCurrent != null )
+			{
+				startFade( Fading.Out );
+			}
+			else
+			{
+				// First time switch
+				showNextPhoto();
+				startFade( Fading.In );
+			}
 		}
 		else
 		{
-			// First time switch
 			showNextPhoto();
-			startFade( Fading.In );
+			repaint();
 		}
 	}
 
@@ -80,7 +90,7 @@ public class PhotoCanvas extends Canvas
 		_fading = fading;
 		
 		_timerFade = new Timer();
-		_timerFade.schedule( new Fader( fading == Fading.Out ), 0, 35 );
+		_timerFade.schedule( new Fader( fading == Fading.Out ), 0, 500 );
 	}
 
 	public void endFade( boolean fadeOut )
@@ -105,7 +115,7 @@ public class PhotoCanvas extends Canvas
 		if( photoPrevious != null && photoPrevious != _photoCurrent )
 		{		
 			// TODO: alert PhotoCanvasControl that we've done with this photo.
-			// we should not be free thins in PhotoCanvas... 
+			// we should not be freeing things in PhotoCanvas... 
 			photoPrevious.setImage( null );
 		}
 	}
@@ -139,7 +149,7 @@ public class PhotoCanvas extends Canvas
 
 		screenBufferGraphic.clearRect( 0, 0, _width, _height );
 
-		if( _photoCurrent != null && _photoCurrent.isReady() )
+		if( _photoCurrent != null )
 		{
 			//
 			// Just draw it from top left
@@ -150,8 +160,8 @@ public class PhotoCanvas extends Canvas
 			//
 			// Fading
 			//
-			Graphics2D g2d = (Graphics2D) screenBufferGraphic;
-			g2d.setComposite( makeComposite( _opacity ) );
+			//Graphics2D g2d = (Graphics2D) screenBufferGraphic;
+			//g2d.setComposite( makeComposite( _opacity ) );
 			
 			
 			//
@@ -177,7 +187,7 @@ public class PhotoCanvas extends Canvas
 		}
 		
 		//
-		// Paint to off screen
+		// Paint to on screen
 		//
 		graphic.drawImage( _screenBuffer, 0, 0, this );
 		screenBufferGraphic.dispose();

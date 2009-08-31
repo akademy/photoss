@@ -51,7 +51,8 @@ public class FullScreenShow
 	            }
 	        } ); 
 	        
-			frame.addKeyListener( new KeyListener() {
+			frame.addKeyListener( new KeyListener() 
+			{
 				public void keyPressed(KeyEvent event) {}
 				public void keyReleased(KeyEvent event) {
 					//if (event.getKeyChar() == KeyEvent.VK_ESCAPE)
@@ -102,7 +103,7 @@ public class FullScreenShow
 		ArrayList<PhotosFrom> photosFromList = new ArrayList<PhotosFrom>();
 
 		//photosFromList.add( new PhotosFromTest() );
-		//photosFromList.add( new PhotosFromFolder() );
+		photosFromList.add( new PhotosFromFolder() );
 		photosFromList.add( new PhotosFromFlickr() );
 
 

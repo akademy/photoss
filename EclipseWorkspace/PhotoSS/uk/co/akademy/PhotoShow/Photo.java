@@ -17,39 +17,16 @@ public class Photo
 	private File _file;
 	private byte[] _bytes;
 	private int _id = 0;
-	private boolean _ready = false;
 	
 	private Photo()
 	{
 		_id = _idGenerate++;		
 	}
 	
-	public Photo(Image image)
-	{
-		this();
-		_image = image;
-	}
-	
 	public Photo( File file )
 	{
 		this();
 		_file = file;
-	}
-	
-	/**
-	 * @return the _bReady
-	 */
-	public boolean isReady()
-	{
-		return _ready;
-	}
-
-	/**
-	 * @param ready the _bReady to set
-	 */
-	public void setReady(boolean ready) 
-	{
-		_ready = ready;
 	}
 
 	/**

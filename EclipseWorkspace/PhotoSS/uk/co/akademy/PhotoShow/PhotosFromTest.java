@@ -16,9 +16,6 @@ public class PhotosFromTest extends PhotosFrom {
 		Photo photo1 = new Photo(file);
 		Photo photo2 = new Photo(file2);
 		
-		photo1.setReady(true);
-		photo2.setReady(true);
-		
 		havePhoto(photo1);
 		havePhoto(photo2);
 		

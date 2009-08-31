@@ -3,6 +3,7 @@
  */
 package uk.co.akademy.PhotoShow;
 
+import java.io.File;
 import java.util.Observable;
 /**
  * @author Matthew
@@ -21,10 +22,28 @@ public abstract class PhotosFrom extends Observable
 	 */
 	void havePhoto( Photo photo )
 	{
-		if( photo != null && photo.isReady() )
+		if( photo != null )
 		{
 			setChanged();
 			notifyObservers( photo );
 		}
+	}
+	
+	boolean isPhoto( File f )
+	{
+		boolean isPhoto = false;
+		
+		if( f.isFile() )
+		{
+			String name = f.getName().toLowerCase();
+	
+			if( name.endsWith(".jpg") || name.endsWith( ".jpeg") ||
+				name.endsWith(".gif") ||
+				name.endsWith(".bmp") ||
+				name.endsWith(".png") )
+				isPhoto = true;
+		}
+				
+		return isPhoto;
 	}
 }

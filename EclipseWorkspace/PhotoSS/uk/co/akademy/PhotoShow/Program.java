@@ -57,20 +57,13 @@ public class Program
 		{
 			_properties.loadProperties( propertiesFile );
 		}
-		catch (IOException e1)
+		catch (IOException e1) {}
+		finally
 		{
-			// Set defaults then
-			_properties.setProperty("flickr.apiSecret","<NEED_SECRET>" ); // Warning: Do not submit to subversion!!!
-			_properties.setProperty("flickr.apiKey","<NEED_APIKEY>"); // Warning: Do not submit to subversion!!!
-			_properties.setProperty("flickr.userToken","<NEED_USERTOKEN>");
-			_properties.setProperty("flickr.photoCount","25" );
-			_properties.setProperty("flickr.daysToReconnect","7");
-			_properties.setProperty("flickr.lastConnection","");
-			_properties.setProperty("general.proxyHost","");
-			_properties.setProperty("general.proxyPort","8080");
-			
-			_properties.saveProperties( propertiesFile );
+			if( PropertyDefaults() )
+				_properties.saveProperties( propertiesFile );
 		}
+		
 		
 		// http://support.microsoft.com/kb/182383		
 		if( args == null || args.length == 0 || args[0].toLowerCase().startsWith("/c") ) // "/c:1234567"
@@ -87,6 +80,57 @@ public class Program
 		}
 		
 		// Save properties.
+		// TODO: this should be left till the program closes, it falls here much earlier than that though
 		_properties.saveProperties( propertiesFile );
+	}
+	
+	private static boolean PropertyDefaults()
+	{
+		boolean changesMade = false;
+		
+		if( SetPropertyDefaultIfNone("flickr.apiSecret","<NEED_SECRET>" ) ) // Warning: Do not submit secret to subversion!!!
+			changesMade = true;
+		
+		if( SetPropertyDefaultIfNone("flickr.apiKey","<NEED_APIKEY>") ) // Warning: Do not submit apikey to subversion!!!
+			changesMade = true;
+
+		if( SetPropertyDefaultIfNone( "flickr.userToken","<NEED_USERTOKEN>") )
+			changesMade = true;
+
+		if( SetPropertyDefaultIfNone( "flickr.photoCount","25") )
+			changesMade = true;
+
+		if( SetPropertyDefaultIfNone( "flickr.daysToReconnect","7") )
+			changesMade = true;
+
+		if( SetPropertyDefaultIfNone( "flickr.lastConnection","") )
+			changesMade = true;
+
+		// TODO Add proxyUse so we can turn it off and on quickly.
+		
+		if( SetPropertyDefaultIfNone( "general.proxyHost","") )
+			changesMade = true;
+
+		if( SetPropertyDefaultIfNone( "general.proxyPort","8080") )
+			changesMade = true;
+
+		if( SetPropertyDefaultIfNone( "general.photoShowTime", "10000") )
+			changesMade = true;
+
+		if( SetPropertyDefaultIfNone( "folder.folders", "<NEED_PATHS_TO_PHOTOS>") )
+			changesMade = true;
+		
+		return changesMade;
+	}
+	
+	private static boolean SetPropertyDefaultIfNone( String property, String value )
+	{
+		if( Program.getProperty( property ) == "" )
+		{
+			Program.setProperty( property , value );
+			return true;
+		}
+		
+		return false;
 	}
 }

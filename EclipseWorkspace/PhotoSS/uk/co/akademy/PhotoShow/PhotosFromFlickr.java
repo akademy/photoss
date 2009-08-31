@@ -408,7 +408,6 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 		{
 			uk.co.akademy.PhotoShow.Photo photo = new uk.co.akademy.PhotoShow.Photo(file);
 			
-			photo.setReady(true);
 			havePhoto(photo);
 			
 			return true;
