@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public class Program
 {
-	static String PROPERTY_FILE = "PhotosFromFlickr.properties";
+	static String PROPERTY_FILE = "PhotoSS.properties";
 	static PropertyFetcher _properties = null;
 	
 	static public String getFolder()
@@ -61,7 +61,10 @@ public class Program
 		finally
 		{
 			if( PropertyDefaults() )
+			{
+				//TODO: Need to delete any old properties that have been removed or replaced.
 				_properties.saveProperties( propertiesFile );
+			}
 		}
 		
 		
@@ -125,7 +128,8 @@ public class Program
 	
 	private static boolean SetPropertyDefaultIfNone( String property, String value )
 	{
-		if( Program.getProperty( property ) == "" )
+		String currentValue = Program.getProperty( property );
+		if( currentValue == null )
 		{
 			Program.setProperty( property , value );
 			return true;
