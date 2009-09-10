@@ -18,6 +18,7 @@ import java.util.TimerTask;
  */
 public class PhotoCanvas extends Canvas
 {
+	PhotoCanvasControl _controller = null; // I'd prefer this class to be Observable.
 	private static final long serialVersionUID = 8302867124480794953L;
 
 	private enum Fading
@@ -54,6 +55,8 @@ public class PhotoCanvas extends Canvas
 		_fading = Fading.None;
 	}
 
+	public void setController( PhotoCanvasControl pcc ) { _controller = pcc; }
+	
 	public void setDebug( boolean debug ) { _debug = debug; }
 	public void setDebugText( String debugText ) { _debugText = debugText; }
 
@@ -116,7 +119,9 @@ public class PhotoCanvas extends Canvas
 		{		
 			// TODO: alert PhotoCanvasControl that we've done with this photo.
 			// we should not be freeing things in PhotoCanvas... 
-			photoPrevious.setImage( null );
+			if( _controller != null )
+				_controller.photoDone( photoPrevious );
+			//photoPrevious.setImage( null );
 		}
 	}
 	

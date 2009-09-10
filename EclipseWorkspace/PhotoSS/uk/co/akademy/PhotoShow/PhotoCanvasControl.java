@@ -28,6 +28,7 @@ public class PhotoCanvasControl implements Runnable, Observer
 	private ArrayList<Photo> _photos = null;
 	
 	private int _photoShowTime = 0;
+	private int _photoCanvasCount;
 
 	private boolean _debug = false;
 	/**
@@ -46,9 +47,14 @@ public class PhotoCanvasControl implements Runnable, Observer
 
 		_photoCanvasList = photoCanvasList;
 		
+		_photoCanvasCount = _photoCanvasList.size();
+		
 		//_debug = true;
 		for( PhotoCanvas pc : _photoCanvasList )
+		{
+			pc.setController( this );
 			pc.setDebug( _debug );
+		}
 		
 		String imageShowTimeString = Program.getProperty("general.photoShowTime");
 		try
@@ -93,39 +99,60 @@ public class PhotoCanvasControl implements Runnable, Observer
 		}
 
 		Random rand = new Random();
-		ArrayList<Photo> photosToShow =  null;
-
+		ArrayList<Photo> photosCurrent =  null;
+		ArrayList<Photo> photosToShow =  new ArrayList<Photo>( _photoCanvasCount );
+		
 		String error = "";
 		
 		for(;;)
 		{
-			photosToShow = clonePhotos( _photos );
+			photosCurrent = clonePhotos( _photos );
 
-			while( !photosToShow.isEmpty() )
+			while( !photosCurrent.isEmpty() )
 			{
-				int nPhoto = rand.nextInt( photosToShow.size() );
-				Photo photo = photosToShow.remove( nPhoto );
+				photosToShow.clear();
+				
+				for( int i = 0; i < _photoCanvasCount; i++ )
+				{
+					int photosCurrentCount = photosCurrent.size();
+					if( photosCurrentCount != 0  )
+					{
+						int nPhoto = rand.nextInt( photosCurrentCount );
+						photosToShow.add( photosCurrent.remove( nPhoto ) );
+					}
+					else
+						photosToShow.add( null );
+						
+				}
 
 				if( _debug )
 				{
-					error += nPhoto + " ";
+					//error += nPhoto + " ";
 					for( PhotoCanvas pc : _photoCanvasList )			
 						pc.setDebugText(error);
 				}
 				
 				try
 				{
-					photo.setImage( ImageIO.read( new ByteArrayInputStream ( photo.getBytes() ) ) );
-
-					for( PhotoCanvas pc : _photoCanvasList )
+					// Get bytes for each photo
+					for( Photo photo : photosToShow )
 					{
-						pc.setNextPhoto( photo );
+						if( photo != null )
+							photo.setImage( ImageIO.read( new ByteArrayInputStream ( photo.getBytes() ) ) );
+					}
+
+					// show each photo
+					for( int i = 0; i < _photoCanvasCount; i++ )
+					{
+						PhotoCanvas pc = _photoCanvasList.get(i);
+						pc.setNextPhoto( photosToShow.get(i) );
 						pc.switchPhotoStart( 500 );
 					}
 				}
 				catch (IOException e)
 				{
-					photo = null;
+					for( int i = 0; i < _photoCanvasCount; i++ )
+						photosToShow.set(i , null );
 				}
 
 				try {
@@ -216,4 +243,9 @@ public class PhotoCanvasControl implements Runnable, Observer
 
         return bytes;
     }
+
+	public void photoDone( Photo photo ) {
+		// TODO Auto-generated method stub
+		photo.setImage(null);
+	}
 }
