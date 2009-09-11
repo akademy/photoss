@@ -25,7 +25,7 @@ import javax.swing.SpringLayout;
  * @author matthew
  *
  */
-public class FullScreenShow
+public class FullScreenShow implements IShow
 {
 	ArrayList<JFrame> _frames = null;
 
@@ -63,7 +63,6 @@ public class FullScreenShow
 				public void keyTyped(KeyEvent event) {}
 			} );
 	        
-	
 			frame.setBackground(Color.black);
 			frame.setUndecorated(true);
 			frame.setTitle("Photo Show" + i);
@@ -139,5 +138,17 @@ public class FullScreenShow
 
 		for( JFrame frame : _frames )
 			frame.setCursor( transCursor );
+	}
+
+	@Override
+	public boolean Initilise() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean Run() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

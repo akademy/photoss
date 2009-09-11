@@ -109,6 +109,8 @@ public class PhotoCanvas extends Canvas
 		}
 	}
 
+	
+	
 	private void showNextPhoto()
 	{
 		Photo photoPrevious = _photoCurrent;
@@ -125,12 +127,18 @@ public class PhotoCanvas extends Canvas
 		}
 	}
 	
+	@Override
+	public boolean isDoubleBuffered()
+	{
+		return true;
+	}
+	
 	/**
 	 *  @see java.awt.Canvas#paint(java.awt.Graphics)
 	 */
 	@Override
 	public void paint(Graphics graphic)
-	{	
+	{
 		if( _width != this.getWidth() || _height != this.getHeight() )
 		{
 			_width = this.getWidth();
@@ -150,8 +158,8 @@ public class PhotoCanvas extends Canvas
 		//
 		// Draw the stuff
 		//
+		
 		super.paint(screenBufferGraphic);
-
 		screenBufferGraphic.clearRect( 0, 0, _width, _height );
 
 		if( _photoCurrent != null )
@@ -171,24 +179,48 @@ public class PhotoCanvas extends Canvas
 			
 			//
 			// Centre image
-			//
-			int 	iPosX = ( _width - _photoCurrent.getWidth() ) / 2,
-					iPosY = ( _height - _photoCurrent.getHeight() ) / 2;
+			//			
+			float 	drawWidth = (float) _photoCurrent.getWidth(), 
+					drawHeight = (float) _photoCurrent.getHeight();
+			
+			float	posX = 0, posY = 0;
+						
+			if( drawWidth > _width || drawHeight > _height )
+			{
+				// Image larger than available area
+				if( drawWidth > drawHeight )
+				{
+					// landscape
+					drawHeight = drawHeight * ( _width / drawWidth );
+					drawWidth = _width;
+					posY = ( _height - drawHeight ) / 2;
+				}
+				else
+				{
+					// portrait
+					drawWidth = drawWidth * ( _height / drawHeight );
+					drawHeight = _height;
+					posX = ( _width - drawWidth ) / 2;
+				}
+			}
+			else
+			{
+				posX = ( _width - drawWidth ) / 2;
+				posY = ( _height - drawHeight ) / 2;				
+			}
 
-			screenBufferGraphic.drawImage( _photoCurrent.getImage(), iPosX, iPosY, null );
+			screenBufferGraphic.drawImage( _photoCurrent.getImage(), (int)posX, (int)posY, (int)drawWidth, (int)drawHeight, null );
 		}
 		else
 		{
 			screenBufferGraphic.setColor( Color.white );
 			screenBufferGraphic.drawString( "Getting photos...", 20, 20 );
-			//screenBufferGraphic.setColor( Color.black );
 		}
 		
 		if( _debug )
 		{
 			screenBufferGraphic.setXORMode( Color.white );
 			screenBufferGraphic.drawString( _debugText, 20, 40 );
-			//screenBufferGraphic.setColor( Color.black );
 		}
 		
 		//

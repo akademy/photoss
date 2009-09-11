@@ -67,7 +67,47 @@ public class Program
 			}
 		}
 		
+		String launch = "";
 		
+		if( args == null || args.length == 0 || args[0].equals("") )
+			launch = "window"; // default.
+		else
+			launch = args[0].toLowerCase();
+		
+		if( launch.equals( "window" ) )
+		{
+			// By default show in own java window
+			new WindowShow();
+		}
+		else if( launch.equals( "screensaver" ) )
+		{
+			boolean showScreensaver = true;
+			
+			if( args.length > 1 )
+			{
+				if( args[1].equals( "preview" ) )
+				{
+					// handle preview
+					//String previewWindow = args[2];
+					showScreensaver = false;
+				}
+			}
+			
+			if( showScreensaver )
+				new FullScreenShow();
+		}
+		else if( launch.equals( "settings" ) )
+		{
+			// Open settings dialog
+			// - We may need different settings for each way to launch it...
+		}
+		else if( launch.equals( "help" ) )
+		{
+			// Show the launch options.
+		}
+		
+		
+		/*
 		// http://support.microsoft.com/kb/182383		
 		if( args == null || args.length == 0 || args[0].toLowerCase().startsWith("/c") ) // "/c:1234567"
 		{
@@ -80,7 +120,7 @@ public class Program
 		else if( args[0].toLowerCase().equals("/s") ) // "/s"
 		{
 			new FullScreenShow();
-		}
+		}*/
 		
 		// Save properties.
 		// TODO: this should be left till the program closes, it falls here much earlier than that though
