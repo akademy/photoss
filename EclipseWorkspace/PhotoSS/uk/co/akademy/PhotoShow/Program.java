@@ -6,6 +6,8 @@ package uk.co.akademy.PhotoShow;
 import java.io.File;
 import java.io.IOException;
 
+//import javax.swing.JOptionPane;
+//import javax.swing.JFrame;
 /**
  * @author matthew
  *
@@ -100,6 +102,17 @@ public class Program
 		{
 			// Open settings dialog
 			// - We may need different settings for each way to launch it...
+			if( args.length > 1 )
+			{
+				if( args[1].equals( "screensaver" ) )
+				{
+					// dafault to screensaver settings
+				}
+			}
+			
+			// TODO: This causes a hang, program does not close properly.
+			//JOptionPane.showMessageDialog(null, "Sorry, no settings yet. You can make some changes in" +
+			//		" photoss.properties file at USER/akademy.co.uk/photoss/");
 		}
 		else if( launch.equals( "help" ) )
 		{

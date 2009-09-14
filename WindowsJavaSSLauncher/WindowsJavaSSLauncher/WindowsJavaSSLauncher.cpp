@@ -37,10 +37,19 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		_tcscpy_s( launchString + fileNameOffset, MAX_COMMANDLINE_LENGTH - fileNameOffset, _T("\\photoss.jar\"\0") );
 
 		int command = 1;
-		for( ; command<argc; command++ )
+		for( ; command < argc; command++ )
 		{
 			_tcscat_s( launchString, 200, _T(" \"") );
-			_tcscat_s( launchString, 200, argv[command] );
+
+			if( !_tcsncmp( argv[command], _T("/s"), 2 ) )
+				_tcscat_s( launchString, 200, _T("screensaver") );
+			else if( !_tcsncmp( argv[command], _T("/p"), 2 ) )
+				_tcscat_s( launchString, 200, _T("screensaver\" \"preview") );
+			else if( !_tcsncmp( argv[command], _T("/c"), 2 ) )
+				_tcscat_s( launchString, 200, _T("settings\" \"screensaver") );
+			else
+				_tcscat_s( launchString, 200, argv[command] );
+
 			_tcscat_s( launchString, 200, _T("\"") );
 		}
 
