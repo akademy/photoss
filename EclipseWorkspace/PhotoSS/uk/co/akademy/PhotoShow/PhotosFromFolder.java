@@ -1,5 +1,5 @@
 /**
- * 
+ * Load photos in specific local folders
  */
 package uk.co.akademy.PhotoShow;
 

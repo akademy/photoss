@@ -1,9 +1,8 @@
 /**
- * 
+ * COntrolling which photo a photocanvas shows.
  */
 package uk.co.akademy.PhotoShow;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -13,8 +12,6 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
 //import java.util.zip.Deflater;
-
-import javax.imageio.ImageIO;
 
 /**
  * @author matthew
@@ -112,6 +109,9 @@ public class PhotoCanvasControl implements Runnable, Observer
 			{
 				photosToShow.clear();
 				
+				//
+				// Select some photos at random and remove them from the set so they don't repeat until all are shown
+				//
 				for( int i = 0; i < _photoCanvasCount; i++ )
 				{
 					int photosCurrentCount = photosCurrent.size();
@@ -121,8 +121,10 @@ public class PhotoCanvasControl implements Runnable, Observer
 						photosToShow.add( photosCurrent.remove( nPhoto ) );
 					}
 					else
-						photosToShow.add( null );
-						
+					{
+						//photosToShow.add( null );
+						break;
+					}
 				}
 
 				if( _debug )
@@ -131,28 +133,15 @@ public class PhotoCanvasControl implements Runnable, Observer
 					for( PhotoCanvas pc : _photoCanvasList )			
 						pc.setDebugText(error);
 				}
-				
-				try
-				{
-					// Get bytes for each photo
-					for( Photo photo : photosToShow )
-					{
-						if( photo != null )
-							photo.setImage( ImageIO.read( new ByteArrayInputStream ( photo.getBytes() ) ) );
-					}
 
-					// show each photo
-					for( int i = 0; i < _photoCanvasCount; i++ )
-					{
-						PhotoCanvas pc = _photoCanvasList.get(i);
-						pc.setNextPhoto( photosToShow.get(i) );
-						pc.switchPhotoStart( 500 );
-					}
-				}
-				catch (IOException e)
+				//
+				// Set the photos to show
+				//
+				for( int i = 0; i < photosToShow.size(); i++ )
 				{
-					for( int i = 0; i < _photoCanvasCount; i++ )
-						photosToShow.set(i , null );
+					PhotoCanvas pc = _photoCanvasList.get(i);
+					pc.setNextPhoto( photosToShow.get(i) );
+					pc.switchPhotoStart( 500 );
 				}
 
 				try {
@@ -187,18 +176,17 @@ public class PhotoCanvasControl implements Runnable, Observer
 	 */
 	public void update(Observable oPhotosFrom, Object oPhoto )
 	{
-		//PhotosFrom pff = (PhotosFrom)o;
 		Photo photo = (Photo)oPhoto;
 
-		try
+		//try
 		{
-			photo.setBytes( getBytesFromFile( photo.getFile() ) );
+			//photo.setBytes( getBytesFromFile( photo.getFile() ) );
 
 			_photos.add( photo ); // TODO... technically we should be taking a deep copy of the photo, but as this is a pretty simple (with only one watcher) we can ignore this... until... we can't...
 		} 
-		catch (IOException e)
+		//catch (IOException e)
 		{
-			e.printStackTrace();
+		//	e.printStackTrace();
 		}
 	}
 
@@ -243,9 +231,4 @@ public class PhotoCanvasControl implements Runnable, Observer
 
         return bytes;
     }
-
-	public void photoDone( Photo photo ) {
-		// TODO Auto-generated method stub
-		photo.setImage(null);
-	}
 }

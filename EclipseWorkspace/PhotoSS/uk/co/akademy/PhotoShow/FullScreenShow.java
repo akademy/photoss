@@ -1,5 +1,5 @@
 /**
- * 
+ * SHow the photos in fullscreen across mutliple screens
  */
 package uk.co.akademy.PhotoShow;
 

@@ -1,9 +1,9 @@
 /**
- * 
+ * Holds some information about each of the photos.
+ * Primarily the file location of the photo.
  */
 package uk.co.akademy.PhotoShow;
 
-import java.awt.Image;
 import java.io.File;
 /**
  * @author matthew
@@ -13,7 +13,6 @@ public class Photo
 {
 	private static int _idGenerate = 1;
 	
-	private Image _image = null;
 	private File _file;
 	private byte[] _bytes;
 	private int _id = 0;
@@ -27,6 +26,13 @@ public class Photo
 	{
 		this();
 		_file = file;
+		
+		/*try {
+			//getBytesFromFile( file );
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 	}
 
 	/**
@@ -36,63 +42,23 @@ public class Photo
 	{
 		return _id;
 	}
-	
-	/**
-	 * @return the _image
-	 */
-	public Image getImage() 
-	{
-		return _image;
-	}
 
-	/**
-	 * @param _image the _image to set
-	 */
-	public void setImage(Image image)
-	{
-		if( this._image != null && this._image != image )
-			this._image.flush();
-		
-		this._image = image;
-	}
-	/**
-	 * 
-	 * @return
-	 */
-	public int getHeight()
-	{
-		if( _image != null )
-			return _image.getHeight(null);
-		
-		return 0;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public int getWidth()
-	{
-		if( _image != null )
-			return _image.getWidth(null);
-		
-		return 0;
-	}
-
-	/**
-	 * @return the _file
-	 */
 	public File getFile()
 	{
 		return _file;
 	}
-
+	
 	/**
 	 * @param _file the _file to set
 	 */
-	public void setFile(File file)
+	public void setData( File file )
 	{
-		this._file = file;
+		/*try {
+			//getBytesFromFile( file );
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 	}
 
 	/**
@@ -101,13 +67,5 @@ public class Photo
 	public byte[] getBytes()
 	{
 		return _bytes;
-	}
-
-	/**
-	 * @param _bytes the _bytes to set
-	 */
-	public void setBytes(byte[] _bytes)
-	{
-		this._bytes = _bytes;
 	}
 }

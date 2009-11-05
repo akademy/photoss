@@ -1,5 +1,5 @@
 /**
- * 
+ * Property helper class
  */
 package uk.co.akademy.PhotoShow;
 

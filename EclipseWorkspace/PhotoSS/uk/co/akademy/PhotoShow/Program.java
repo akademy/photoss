@@ -1,5 +1,5 @@
 /**
- * 
+ * Starting point. Saves / loads properties.
  */
 package uk.co.akademy.PhotoShow;
 

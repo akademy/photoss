@@ -1,5 +1,5 @@
 /**
- * 
+ * DOwnload some photos from flickr
  */
 package uk.co.akademy.PhotoShow;
 

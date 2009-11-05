@@ -1,3 +1,6 @@
+/*
+ * Test the program with a couple of files.
+ */
 package uk.co.akademy.PhotoShow;
 
 import java.io.File;
