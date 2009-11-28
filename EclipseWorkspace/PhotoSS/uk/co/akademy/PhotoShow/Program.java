@@ -64,7 +64,7 @@ public class Program
 		{
 			if( PropertyDefaults() )
 			{
-				//TODO: Need to delete any old properties that have been removed or replaced.
+				//TODO: Need to delete any old properties that have been removed or replaced in an earlier version.
 				_properties.saveProperties( propertiesFile );
 			}
 		}
@@ -78,10 +78,18 @@ public class Program
 		
 		if( launch.equals( "window" ) )
 		{
-			// By default show in own java window
-			new WindowShow();
+			int number = 1;
+			
+			if( args.length > 1 )
+			{
+				try {
+					number = Integer.parseInt( args[1] ); }
+				catch( Exception e ) {}
+			}
+			
+			new WindowShow( number );
 		}
-		else if( launch.equals( "screensaver" ) )
+		else if( launch.equals( "screensaver" ) || launch.equals( "fullscreen" ) )
 		{
 			boolean showScreensaver = true;
 			
@@ -106,38 +114,40 @@ public class Program
 			{
 				if( args[1].equals( "screensaver" ) )
 				{
-					// dafault to screensaver settings
+					// default to screensaver settings
 				}
 			}
 			
-			// TODO: This causes a hang, program does not close properly.
+			// TODO: Next line causes a hang, program does not close properly.
 			//JOptionPane.showMessageDialog(null, "Sorry, no settings yet. You can make some changes in" +
 			//		" photoss.properties file at USER/akademy.co.uk/photoss/");
 		}
 		else if( launch.equals( "help" ) )
 		{
-			// Show the launch options.
+			OutputInformation();
+			OutputHelp();
 		}
-		
-		
-		/*
-		// http://support.microsoft.com/kb/182383		
-		if( args == null || args.length == 0 || args[0].toLowerCase().startsWith("/c") ) // "/c:1234567"
+		else
 		{
-			// Show settings
+			OutputInformation();
+			System.err.println( "Error: Your command was not found.");
+			OutputHelp();
 		}
-		else if( args[0].toLowerCase().equals("/p") ) // "/p" "1234567"
-		{
-			// Preview screen saver in a window
-		}
-		else if( args[0].toLowerCase().equals("/s") ) // "/s"
-		{
-			new FullScreenShow();
-		}*/
 		
 		// Save properties.
 		// TODO: this should be left till the program closes, it falls here much earlier than that though
 		_properties.saveProperties( propertiesFile );
+	}
+	
+	private static void OutputInformation()
+	{
+		System.out.println("PhotoSS : Photos everywhere. Copyright, akademy.co.uk 2009.");
+	}
+	
+	private static void OutputHelp()
+	{
+		System.out.println("To show in full screen add \"fullscreen\".");
+		System.out.println("To show in a one or more windows add \"window <number>\".");
 	}
 	
 	private static boolean PropertyDefaults()

@@ -14,22 +14,20 @@ import javax.swing.JFrame;
 
 public class WindowShow implements IShow
 {
-	ArrayList<PhotoCanvas> photoCanvasList = null;
-	JFrame frames[] = null;
+	ArrayList<JFrame> _windows = null;
 	
-	int width = 500;
-	int height = 300;
+	int _width = 600;
+	int _height = 400;
 	
-	public WindowShow()
+	public WindowShow( int windowNumber )
 	{
-		int frameNumber = 2;
-		frames = new JFrame[frameNumber];
+		_windows = new ArrayList<JFrame>(windowNumber);
 		
-		photoCanvasList = new ArrayList<PhotoCanvas>();
+		ArrayList<PhotoCanvas> photoCanvasList = new ArrayList<PhotoCanvas>(windowNumber);
 		
-		for( int i = 0; i<frameNumber; i++ )
+		for( int i = 0; i<windowNumber; i++ )
 		{
-			JFrame frame = new JFrame("PhotoSS");
+			JFrame frame = new JFrame( "PhotoSS " + (i+1) );
 			
 	        frame.addWindowListener( new WindowAdapter() {
 	            public void windowClosing(WindowEvent e) {
@@ -50,32 +48,33 @@ public class WindowShow implements IShow
 			} );
 	        
 			frame.setBackground(Color.black);
-			frame.setSize(width, height);
+			//frame.setSize( _width, _height );
 	
-			PhotoCanvas pc = new PhotoCanvas();
-	
-			pc.setBackground( Color.black );
-			pc.setBounds(0, 0, width, height);
-	
+			PhotoCanvas pc = new PhotoCanvas( _width, _height );
+			//pc.setBounds(0, 0, _width, _height);
+			
 			photoCanvasList.add( pc );
 	
 			frame.add( pc );
 			frame.pack();
-				
-			frames[i] = frame;
+			
+			pc.setVisible(false);
+			
+			_windows.add( frame );
 		}
 		
 		ArrayList<PhotosFrom> photosFromList = new ArrayList<PhotosFrom>();
 
 		//photosFromList.add( new PhotosFromTest() );
 		photosFromList.add( new PhotosFromFolder() );
-		photosFromList.add( new PhotosFromFlickr() );
+		//photosFromList.add( new PhotosFromFlickr() );
 		
 		PhotoCanvasControl pcc = new PhotoCanvasControl( photoCanvasList, photosFromList );
-		pcc.initilise();
 		
-		for( JFrame frame : frames )
+		for( JFrame frame : _windows )
 			frame.setVisible(true);
+		
+		pcc.initilise();
 	}
 
 	@Override

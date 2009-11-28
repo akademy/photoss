@@ -41,6 +41,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		{
 			_tcscat_s( launchString, 200, _T(" \"") );
 
+			// Windows screensaver info: // http://support.microsoft.com/kb/182383
 			if( !_tcsncmp( argv[command], _T("/s"), 2 ) )
 				_tcscat_s( launchString, 200, _T("screensaver") );
 			else if( !_tcsncmp( argv[command], _T("/p"), 2 ) )

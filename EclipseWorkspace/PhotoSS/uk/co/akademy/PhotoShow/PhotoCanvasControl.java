@@ -77,7 +77,12 @@ public class PhotoCanvasControl implements Runnable, Observer
 		}
 		 
 		if( photosFromInitilised > 0 )
+		{			
+			for( PhotoCanvas pc : _photoCanvasList )
+				pc.setVisible(true);
+			
 			start();
+		}
 	}
 
 	/* (non-Javadoc)

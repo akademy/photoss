@@ -27,13 +27,13 @@ import javax.swing.SpringLayout;
  */
 public class FullScreenShow implements IShow
 {
-	ArrayList<JFrame> _frames = null;
+	ArrayList<JFrame> _screens = null;
 
 	public FullScreenShow()
 	{
 		ArrayList<PhotoCanvas> photoCanvasList = new ArrayList<PhotoCanvas>();
 
-		_frames = new ArrayList<JFrame>();
+		_screens = new ArrayList<JFrame>();
 
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice[] gs = ge.getScreenDevices();
@@ -43,7 +43,7 @@ public class FullScreenShow implements IShow
 		
 		for( int i = 0; i < screens; i++ )
 		{
-			JFrame frame = new JFrame("My Frame");
+			JFrame frame = new JFrame("FullScreenView"+(i+1));
 			
 	        frame.addWindowListener( new WindowAdapter() {
 	            public void windowClosing(WindowEvent e) {
@@ -65,34 +65,23 @@ public class FullScreenShow implements IShow
 	        
 			frame.setBackground(Color.black);
 			frame.setUndecorated(true);
-			frame.setTitle("Photo Show" + i);
-			// _frame.setAlwaysOnTop(true); // Hard to debug!
 
 			DisplayMode dm = gs[i].getDisplayMode();
 			frame.setSize(dm.getWidth(), dm.getHeight());
-
-			PhotoCanvas pc = new PhotoCanvas();
-
-			pc.setBackground( Color.black );
-			pc.setBounds(0, 0, dm.getWidth(), dm.getHeight());
-
+			
+			PhotoCanvas pc = new PhotoCanvas( dm.getWidth(), dm.getHeight() );
+			
 			photoCanvasList.add( pc );
 
 			frame.add( pc, SpringLayout.WEST );
 			frame.pack();
 
-			frame.setAlwaysOnTop(true);
+			pc.setVisible(false);
+			
+			frame.setVisible(false);
+			frame.setAlwaysOnTop(true); // Hard to debug!
 
-			_frames.add( frame );
-		}
-	    
-	    
-		//
-		// Loop around and blank screens seemingly at once
-		//
-		for( int i=0; i<screens; i++ )
-		{
-			gs[i].setFullScreenWindow( _frames.get(i) );
+			_screens.add( frame );
 		}
 
 	    
@@ -103,15 +92,13 @@ public class FullScreenShow implements IShow
 
 		//photosFromList.add( new PhotosFromTest() );
 		photosFromList.add( new PhotosFromFolder() );
-		photosFromList.add( new PhotosFromFlickr() );
+		//photosFromList.add( new PhotosFromFlickr() );
 
 
 		//
 		// Create the PhotoCanvasControl and start getting photos
 		//
 		PhotoCanvasControl pcc = new PhotoCanvasControl( photoCanvasList, photosFromList );
-		pcc.initilise();
-
 
 		//
 		// Hide cursor (From http://sevensoft.livejournal.com/23460.html)
@@ -122,7 +109,7 @@ public class FullScreenShow implements IShow
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		Image transCursorImage = toolkit.getImage("./1pxtrans_cursor.gif");
 
-		MediaTracker mediaTracker = new MediaTracker( _frames.get(0) );
+		MediaTracker mediaTracker = new MediaTracker( _screens.get(0) );
 		mediaTracker.addImage(transCursorImage, 0);
 		try
 		{
@@ -136,8 +123,13 @@ public class FullScreenShow implements IShow
 
 		Cursor transCursor = toolkit.createCustomCursor(transCursorImage, new Point(0,0), transCursorName);
 
-		for( JFrame frame : _frames )
+		for( JFrame frame : _screens )
 			frame.setCursor( transCursor );
+		
+		for( JFrame frame : _screens )
+			frame.setVisible(true);
+		
+		pcc.initilise();
 	}
 
 	@Override
