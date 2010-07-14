@@ -6,8 +6,6 @@ package uk.co.akademy.PhotoShow;
 import java.io.File;
 import java.io.IOException;
 
-//import javax.swing.JOptionPane;
-//import javax.swing.JFrame;
 /**
  * @author matthew
  *
@@ -62,7 +60,7 @@ public class Program
 		catch (IOException e1) {}
 		finally
 		{
-			if( PropertyDefaults() )
+			if( propertyDefaults() )
 			{
 				//TODO: Need to delete any old properties that have been removed or replaced in an earlier version.
 				_properties.saveProperties( propertiesFile );
@@ -72,7 +70,12 @@ public class Program
 		String launch = "";
 		
 		if( args == null || args.length == 0 || args[0].equals("") )
+		{
+			System.out.println("No choice made, using \"window 1\".");
+			outputHelp();
+			
 			launch = "window"; // default.
+		}
 		else
 			launch = args[0].toLowerCase();
 		
@@ -84,7 +87,9 @@ public class Program
 			{
 				try {
 					number = Integer.parseInt( args[1] ); }
-				catch( Exception e ) {}
+				catch( Exception e ) {
+					System.err.println( "Error: You need to pass in a number: photoss window <number>.");
+				}
 			}
 			
 			new WindowShow( number );
@@ -118,20 +123,18 @@ public class Program
 				}
 			}
 			
-			// TODO: Next line causes a hang, program does not close properly.
-			//JOptionPane.showMessageDialog(null, "Sorry, no settings yet. You can make some changes in" +
-			//		" photoss.properties file at USER/akademy.co.uk/photoss/");
+			new PropertyChanger( _properties );
 		}
 		else if( launch.equals( "help" ) )
 		{
-			OutputInformation();
-			OutputHelp();
+			outputInformation();
+			outputHelp();
 		}
 		else
 		{
-			OutputInformation();
+			outputInformation();
 			System.err.println( "Error: Your command was not found.");
-			OutputHelp();
+			outputHelp();
 		}
 		
 		// Save properties.
@@ -139,61 +142,66 @@ public class Program
 		_properties.saveProperties( propertiesFile );
 	}
 	
-	private static void OutputInformation()
+	private static void outputInformation()
 	{
-		System.out.println("PhotoSS : Photos everywhere. Copyright, akademy.co.uk 2009.");
+		System.out.println("PhotoSS : Photos everywhere. Copyright, akademy.co.uk 2010.");
 	}
 	
-	private static void OutputHelp()
+	private static void outputHelp()
 	{
-		System.out.println("To show in full screen add \"fullscreen\".");
-		System.out.println("To show in a one or more windows add \"window <number>\".");
+		System.out.println("Command line settings:");
+		System.out.println("photoss fullscreen - To show in full screen.");
+		System.out.println("photoss window <number> - To show in one or more windows.");
 	}
 	
-	private static boolean PropertyDefaults()
+	private static boolean propertyDefaults()
 	{
 		boolean changesMade = false;
 		
-		if( SetPropertyDefaultIfNone("flickr.apiSecret","<NEED_SECRET>" ) ) // Warning: Do not submit secret to subversion!!!
+		if( setPropertyIfNone("flickr.apiSecret","" ) ) // Warning: Do not submit apiSecret to subversion!!!
 			changesMade = true;
 		
-		if( SetPropertyDefaultIfNone("flickr.apiKey","<NEED_APIKEY>") ) // Warning: Do not submit apikey to subversion!!!
+		if( setPropertyIfNone("flickr.apiKey","") ) // Warning: Do not submit apikey to subversion!!!
 			changesMade = true;
 
-		if( SetPropertyDefaultIfNone( "flickr.userToken","<NEED_USERTOKEN>") )
+		if( setPropertyIfNone( "flickr.userToken","") )
 			changesMade = true;
 
-		if( SetPropertyDefaultIfNone( "flickr.photoCount","25") )
+		if( setPropertyIfNone( "flickr.photoCount","25") )
 			changesMade = true;
 
-		if( SetPropertyDefaultIfNone( "flickr.daysToReconnect","7") )
+		if( setPropertyIfNone( "flickr.daysToReconnect","7") )
 			changesMade = true;
 
-		if( SetPropertyDefaultIfNone( "flickr.lastConnection","") )
+		if( setPropertyIfNone( "flickr.lastConnection","") )
+			changesMade = true;
+		
+		if( setPropertyIfNone( "flickr.photosets",""))
 			changesMade = true;
 
 		// TODO Add proxyUse so we can turn it off and on quickly.
 		
-		if( SetPropertyDefaultIfNone( "general.proxyHost","") )
+		if( setPropertyIfNone( "general.proxyHost","") )
 			changesMade = true;
 
-		if( SetPropertyDefaultIfNone( "general.proxyPort","8080") )
+		if( setPropertyIfNone( "general.proxyPort","8080") )
 			changesMade = true;
 
-		if( SetPropertyDefaultIfNone( "general.photoShowTime", "10000") )
+		if( setPropertyIfNone( "general.photoShowTime", "10000") )
 			changesMade = true;
 
-		if( SetPropertyDefaultIfNone( "folder.folders", "<NEED_PATHS_TO_PHOTOS>") )
+		if( setPropertyIfNone( "folder.folders", "") )
 			changesMade = true;
 		
 		return changesMade;
 	}
 	
-	private static boolean SetPropertyDefaultIfNone( String property, String value )
+	private static boolean setPropertyIfNone( String property, String value )
 	{
 		String currentValue = Program.getProperty( property );
 		if( currentValue == null )
 		{
+			// Nothing set, so use default
 			Program.setProperty( property , value );
 			return true;
 		}
@@ -201,3 +209,5 @@ public class Program
 		return false;
 	}
 }
+
+// http://www.dis.uniroma1.it/~liberato/screensaver/

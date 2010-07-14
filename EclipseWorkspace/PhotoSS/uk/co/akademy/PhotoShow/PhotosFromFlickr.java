@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -27,12 +28,18 @@ import java.util.TimeZone;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.xml.sax.SAXException;
+
 import uk.co.akademy.Downloader.Download;
 
 import com.aetrion.flickr.Flickr;
+import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.people.PeopleInterface;
 import com.aetrion.flickr.photos.PhotoList;
+import com.aetrion.flickr.photosets.Photoset;
+import com.aetrion.flickr.photosets.Photosets;
+import com.aetrion.flickr.photosets.PhotosetsInterface;
 
 /**
  * @author Matthew
@@ -130,11 +137,15 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 		if( newPhotoList != null )
 			photoListToShow = newPhotoList;
 			
+		if( photoListToShow == null )
+			return false;
+		
 		//
 		// Add the photos, download if necessary?
 		//
 		String downloadFolder = programWorkingFolder + DOWNLOADS_FOLDER;
 		File downloads = new File( downloadFolder );
+		
 		if( !downloads.exists() )
 			downloads.mkdirs();
 		
@@ -161,6 +172,7 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 	    	
 			if( !addByFilename( downloadFolder + fileName ) )
 			{
+				// TODO: Limit numbers of simultaneous downloads.
 				Download dl = new Download( url, downloadFolder );
 				
 				_downloads.add( dl );
@@ -179,14 +191,14 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 	{	
 		String apiKey = Program.getProperty( "flickr.apiKey" );
 		String apiSecret = Program.getProperty( "flickr.apiSecret" );
-		
-		if( (apiKey == null ) || ( apiSecret == null ) ||
-				( apiSecret == "" ) || ( apiKey == "" ) )
+
+		if( ( apiKey == null ) || ( apiSecret == null ) ||
+			( apiSecret == "" ) || ( apiKey == "" ) )
 		{
 			// TODO: Missing properties error handle.
 			return null;
 		}
-		
+
 		REST rest = null;
 		try
 		{
@@ -231,16 +243,7 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 	    	rest.setProxy(proxyHost, proxyPort);
 		}
 	    
-		//
-	    // Connect to flickr
-	    //
-		Flickr f = new Flickr( apiKey, apiSecret, rest );
-		
-		PeopleInterface pi = f.getPeopleInterface();
-		
-		String userToken = Program.getProperty( "flickr.userToken" );
 		String sPhotoCount = Program.getProperty( "flickr.photoCount" );
-		
 		int photoCount;
 		try
 		{
@@ -257,16 +260,72 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 			photoCount = 500;
 		else if( photoCount < 1 )
 			photoCount = 1;
+	    
+		//
+	    // Connect to flickr
+	    //
+		Flickr flickr = new Flickr( apiKey, apiSecret, rest );
 		
 		PhotoList newPhotoList = null;
-		try
+		
+		String userToken = Program.getProperty( "flickr.userToken" );
+		String sPhotosets = Program.getProperty( "flickr.photosets" );
+		
+		if( sPhotosets != "" )
 		{
-			newPhotoList = pi.getPublicPhotos(userToken, photoCount,1);
+			PhotosetsInterface photosetsI = flickr.getPhotosetsInterface();
+			
+			Photosets photosets = null;
+			
+			try
+			{
+				photosets = photosetsI.getList(userToken);
+			}
+			catch (Exception e) //IOException e2, SAXException e2, FlickrException e2) {
+			{
+				e.printStackTrace();
+				return null;
+			}
+			
+			if( photosets != null )
+			{
+				// If we have a list of photosets, just get the photos from there.
+				Collection<Photoset> photosetCollection = photosets.getPhotosets();
+			
+				String[] photosetsNamesArray = sPhotosets.split(";");
+				for( Photoset photoset : photosetCollection )
+				{
+					String photosetName = photoset.getTitle();
+					for( int i = 0; i<photosetsNamesArray.length;i++)
+						if( photosetsNamesArray[i] != "" && 
+								photosetsNamesArray[i].compareToIgnoreCase(photosetName) == 0 )
+						{
+							try
+							{
+								newPhotoList = photosetsI.getPhotos(photoset.getId(), photoCount / photosetsNamesArray.length, 1);
+							}
+							catch( Exception e) //catch (IOException e), catch (SAXException e), catch (FlickrException e)
+							{
+								e.printStackTrace();
+								return null;
+							}
+						}
+				}
+			}
 		}
-		catch( Exception e) //catch (IOException e), catch (SAXException e), catch (FlickrException e)
+		else
 		{
-			e.printStackTrace();
-			return null;
+			PeopleInterface pi = flickr.getPeopleInterface();
+			
+			try
+			{
+				newPhotoList = pi.getPublicPhotos(userToken, photoCount,1);
+			}
+			catch( Exception e) //catch (IOException e), catch (SAXException e), catch (FlickrException e)
+			{
+				e.printStackTrace();
+				return null;
+			}
 		}
 		
 		return newPhotoList;

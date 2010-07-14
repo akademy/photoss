@@ -1,5 +1,5 @@
 /*
- * DIsplay photos in one of more windows.
+ * Display photos in one or more windows.
  */
 package uk.co.akademy.PhotoShow;
 
@@ -67,7 +67,7 @@ public class WindowShow implements IShow
 
 		//photosFromList.add( new PhotosFromTest() );
 		photosFromList.add( new PhotosFromFolder() );
-		//photosFromList.add( new PhotosFromFlickr() );
+		photosFromList.add( new PhotosFromFlickr() );
 		
 		PhotoCanvasControl pcc = new PhotoCanvasControl( photoCanvasList, photosFromList );
 		
