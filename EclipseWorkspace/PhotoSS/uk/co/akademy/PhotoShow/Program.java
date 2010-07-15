@@ -90,9 +90,15 @@ public class Program
 				catch( Exception e ) {
 					System.err.println( "Error: You need to pass in a number: photoss window <number>.");
 				}
+				
+				if( number > 10 )
+					number = 10;
+				else if( number < 0 )
+					number = 0;
 			}
 			
-			new WindowShow( number );
+			if( number != 0 )
+				new WindowShow( number );
 		}
 		else if( launch.equals( "screensaver" ) || launch.equals( "fullscreen" ) )
 		{
