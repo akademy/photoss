@@ -30,8 +30,8 @@ java -jar PhotoSS.jar screensaver
 
 Screensaver Install
 -------------------
-To use as a screensaver drop both "PhotoSS.jar" and "PhotoSS.scr" files into your system folder, on WindowsXP this is usually:
-C:\Windows\system\system32\
+To use as a screensaver drop both "PhotoSS.jar" and "PhotoSS.scr" files into your system folder, on WindowsXP or Windows7 :
+c:\windows\system32\
 
 (It's different on other systems, just find where the default screensavers are installed already and drop the two files in there.)
 
