@@ -25,73 +25,67 @@ import javax.swing.SpringLayout;
  * @author Matthew
  *
  */
-public class FullScreenShow implements IShow
+public class ScreensaverShow implements IShow
 {
-	JFrame _screen = null;
+	ArrayList<JFrame> _screens = null;
 	ArrayList<PhotoCanvas> _photoCanvasList = null;
-	int _screenNumber = 1;
 	
-	
-	public FullScreenShow(int screenNumber)
-	{
-		_screenNumber = screenNumber;
-	}	
-	public FullScreenShow() { }
-
+	public ScreensaverShow() { }
 
 	public boolean initilise()
 	{
 		_photoCanvasList = new ArrayList<PhotoCanvas>();
 
+		_screens = new ArrayList<JFrame>();
+
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice[] gs = ge.getScreenDevices();
 
 		int screens = gs.length;
-
-		if( _screenNumber > screens )
-			_screenNumber = 1;
+		// screens = 1;
 		
-		JFrame frame = new JFrame("FullScreenShow");
-			
-        frame.addWindowListener( new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                System.exit(0);
-            }
-        } ); 
-        
-		frame.addKeyListener( new KeyListener() 
+		for( int i = 0; i < screens; i++ )
 		{
-			public void keyPressed(KeyEvent event) {}
-			public void keyReleased(KeyEvent event) {
-				if (event.getKeyChar() == KeyEvent.VK_ESCAPE)
-				{
-					System.exit(0);
+			JFrame frame = new JFrame("FullScreenView"+(i+1));
+			
+	        frame.addWindowListener( new WindowAdapter() {
+	            public void windowClosing(WindowEvent e) {
+	                System.exit(0);
+	            }
+	        } ); 
+	        
+			frame.addKeyListener( new KeyListener() 
+			{
+				public void keyPressed(KeyEvent event) {}
+				public void keyReleased(KeyEvent event) {
+					//if (event.getKeyChar() == KeyEvent.VK_ESCAPE)
+					{
+						System.exit(0);
+					}
 				}
-				
-				// TODO: Add navigation keys so that you can move through
-			}
-			public void keyTyped(KeyEvent event) {}
-		} );
-        
-		frame.setBackground(Color.black);
-		frame.setUndecorated(true);
+				public void keyTyped(KeyEvent event) {}
+			} );
+	        
+			frame.setBackground(Color.black);
+			frame.setUndecorated(true);
 
-		DisplayMode dm = gs[_screenNumber-1].getDisplayMode();
-		frame.setSize(dm.getWidth(), dm.getHeight());
-		
-		PhotoCanvas pc = new PhotoCanvas( dm.getWidth(), dm.getHeight() );
-		
-		_photoCanvasList.add( pc );
+			DisplayMode dm = gs[i].getDisplayMode();
+			frame.setSize(dm.getWidth(), dm.getHeight());
+			
+			PhotoCanvas pc = new PhotoCanvas( dm.getWidth(), dm.getHeight() );
+			
+			_photoCanvasList.add( pc );
 
-		frame.add( pc, SpringLayout.WEST );
-		frame.pack();
+			frame.add( pc, SpringLayout.WEST );
+			frame.pack();
 
-		pc.setVisible(false);
-		
-		frame.setVisible(false);
-		frame.setAlwaysOnTop(true); // Hard to debug!
+			pc.setVisible(false);
+			
+			frame.setVisible(false);
+			frame.setAlwaysOnTop(true); // Hard to debug!
 
-		_screen = frame;
+			_screens.add( frame );
+		}
 
 		//
 		// Hide cursor (From http://sevensoft.livejournal.com/23460.html)
@@ -102,7 +96,7 @@ public class FullScreenShow implements IShow
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		Image transCursorImage = toolkit.getImage("./1pxtrans_cursor.gif");
 
-		MediaTracker mediaTracker = new MediaTracker( _screen );
+		MediaTracker mediaTracker = new MediaTracker( _screens.get(0) );
 		mediaTracker.addImage(transCursorImage, 0);
 		try
 		{
@@ -116,13 +110,15 @@ public class FullScreenShow implements IShow
 
 		Cursor transCursor = toolkit.createCustomCursor(transCursorImage, new Point(0,0), transCursorName);
 
-		_screen.setCursor( transCursor );
+		for( JFrame frame : _screens )
+			frame.setCursor( transCursor );
 		
 		return true;
 	}
 
 	public boolean start( ArrayList<PhotosFrom> photosFromList )
 	{
+
 		if( photosFromList.size() > 0 )
 		{
 			PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
@@ -130,12 +126,16 @@ public class FullScreenShow implements IShow
 			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			GraphicsDevice[] gs = ge.getScreenDevices();
 			
-			gs[_screenNumber-1].setFullScreenWindow( _screen );
+			for( int i=0; i<gs.length; i++ )
+			{
+				gs[i].setFullScreenWindow( _screens.get(i) );
+			}
 			
-			_screen.setVisible(true);
+			for( JFrame frame : _screens )
+				frame.setVisible(true);
 			
 			pcc.initilise();
-			
+		
 			return true;
 		}
 		

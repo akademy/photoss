@@ -5,6 +5,7 @@ package uk.co.akademy.PhotoShow;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * @author matthew
@@ -81,26 +82,43 @@ public class Program
 		
 		if( launch.equals( "window" ) )
 		{
-			int number = 1;
+			int windowCount = 1;
 			
 			if( args.length > 1 )
 			{
 				try {
-					number = Integer.parseInt( args[1] ); }
+					windowCount = Integer.parseInt( args[1] ); }
 				catch( Exception e ) {
 					System.err.println( "Error: You need to pass in a number: photoss window <number>.");
 				}
 				
-				if( number > 10 )
-					number = 10;
-				else if( number < 0 )
-					number = 0;
+				if( windowCount > 10 )
+					windowCount = 10;
+				else if( windowCount < 0 )
+					windowCount = 0;
 			}
 			
-			if( number != 0 )
-				new WindowShow( number );
+			if( windowCount != 0 )
+			{
+				show( new WindowShow( windowCount ) );
+			}
 		}
-		else if( launch.equals( "screensaver" ) || launch.equals( "fullscreen" ) )
+		else if( launch.equals( "fullscreen" ) )
+		{
+			int screenNumber = 1;
+			
+			if( args.length > 1 )
+			{
+				try {
+					screenNumber = Integer.parseInt( args[1] ); }
+				catch( Exception e ) {
+					System.err.println( "Error: You need to pass in a number: photoss fullscreen <number>.");
+				}
+			}
+			
+			show( new FullScreenShow( screenNumber ) );
+		}
+		else if( launch.equals( "screensaver" ) )
 		{
 			boolean showScreensaver = true;
 			
@@ -108,14 +126,16 @@ public class Program
 			{
 				if( args[1].equals( "preview" ) )
 				{
-					// handle preview
+					//TODO: Handle screensaver preview. (Almost certainly platform specific though)
 					//String previewWindow = args[2];
 					showScreensaver = false;
 				}
 			}
 			
 			if( showScreensaver )
-				new FullScreenShow();
+			{
+				show( new ScreensaverShow() );
+			}
 		}
 		else if( launch.equals( "settings" ) )
 		{
@@ -146,6 +166,20 @@ public class Program
 		// Save properties.
 		// TODO: this should be left till the program closes, it falls here much earlier than that though
 		_properties.saveProperties( propertiesFile );
+	}
+	
+	private static void show( IShow show )
+	{
+		if( show.initilise() )
+		{
+			ArrayList<PhotosFrom> photosFromList = new ArrayList<PhotosFrom>();
+	
+			//photosFromList.add( new PhotosFromTest() );
+			photosFromList.add( new PhotosFromFolder() );
+			photosFromList.add( new PhotosFromFlickr() );
+			
+			show.start(photosFromList);
+		}
 	}
 	
 	private static void outputInformation()
@@ -185,7 +219,7 @@ public class Program
 		if( setPropertyIfNone( "flickr.photosets",""))
 			changesMade = true;
 
-		// TODO Add proxyUse so we can turn it off and on quickly.
+		// TODO Add proxyUse so we can turn it on and off without removing other properties.
 		
 		if( setPropertyIfNone( "general.proxyHost","") )
 			changesMade = true;

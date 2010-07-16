@@ -14,18 +14,33 @@ import javax.swing.JFrame;
 
 public class WindowShow implements IShow
 {
+	ArrayList<PhotoCanvas> _photoCanvasList = null;
 	ArrayList<JFrame> _windows = null;
 	
 	int _width = 600;
 	int _height = 400;
+	int _windowNumber = 1;
 	
+	
+	public WindowShow( int windowNumber, int width, int height )
+	{
+		_windowNumber = windowNumber;
+		_width = width;
+		_height = height;
+	}	
 	public WindowShow( int windowNumber )
 	{
-		_windows = new ArrayList<JFrame>(windowNumber);
+		_windowNumber = windowNumber;
+	}
+	public WindowShow() {}
+
+	
+	public boolean initilise() 
+	{
+		_windows = new ArrayList<JFrame>(_windowNumber);
+		_photoCanvasList = new ArrayList<PhotoCanvas>(_windowNumber);
 		
-		ArrayList<PhotoCanvas> photoCanvasList = new ArrayList<PhotoCanvas>(windowNumber);
-		
-		for( int i = 0; i<windowNumber; i++ )
+		for( int i = 0; i<_windowNumber; i++ )
 		{
 			JFrame frame = new JFrame( "PhotoSS " + (i+1) );
 			
@@ -48,12 +63,10 @@ public class WindowShow implements IShow
 			} );
 	        
 			frame.setBackground(Color.black);
-			//frame.setSize( _width, _height );
-	
+
 			PhotoCanvas pc = new PhotoCanvas( _width, _height );
-			//pc.setBounds(0, 0, _width, _height);
 			
-			photoCanvasList.add( pc );
+			_photoCanvasList.add( pc );
 	
 			frame.add( pc );
 			frame.pack();
@@ -63,29 +76,23 @@ public class WindowShow implements IShow
 			_windows.add( frame );
 		}
 		
-		ArrayList<PhotosFrom> photosFromList = new ArrayList<PhotosFrom>();
-
-		//photosFromList.add( new PhotosFromTest() );
-		photosFromList.add( new PhotosFromFolder() );
-		photosFromList.add( new PhotosFromFlickr() );
-		
-		PhotoCanvasControl pcc = new PhotoCanvasControl( photoCanvasList, photosFromList );
-		
-		for( JFrame frame : _windows )
-			frame.setVisible(true);
-		
-		pcc.initilise();
+		return true;
 	}
 
-	@Override
-	public boolean Initilise() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean Run() {
-		// TODO Auto-generated method stub
+	public boolean start( ArrayList<PhotosFrom> photosFromList )
+	{
+		if( photosFromList.size() > 0 )
+		{
+			PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
+			
+			for( JFrame frame : _windows )
+				frame.setVisible(true);
+			
+			pcc.initilise();
+			
+			return true;
+		}
+		
 		return false;
 	}
 }

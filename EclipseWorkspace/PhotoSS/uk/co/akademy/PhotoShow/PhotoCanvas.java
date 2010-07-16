@@ -28,6 +28,7 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 	
 	private int _widthCanvas = 0, _heightCanvas = 0;
 	private int _widthImage = 0, _heightImage = 0;
+	private int _border = 5;
 	
 	private int _widthDraw = 0, _heightDraw = 0;
 	private int _posX = 0, _posY = 0;
@@ -57,7 +58,9 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 	{
 		try {
 			_imageNext = ImageIO.read( photo.getFile() );
-		} catch (IOException e) {
+		} 
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 	}
@@ -161,15 +164,17 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 			Graphics screenBufferGraphic = _screenBuffer.getGraphics();
 	
 			//
-			// Draw the stuff
+			// Draw the stuff off screen
 			//
 			super.paint( screenBufferGraphic );
 			screenBufferGraphic.clearRect( 0, 0, _widthCanvas, _heightCanvas );
 	
-			if( !_adjusting )
+			if( !_adjusting ) // Avoid flickering on move
 			{
 				if( _image != null )
 				{
+					screenBufferGraphic.setColor( Color.white );
+					screenBufferGraphic.drawRect(_posX - _border, _posY - _border, _widthDraw + _border * 2, _heightDraw + _border * 2);
 					screenBufferGraphic.drawImage( _image, _posX, _posY, _widthDraw, _heightDraw, null );
 				}
 				else
@@ -187,20 +192,20 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 			}
 	
 			//
-			// Paint to on screen
+			// Paint to screen
 			//
 			graphic.drawImage( _screenBuffer, 0, 0, this );
 			screenBufferGraphic.dispose();
 		}
 	}
 
-	@Override
+	//@Override
 	public void componentHidden(ComponentEvent e) { }
 
-	@Override
+	//@Override
 	public void componentMoved(ComponentEvent e) { }
 
-	@Override
+	//@Override
 	public void componentResized(ComponentEvent e)
 	{
 		int currentWidth = this.getWidth();
@@ -216,7 +221,7 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 		}
 	}
 
-	@Override
+	//@Override
 	public void componentShown(ComponentEvent e)
 	{
 		createScreenBuffer();

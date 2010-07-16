@@ -3,7 +3,16 @@
  */
 package uk.co.akademy.PhotoShow;
 
+import java.util.ArrayList;
+
 public interface IShow {
-	public boolean Initilise();
-	public boolean Run();
+	/* 
+	 * Do all the setting up of the show, avoid any visible changes.
+	 */
+	public boolean initilise();
+	
+	/*
+	 * Display and start the show
+	 */
+	public boolean start( ArrayList<PhotosFrom> photosFromList );
 }

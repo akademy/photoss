@@ -28,12 +28,9 @@ import java.util.TimeZone;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.xml.sax.SAXException;
-
 import uk.co.akademy.Downloader.Download;
 
 import com.aetrion.flickr.Flickr;
-import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.REST;
 import com.aetrion.flickr.people.PeopleInterface;
 import com.aetrion.flickr.photos.PhotoList;
