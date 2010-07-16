@@ -152,7 +152,11 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 		// TODO: Check if file already exists, but delete ones we aren't using any more.
 		// Should only be less than the number of photos allowed to be downloaded some 
 		// may need to delete before downloading 
-	    for (Iterator<com.aetrion.flickr.photos.Photo> i = (Iterator<com.aetrion.flickr.photos.Photo>)photoListToShow.iterator(); i.hasNext();)
+		
+		@SuppressWarnings("unchecked")
+		Iterator<com.aetrion.flickr.photos.Photo> i = (Iterator<com.aetrion.flickr.photos.Photo>)photoListToShow.iterator();
+		
+	    for(; i.hasNext();)
 	    {
 	    	com.aetrion.flickr.photos.Photo photo = i.next();
 	    	
@@ -290,6 +294,7 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 			if( photosets != null )
 			{
 				// If we have a list of photosets, just get the photos from there.
+				@SuppressWarnings("unchecked")
 				Collection<Photoset> photosetCollection = photosets.getPhotosets();
 			
 				String[] photosetsNamesArray = sPhotosets.split(";");

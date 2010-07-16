@@ -92,7 +92,7 @@ public class FullScreenShow implements IShow
 
 		//photosFromList.add( new PhotosFromTest() );
 		photosFromList.add( new PhotosFromFolder() );
-		//photosFromList.add( new PhotosFromFlickr() );
+		photosFromList.add( new PhotosFromFlickr() );
 
 
 		//

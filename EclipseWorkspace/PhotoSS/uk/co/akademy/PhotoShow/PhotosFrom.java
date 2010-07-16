@@ -36,12 +36,18 @@ public abstract class PhotosFrom extends Observable
 		if( f.isFile() )
 		{
 			String name = f.getName().toLowerCase();
-	
-			if( name.endsWith(".jpg") || name.endsWith( ".jpeg") ||
-				name.endsWith(".gif") ||
-				name.endsWith(".bmp") ||
-				name.endsWith(".png") )
-				isPhoto = true;
+			int pos = name.lastIndexOf(".");
+			
+			if( pos != -1 )
+			{
+				String endswith = name.substring(pos+1);
+				
+				if( endswith.equals("jpg") || endswith.equals( "jpeg") ||
+						endswith.equals("gif") ||
+						endswith.equals("bmp") ||
+						endswith.equals("png") 	)
+					isPhoto = true;
+			}
 		}
 				
 		return isPhoto;
