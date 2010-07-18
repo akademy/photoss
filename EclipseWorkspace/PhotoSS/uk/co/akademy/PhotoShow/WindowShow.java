@@ -42,7 +42,7 @@ public class WindowShow implements IShow
 		
 		for( int i = 0; i<_windowNumber; i++ )
 		{
-			JFrame frame = new JFrame( "PhotoSS " + (i+1) );
+			JFrame frame = new JFrame( "PhotoSS window-" + (i+1) );
 			
 	        frame.addWindowListener( new WindowAdapter() {
 	            public void windowClosing(WindowEvent e) {

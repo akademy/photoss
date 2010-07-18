@@ -294,25 +294,53 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 				@SuppressWarnings("unchecked")
 				Collection<Photoset> photosetCollection = photosets.getPhotosets();
 			
+				PhotoList photosetsPhotoList = new PhotoList(); 
+				
 				String[] photosetsNamesArray = sPhotosets.split(";");
+				
+				int photosetsPhotoCount = photoCount / photosetsNamesArray.length;
+				int photosetsPhotoCountExtra = 0;
 				for( Photoset photoset : photosetCollection )
 				{
 					String photosetName = photoset.getTitle();
 					for( int i = 0; i<photosetsNamesArray.length;i++)
+					{
 						if( photosetsNamesArray[i] != "" && 
 								photosetsNamesArray[i].compareToIgnoreCase(photosetName) == 0 )
 						{
+							PhotoList photoList = null;
 							try
 							{
-								newPhotoList = photosetsI.getPhotos(photoset.getId(), photoCount / photosetsNamesArray.length, 1);
+								photoList = photosetsI.getPhotos(photoset.getId(), photosetsPhotoCount + photosetsPhotoCountExtra, 1);
 							}
 							catch( Exception e) //catch (IOException e), catch (SAXException e), catch (FlickrException e)
 							{
 								e.printStackTrace();
 								return null;
 							}
+							
+							if( photoList != null )
+							{
+								@SuppressWarnings("unchecked")
+								Iterator<com.aetrion.flickr.photos.Photo> p = (Iterator<com.aetrion.flickr.photos.Photo>)photoList.iterator();
+								
+								int photosAdded = 0;
+							    for(; p.hasNext();)
+							    {
+							    	com.aetrion.flickr.photos.Photo photo = p.next();
+							    	if( ! photosetsPhotoList.contains(photo) )
+							    	{
+							    		photosetsPhotoList.add(photo);
+							    		photosAdded++;
+							    	}
+							    }
+							    
+								photosetsPhotoCountExtra += photosetsPhotoCount - photosAdded;
+							}
 						}
+					}
 				}
+				newPhotoList = photosetsPhotoList;
 			}
 		}
 		else
@@ -465,7 +493,7 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 	
 	private boolean addByFile( File file )
 	{
-		if( file != null && file.exists() && file.length() != 2900 ) // TODO: File size of the dummy file that is returned if the real one is not available, need a better way!
+		if( file != null && file.exists() && file.length() != 3386/*2900*/ ) // TODO: File size of the dummy file that is returned if the real one is not available, need a better way!
 		{
 			uk.co.akademy.PhotoShow.Photo photo = new uk.co.akademy.PhotoShow.Photo(file);
 			

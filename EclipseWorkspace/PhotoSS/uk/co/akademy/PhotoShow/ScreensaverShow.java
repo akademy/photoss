@@ -29,6 +29,7 @@ public class ScreensaverShow implements IShow
 {
 	ArrayList<JFrame> _screens = null;
 	ArrayList<PhotoCanvas> _photoCanvasList = null;
+	GraphicsDevice[] _graphicsDeviceArray = null;
 	
 	public ScreensaverShow() { }
 
@@ -39,14 +40,14 @@ public class ScreensaverShow implements IShow
 		_screens = new ArrayList<JFrame>();
 
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice[] gs = ge.getScreenDevices();
+		_graphicsDeviceArray = ge.getScreenDevices();
 
-		int screens = gs.length;
+		int screens = _graphicsDeviceArray.length;
 		// screens = 1;
 		
 		for( int i = 0; i < screens; i++ )
 		{
-			JFrame frame = new JFrame("FullScreenView"+(i+1));
+			JFrame frame = new JFrame("PhotoSS screensaver-"+(i+1));
 			
 	        frame.addWindowListener( new WindowAdapter() {
 	            public void windowClosing(WindowEvent e) {
@@ -69,7 +70,7 @@ public class ScreensaverShow implements IShow
 			frame.setBackground(Color.black);
 			frame.setUndecorated(true);
 
-			DisplayMode dm = gs[i].getDisplayMode();
+			DisplayMode dm = _graphicsDeviceArray[i].getDisplayMode();
 			frame.setSize(dm.getWidth(), dm.getHeight());
 			
 			PhotoCanvas pc = new PhotoCanvas( dm.getWidth(), dm.getHeight() );
@@ -118,21 +119,17 @@ public class ScreensaverShow implements IShow
 
 	public boolean start( ArrayList<PhotosFrom> photosFromList )
 	{
-
 		if( photosFromList.size() > 0 )
 		{
 			PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
 			
-			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-			GraphicsDevice[] gs = ge.getScreenDevices();
-			
-			for( int i=0; i<gs.length; i++ )
+			for( int i=0; i<_graphicsDeviceArray.length; i++ )
 			{
-				gs[i].setFullScreenWindow( _screens.get(i) );
+				_graphicsDeviceArray[i].setFullScreenWindow( _screens.get(i) );
 			}
 			
-			for( JFrame frame : _screens )
-				frame.setVisible(true);
+			//for( JFrame frame : _screens )
+			//	frame.setVisible(true);
 			
 			pcc.initilise();
 		

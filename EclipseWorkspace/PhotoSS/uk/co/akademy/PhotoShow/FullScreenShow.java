@@ -1,5 +1,5 @@
 /**
- * SHow the photos in fullscreen across mutliple screens
+ * Show the photos in fullscreen across multiple screens
  */
 package uk.co.akademy.PhotoShow;
 
@@ -28,30 +28,31 @@ import javax.swing.SpringLayout;
 public class FullScreenShow implements IShow
 {
 	JFrame _screen = null;
-	ArrayList<PhotoCanvas> _photoCanvasList = null;
 	int _screenNumber = 1;
 	
+	ArrayList<PhotoCanvas> _photoCanvasList = null;
+	GraphicsDevice[] _graphicsDeviceArray = null;
 	
 	public FullScreenShow(int screenNumber)
 	{
 		_screenNumber = screenNumber;
 	}	
-	public FullScreenShow() { }
+	public FullScreenShow() {}
 
 
 	public boolean initilise()
 	{
 		_photoCanvasList = new ArrayList<PhotoCanvas>();
 
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice[] gs = ge.getScreenDevices();
+		GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		_graphicsDeviceArray = graphicsEnvironment.getScreenDevices();
 
-		int screens = gs.length;
+		int screens = _graphicsDeviceArray.length;
 
 		if( _screenNumber > screens )
 			_screenNumber = 1;
 		
-		JFrame frame = new JFrame("FullScreenShow");
+		JFrame frame = new JFrame( "PhotoSS fullscreen-" + _screenNumber );
 			
         frame.addWindowListener( new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -76,7 +77,7 @@ public class FullScreenShow implements IShow
 		frame.setBackground(Color.black);
 		frame.setUndecorated(true);
 
-		DisplayMode dm = gs[_screenNumber-1].getDisplayMode();
+		DisplayMode dm = _graphicsDeviceArray[_screenNumber-1].getDisplayMode();
 		frame.setSize(dm.getWidth(), dm.getHeight());
 		
 		PhotoCanvas pc = new PhotoCanvas( dm.getWidth(), dm.getHeight() );
@@ -126,13 +127,9 @@ public class FullScreenShow implements IShow
 		if( photosFromList.size() > 0 )
 		{
 			PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
-			
-			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-			GraphicsDevice[] gs = ge.getScreenDevices();
-			
-			gs[_screenNumber-1].setFullScreenWindow( _screen );
-			
-			_screen.setVisible(true);
+
+			//_screen.setVisible(true);
+			_graphicsDeviceArray[_screenNumber-1].setFullScreenWindow( _screen );
 			
 			pcc.initilise();
 			
