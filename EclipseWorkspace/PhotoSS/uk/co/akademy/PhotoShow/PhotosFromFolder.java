@@ -12,19 +12,32 @@ import java.io.FileFilter;
  */
 public class PhotosFromFolder extends PhotosFrom
 {
+	private String[] _folders;
+	
 	public PhotosFromFolder()
 	{
 		super();
 	}
 	
-	public boolean Initilise()
+	public boolean initilise()
 	{
 		String folders = Program.getProperty("folder.folders");
 		
-		String [] aFolders = folders.split( ";" );
-
-		int photoCount = 0;
-		for( String folder : aFolders )
+		_folders = folders.split( ";" );
+		
+		if( _folders.length > 0 )
+		{
+			for( String s : _folders )
+				if( !s.trim().isEmpty() )
+					return true;
+		}
+		
+		return false;
+	}
+	
+	public void run()
+	{
+		for( String folder : _folders )
 		{
 			File file = new File( folder );
 			
@@ -39,12 +52,8 @@ public class PhotosFromFolder extends PhotosFrom
 					Photo photo = new Photo(filePhoto);
 						
 					havePhoto(photo);
-					
-					photoCount++;
 				}
 			}
 		}
-		
-		return ( photoCount > 0 );
 	}
 }

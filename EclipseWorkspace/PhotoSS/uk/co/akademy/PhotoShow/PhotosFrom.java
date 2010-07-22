@@ -9,12 +9,12 @@ import java.util.Observable;
  * @author Matthew
  *
  */
-public abstract class PhotosFrom extends Observable
+public abstract class PhotosFrom extends Observable implements Runnable
 {
 	/**
 	 * Do anything that needs doing to get the photos
 	 */
-	abstract boolean Initilise();
+	abstract boolean initilise();
 	
 	/**
 	 * Notify anything that is watching that we have a photo.

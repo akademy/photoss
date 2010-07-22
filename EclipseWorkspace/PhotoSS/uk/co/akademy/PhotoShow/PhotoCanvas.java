@@ -25,6 +25,7 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 	private boolean _debug = false;
 	
 	private boolean _adjusting = false;
+	private boolean _noPhotos = false;
 	
 	private int _widthCanvas = 0, _heightCanvas = 0;
 	private int _widthImage = 0, _heightImage = 0;
@@ -43,9 +44,12 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 		this.addComponentListener(this);
 		
 		this.setBackground(Color.black);
-		this.setEnabled(false);
 		
 		this.setSize( width, height );
+		
+		this.setEnabled(false);
+		this.enableInputMethods(false);
+		this.setFocusable(false);
 		
 		_widthCanvas = width;
 		_heightCanvas = height;
@@ -55,6 +59,8 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 	
 	public void setDebug( boolean debug ) { _debug = debug; }
 	public void setDebugText( String debugText ) { _debugText = debugText; }
+	
+	public void setNoPhotos( boolean noPhotos ) { _noPhotos = noPhotos; repaint(); }
 	
 	public void setNextPhoto( Photo photo )
 	{
@@ -180,6 +186,8 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 	@Override
 	public void paint(Graphics graphic)
 	{
+		// TODO: All the paint control should be done by the PhotoCanvasControl and not here.
+		//
 		if( _screenBuffer != null )
 		{
 			Graphics screenBufferGraphic = _screenBuffer.getGraphics();
@@ -192,11 +200,17 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 
 			if( !_adjusting ) // Avoid flickering on move
 			{
+
 				if( _image != null )
 				{
 					screenBufferGraphic.setColor( Color.white );
 					screenBufferGraphic.drawRect(_posX - _border, _posY - _border, _widthDraw + _border * 2, _heightDraw + _border * 2);
 					screenBufferGraphic.drawImage( _image, _posX, _posY, _widthDraw, _heightDraw, null );
+				}
+				else if( _noPhotos )
+				{
+					screenBufferGraphic.setColor( Color.white );
+					screenBufferGraphic.drawString( "No PhotosFrom running.", 20, 20 );
 				}
 				else
 				{

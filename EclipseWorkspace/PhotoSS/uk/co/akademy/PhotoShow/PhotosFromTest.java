@@ -8,7 +8,12 @@ import java.io.File;
 public class PhotosFromTest extends PhotosFrom {
 
 	@Override
-	public boolean Initilise()
+	public boolean initilise()
+	{
+		return true;
+	}
+	
+	public void run()
 	{
 		String fileName1 = "test1.jpg";
 		String fileName2 = "test2.jpg";
@@ -21,8 +26,6 @@ public class PhotosFromTest extends PhotosFrom {
 		
 		havePhoto(photo1);
 		havePhoto(photo2);
-		
-		return true;
 	}
 
 }

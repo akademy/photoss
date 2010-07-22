@@ -14,5 +14,5 @@ public interface IShow {
 	/*
 	 * Display and start the show
 	 */
-	public boolean start( ArrayList<PhotosFrom> photosFromList );
+	public void start( ArrayList<PhotosFrom> photosFromList );
 }

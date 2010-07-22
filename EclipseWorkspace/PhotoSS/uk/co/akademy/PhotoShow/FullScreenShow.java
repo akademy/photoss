@@ -37,7 +37,7 @@ public class FullScreenShow implements IShow
 	{
 		_screenNumber = screenNumber;
 	}	
-	public FullScreenShow() {}
+	public FullScreenShow() { }
 
 
 	public boolean initilise()
@@ -69,7 +69,7 @@ public class FullScreenShow implements IShow
 					System.exit(0);
 				}
 				
-				// TODO: Add navigation keys so that you can move through
+				// TODO: Add navigation keys so that you can move through the photos
 			}
 			public void keyTyped(KeyEvent event) {}
 		} );
@@ -98,7 +98,7 @@ public class FullScreenShow implements IShow
 		// Hide cursor (From http://sevensoft.livejournal.com/23460.html)
 		// Set the mouse cursor to a transparent image.
 		//
-		String transCursorName = new String("transparentCursor");
+		/*String transCursorName = new String("transparentCursor");
 
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		Image transCursorImage = toolkit.getImage("./1pxtrans_cursor.gif");
@@ -117,25 +117,21 @@ public class FullScreenShow implements IShow
 
 		Cursor transCursor = toolkit.createCustomCursor(transCursorImage, new Point(0,0), transCursorName);
 
-		_screen.setCursor( transCursor );
+		_screen.setCursor( transCursor );*/
 		
 		return true;
 	}
 
-	public boolean start( ArrayList<PhotosFrom> photosFromList )
+	public void start( ArrayList<PhotosFrom> photosFromList )
 	{
-		if( photosFromList.size() > 0 )
-		{
-			PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
-
-			//_screen.setVisible(true);
-			_graphicsDeviceArray[_screenNumber-1].setFullScreenWindow( _screen );
-			
-			pcc.initilise();
-			
-			return true;
-		}
+		PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
 		
-		return false;
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice[] gs = ge.getScreenDevices();
+		
+		_graphicsDeviceArray[_screenNumber-1].setFullScreenWindow( _screen );
+		
+		pcc.initialise();
+		pcc.start();
 	}
 }

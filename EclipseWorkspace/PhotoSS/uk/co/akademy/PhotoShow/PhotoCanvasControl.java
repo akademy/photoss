@@ -3,15 +3,11 @@
  */
 package uk.co.akademy.PhotoShow;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
-//import java.util.zip.Deflater;
 
 /**
  * @author matthew
@@ -23,11 +19,16 @@ public class PhotoCanvasControl implements Runnable, Observer
 	private ArrayList<PhotosFrom> _photosFromList = null;
 
 	private ArrayList<Photo> _photos = null;
+	private ArrayList<Thread> _threads = null;
 	
 	private int _photoShowTime = 0;
 	private int _photoCanvasCount;
 
 	private boolean _debug = false;
+	
+	
+	private volatile boolean _waitForPhotos = false;
+	
 	/**
 	 * PhotoCanvasControl 
 	 * @param pcs PhotoCanvas list to show the photos in
@@ -36,122 +37,136 @@ public class PhotoCanvasControl implements Runnable, Observer
 	public PhotoCanvasControl( ArrayList<PhotoCanvas> photoCanvasList, ArrayList<PhotosFrom> photosFromList )
 	{
 		_photos = new ArrayList<Photo>();
+		_threads = new ArrayList<Thread>();
 		
 		_photosFromList = photosFromList;
-		
-		for( PhotosFrom pf : _photosFromList )
-			pf.addObserver( this );
 
 		_photoCanvasList = photoCanvasList;
-		
 		_photoCanvasCount = _photoCanvasList.size();
 		
-		//_debug = true;
-		for( PhotoCanvas pc : _photoCanvasList )
-		{
-			pc.setController( this );
-			pc.setDebug( _debug );
-		}
+		_photoShowTime = 8000;
 		
+		//_debug = true;
+		
+		_waitForPhotos = true;
+	}
+
+	/**
+	 * Initialise all the PhotosFrom list
+	 */
+	public void initialise()
+	{
 		String imageShowTimeString = Program.getProperty("general.photoShowTime");
 		try
 		{
 			_photoShowTime = Integer.parseInt(imageShowTimeString);
 		}
-		catch (NumberFormatException e1) { _photoShowTime = 8000; }
+		catch (NumberFormatException e1) {}
+		
+		for( PhotoCanvas pc : _photoCanvasList )
+		{
+			pc.setController( this );
+			pc.setDebug( _debug );
+		}
 	}
 
 	/**
-	 * Initilise all the PhotosFrom list
+	 * Start up the main loop
 	 */
-	public void initilise()
+	public void start()
 	{
-		int photosFromInitilised = 0;
-		
 		for( PhotosFrom pf : _photosFromList )
 		{
-			if( pf.Initilise() )
-				photosFromInitilised++;
-			else
-				pf.deleteObserver( this );
+			if( pf.initilise() )
+			{
+				pf.addObserver( this );
+				
+				Thread t = new Thread( pf );
+				t.start();
+				
+				_threads.add( t );
+			}
 		}
-		 
-		if( photosFromInitilised > 0 )
+		
+		for( PhotoCanvas pc : _photoCanvasList )
+			pc.setVisible(true);
+		
+		new Thread( this ).start();
+			
+		if( _threads.isEmpty() )
 		{			
 			for( PhotoCanvas pc : _photoCanvasList )
-				pc.setVisible(true);
+				pc.setNoPhotos( true );
 			
-			start();
+			_waitForPhotos = false;
+			
+			try {
+				Thread.sleep( _photoShowTime );
+			} catch (InterruptedException e) { }
+		}
+		else
+		{
+			//TODO: Monitor threads so if all finish with no photos we can notify user.
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * Swap the displayed photos around
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run()
 	{	
-		while( _photos.isEmpty() )
+		while( _waitForPhotos )
 		{
 			// Haven't got an image yet so sleep for a bit.
-			// TODO: with no photos this could hang forever. (well until someone presses a button.)
 			try {
 				Thread.sleep( 50 );
 			} catch (InterruptedException e) { }
 		}
 
-		Random rand = new Random();
-		ArrayList<Photo> photosCurrent =  null;
-		ArrayList<Photo> photosToShow =  new ArrayList<Photo>( _photoCanvasCount );
-		
-		String error = "";
-		
-		for(;;)
+		if( !_photos.isEmpty() )
 		{
-			photosCurrent = clonePhotos( _photos );
-
-			while( !photosCurrent.isEmpty() )
+			ArrayList<Photo> photosCurrent =  null;
+			
+			String error = "";
+			
+			for(;;)
 			{
-				photosToShow.clear();
+				synchronized( _photos ) {
+					photosCurrent = clonePhotos( _photos );
+				};
 				
-				//
-				// Select some photos at random and remove them from the set so they don't repeat until all are shown
-				//
-				for( int i = 0; i < _photoCanvasCount; i++ )
+				Collections.shuffle( photosCurrent );
+				int total = photosCurrent.size();
+				
+				if( total < _photoCanvasCount )
+					Collections.shuffle( _photoCanvasList ); // Shuffle so all canvases eventually get a photo
+				
+				int currentPhoto = 0;
+				
+				while( currentPhoto < total )
 				{
-					int photosCurrentCount = photosCurrent.size();
-					if( photosCurrentCount != 0  )
+					int photosToShow = Math.min( _photoCanvasCount, total - currentPhoto );
+	
+					int i;
+					for( i = 0; i < photosToShow; i++ )
+						_photoCanvasList.get(i).setNextPhoto( photosCurrent.get(i+currentPhoto) );
+					
+					for( i = 0; i < photosToShow; i++ )
+						_photoCanvasList.get(i).switchPhotoStart( 500 );
+					
+					currentPhoto += photosToShow;
+					
+					if( _debug )
 					{
-						int nPhoto = rand.nextInt( photosCurrentCount );
-						photosToShow.add( photosCurrent.remove( nPhoto ) );
-					}
-					else
-					{
-						//photosToShow.add( null );
-						break;
-					}
+						for( PhotoCanvas pc : _photoCanvasList )			
+							pc.setDebugText(error);
+					}	
+					
+					try {
+						Thread.sleep( _photoShowTime );
+					} catch (InterruptedException e) { }
 				}
-
-				if( _debug )
-				{
-					//error += nPhoto + " ";
-					for( PhotoCanvas pc : _photoCanvasList )			
-						pc.setDebugText(error);
-				}
-
-				//
-				// Set the photos to show
-				//
-				for( int i = 0; i < photosToShow.size(); i++ )
-				{
-					PhotoCanvas pc = _photoCanvasList.get(i);
-					pc.setNextPhoto( photosToShow.get(i) );
-					pc.switchPhotoStart( 500 );
-				}
-
-				try {
-					Thread.sleep( _photoShowTime );
-				} catch (InterruptedException e) { }
 			}
 		}
 	}
@@ -167,15 +182,6 @@ public class PhotoCanvasControl implements Runnable, Observer
 		return (ArrayList<Photo>) photos.clone();
 	}
 
-	/**
-	 * Start up the main loop
-	 */
-	private void start()
-	{
-		Thread thread = new Thread(this);
-		thread.start();
-	}
-
 	/* (non-Javadoc) Add a photo to the list
 	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
 	 */
@@ -183,57 +189,11 @@ public class PhotoCanvasControl implements Runnable, Observer
 	{
 		Photo photo = (Photo)oPhoto;
 
-		//try
-		{
-			//photo.setBytes( getBytesFromFile( photo.getFile() ) );
-
-			_photos.add( photo ); // TODO... technically we should be taking a deep copy of the photo, but as this is a pretty simple (with only one watcher) we can ignore this... until... we can't...
-		} 
-		//catch (IOException e)
-		{
-		//	e.printStackTrace();
+		synchronized( _photos ) {	
+			_photos.add( photo ); // TODO... technically we should be taking a deep copy of the photo, but while this is a simple case (with only one watcher) we can ignore this
 		}
+		
+		if( _waitForPhotos )
+			_waitForPhotos = false;
 	}
-
-	/**
-	 * Get the bytes of a file
-	 * @param file The file to load
-	 * @return An array of bytes
-	 * @throws IOException 
-	 */
-    public static byte[] getBytesFromFile(File file) throws IOException
-    {
-        InputStream is = new FileInputStream(file);
-
-        // Get the size of the file
-        long length = file.length();
-    
-        if (length > Integer.MAX_VALUE) {
-            // File is too large
-        }
-
-        // Create the byte array to hold the data
-        byte[] bytes = new byte[(int)length];
-
-        // Read in the bytes
-        int offset = 0;
-        int numRead = 0;
-        while (offset < bytes.length && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
-            offset += numRead;
-        }
-
-        // Ensure all the bytes have been read in
-        if (offset < bytes.length) {
-            throw new IOException("Could not completely read file "+ file.getName());
-        }
-
-        // Close the input stream and return bytes
-        is.close();
-
-        // TODO Compress images with no built in compression: BMP, TIF
-        // Deflater compressor = new Deflater();
-        // compressor.setLevel(Deflater.BEST_SPEED);
-
-        return bytes;
-    }
 }

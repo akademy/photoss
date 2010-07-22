@@ -79,20 +79,14 @@ public class WindowShow implements IShow
 		return true;
 	}
 
-	public boolean start( ArrayList<PhotosFrom> photosFromList )
+	public void start( ArrayList<PhotosFrom> photosFromList )
 	{
-		if( photosFromList.size() > 0 )
-		{
-			PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
+		PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
 			
-			for( JFrame frame : _windows )
-				frame.setVisible(true);
+		for( JFrame frame : _windows )
+			frame.setVisible(true);
 			
-			pcc.initilise();
-			
-			return true;
-		}
-		
-		return false;
+		pcc.initialise();
+		pcc.start();
 	}
 }

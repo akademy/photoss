@@ -14,6 +14,8 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -55,18 +57,24 @@ public class ScreensaverShow implements IShow
 	            }
 	        } ); 
 	        
-			frame.addKeyListener( new KeyListener() 
-			{
+			frame.addKeyListener( new KeyListener() {
 				public void keyPressed(KeyEvent event) {}
 				public void keyReleased(KeyEvent event) {
-					//if (event.getKeyChar() == KeyEvent.VK_ESCAPE)
-					{
-						System.exit(0);
-					}
+					System.exit(0);
 				}
 				public void keyTyped(KeyEvent event) {}
 			} );
 	        
+			frame.addMouseListener( new MouseListener() {
+				public void mouseClicked(MouseEvent event) {
+					System.exit(0);
+				}
+				public void mouseEntered(MouseEvent event) {}
+				public void mouseExited(MouseEvent event) {}
+				public void mousePressed(MouseEvent event) {}
+				public void mouseReleased(MouseEvent event) {}
+			} );
+			
 			frame.setBackground(Color.black);
 			frame.setUndecorated(true);
 
@@ -117,25 +125,14 @@ public class ScreensaverShow implements IShow
 		return true;
 	}
 
-	public boolean start( ArrayList<PhotosFrom> photosFromList )
+	public void start( ArrayList<PhotosFrom> photosFromList )
 	{
-		if( photosFromList.size() > 0 )
-		{
-			PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
-			
-			for( int i=0; i<_graphicsDeviceArray.length; i++ )
-			{
-				_graphicsDeviceArray[i].setFullScreenWindow( _screens.get(i) );
-			}
-			
-			//for( JFrame frame : _screens )
-			//	frame.setVisible(true);
-			
-			pcc.initilise();
+		PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
 		
-			return true;
-		}
+		for( int i=0; i<_graphicsDeviceArray.length; i++ )
+			_graphicsDeviceArray[i].setFullScreenWindow( _screens.get(i) );
 		
-		return false;
+		pcc.initialise();
+		pcc.start();
 	}
 }

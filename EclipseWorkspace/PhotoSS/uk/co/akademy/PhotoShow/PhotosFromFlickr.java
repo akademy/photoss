@@ -62,8 +62,14 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 	/* (non-Javadoc)
 	 * @see uk.co.akademy.PhotoShow.PhotosFrom#initilise(uk.co.akademy.PhotoShow.PhotoCanvas)
 	 */
-	public boolean Initilise()
-	{				
+	public boolean initilise()
+	{
+		// TODO!
+		return true;
+	}
+	
+	public void run()
+	{
 		String programWorkingFolder = Program.getFolder();
 		File dataFile = new File(programWorkingFolder + DATA_FILE);
 		
@@ -135,7 +141,7 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 			photoListToShow = newPhotoList;
 			
 		if( photoListToShow == null )
-			return false;
+			return;
 		
 		//
 		// Add the photos, download if necessary?
@@ -184,7 +190,7 @@ public class PhotosFromFlickr extends PhotosFrom implements Observer
 	    }
 
 	    
-		return true;
+		return;
 	}
 	
 	// Contact Flickr for new photo list

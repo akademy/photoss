@@ -14,7 +14,7 @@ public class Download extends Observable implements Runnable
 	private static final int MAX_BUFFER_SIZE = 1024;
 
 	// These are the status names.
-	public static final String STATUSES[] = {"Downloading", "Paused", "Complete", "Cancelled", "Error"};
+	public static final String STATUSES[] = {"Downloading", "Paused", "Complete", "Cancelled", "Error", "Waiting"};
 
 	// These are the status codes.
 	public static final int DOWNLOADING = 0;
@@ -22,6 +22,8 @@ public class Download extends Observable implements Runnable
 	public static final int COMPLETE = 2;
 	public static final int CANCELLED = 3;
 	public static final int ERROR = 4;
+	public static final int WAITING = 5;
+	
 
 	private String _downloadFolder; 
 	private URL _url; // download URL
@@ -36,7 +38,7 @@ public class Download extends Observable implements Runnable
 		
 		size = -1;
 		downloaded = 0;
-		status = DOWNLOADING;
+		status = WAITING;
 	}
 
 	// Get this download's URL.
@@ -101,7 +103,10 @@ public class Download extends Observable implements Runnable
 	}
 
 	// Start or resume downloading.
-	public void download() {
+	public void download()
+	{
+		status = DOWNLOADING;
+		
 		Thread thread = new Thread(this);
 		thread.start();
 	}
