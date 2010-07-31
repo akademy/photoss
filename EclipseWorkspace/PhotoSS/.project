@@ -15,11 +15,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>PhotoSS.properties</name>
-			<type>1</type>
-			<location>/home/matthew/.akademy.co.uk/photoss/PhotoSS.properties</location>
-		</link>
-	</linkedResources>
 </projectDescription>

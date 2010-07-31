@@ -30,7 +30,6 @@ public class Photo
 		/*try {
 			//getBytesFromFile( file );
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
 	}
@@ -56,7 +55,6 @@ public class Photo
 		/*try {
 			//getBytesFromFile( file );
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
 	}

@@ -19,9 +19,9 @@ public class PropertyChanger {
 		
 		_changer.setVisible(true);
 		
-		// TODO 
-		for( AbstractPhotosFromPanel p : photosFromPanels )
-			p.updateProperties();
+		// TODO: Need a better system to update properties.
+		//for( AbstractPhotosFromPanel p : photosFromPanels )
+			//p.updateProperties();
 		
 	}
 }

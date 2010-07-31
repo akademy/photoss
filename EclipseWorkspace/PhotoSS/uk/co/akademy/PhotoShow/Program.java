@@ -175,7 +175,7 @@ public class Program
 		}
 		
 		// Save properties.
-		// TODO: this should be left till the program closes, it falls here much earlier than that though
+		// TODO: saving of properties should be left till the program closes, it falls here much earlier than that though
 		saveProperties();
 	}
 	

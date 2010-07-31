@@ -64,7 +64,7 @@ public class PhotosFromFlickr extends AbstractPhotosFrom implements Observer
 	 */
 	public boolean initilise()
 	{
-		// TODO!
+		// TODO: Move Flickr code to initilise!
 		return true;
 	}
 	
@@ -114,15 +114,7 @@ public class PhotosFromFlickr extends AbstractPhotosFrom implements Observer
 					ObjectOutputStream obj_out = new ObjectOutputStream (f_out);
 					obj_out.writeObject ( newPhotoList );
 				}
-				catch (FileNotFoundException e2)
-				{
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				}catch (IOException e1)
-				{
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				catch (Exception e) {}// FileNotFoundException, IOException
 				finally
 				{
 					if( f_out != null )
@@ -180,6 +172,7 @@ public class PhotosFromFlickr extends AbstractPhotosFrom implements Observer
 			if( !addByFilename( downloadFolder + fileName ) )
 			{
 				// TODO: Limit numbers of simultaneous downloads.
+				// TODO: Check image has finished downloadingy.
 				Download dl = new Download( url, downloadFolder );
 				
 				_downloads.add( dl );
@@ -251,17 +244,12 @@ public class PhotosFromFlickr extends AbstractPhotosFrom implements Observer
 		}
 	    
 		String sPhotoCount = Program.getProperty( "flickr.photoCount" );
-		int photoCount;
+		int photoCount = 25;
 		try
 		{
 			photoCount = Integer.parseInt(sPhotoCount);
 		}
-		catch (NumberFormatException e1)
-		{
-			// TODO Integer is not a number.
-			e1.printStackTrace();
-			return null;
-		}
+		catch (NumberFormatException e1) { }
 		
 		if( photoCount > 500 )
 			photoCount = 500;
@@ -435,21 +423,7 @@ public class PhotosFromFlickr extends AbstractPhotosFrom implements Observer
 				if (object instanceof PhotoList)
 					photoList = (PhotoList) object;
 			} 
-			catch (FileNotFoundException e3)
-			{
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
-			}
-			catch (IOException e3)
-			{
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
-			} 
-			catch (ClassNotFoundException e3)
-			{
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
-			}
+			catch (Exception e) {}//FileNotFoundException, IOException, ClassNotFoundException
 			finally
 			{
 				if( fileStream != null )
@@ -479,7 +453,7 @@ public class PhotosFromFlickr extends AbstractPhotosFrom implements Observer
 				break;
 				
 			case Download.ERROR:
-				// TODO: Do something with error
+				// TODO: Do something with download error
 				break;
 				
 			case Download.COMPLETE:
