@@ -5,7 +5,7 @@ package uk.co.akademy.PhotoShow;
 
 import java.io.File;
 
-public class PhotosFromTest extends PhotosFrom {
+public class PhotosFromTest extends AbstractPhotosFrom {
 
 	@Override
 	public boolean initilise()

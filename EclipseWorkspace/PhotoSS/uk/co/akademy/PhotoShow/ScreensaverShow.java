@@ -27,7 +27,7 @@ import javax.swing.SpringLayout;
  * @author Matthew
  *
  */
-public class ScreensaverShow implements IShow
+public class ScreensaverShow implements Show
 {
 	ArrayList<JFrame> _screens = null;
 	ArrayList<PhotoCanvas> _photoCanvasList = null;
@@ -125,7 +125,7 @@ public class ScreensaverShow implements IShow
 		return true;
 	}
 
-	public void start( ArrayList<PhotosFrom> photosFromList )
+	public void start( ArrayList<AbstractPhotosFrom> photosFromList )
 	{
 		PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
 		

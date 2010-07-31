@@ -4,14 +4,9 @@
 package uk.co.akademy.PhotoShow;
 
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.MediaTracker;
-import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -25,7 +20,7 @@ import javax.swing.SpringLayout;
  * @author Matthew
  *
  */
-public class FullScreenShow implements IShow
+public class FullScreenShow implements Show
 {
 	JFrame _screen = null;
 	int _screenNumber = 1;
@@ -93,41 +88,13 @@ public class FullScreenShow implements IShow
 		frame.setAlwaysOnTop(true); // Hard to debug!
 
 		_screen = frame;
-
-		//
-		// Hide cursor (From http://sevensoft.livejournal.com/23460.html)
-		// Set the mouse cursor to a transparent image.
-		//
-		/*String transCursorName = new String("transparentCursor");
-
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Image transCursorImage = toolkit.getImage("./1pxtrans_cursor.gif");
-
-		MediaTracker mediaTracker = new MediaTracker( _screen );
-		mediaTracker.addImage(transCursorImage, 0);
-		try
-		{
-			mediaTracker.waitForID(0);
-		}
-		catch (InterruptedException ie)
-		{
-			System.err.println(ie);
-			System.exit(1);
-		}
-
-		Cursor transCursor = toolkit.createCustomCursor(transCursorImage, new Point(0,0), transCursorName);
-
-		_screen.setCursor( transCursor );*/
 		
 		return true;
 	}
 
-	public void start( ArrayList<PhotosFrom> photosFromList )
+	public void start( ArrayList<AbstractPhotosFrom> photosFromList )
 	{
 		PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
-		
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice[] gs = ge.getScreenDevices();
 		
 		_graphicsDeviceArray[_screenNumber-1].setFullScreenWindow( _screen );
 		

@@ -10,7 +10,7 @@ import java.io.FileFilter;
  * @author matthew
  *
  */
-public class PhotosFromFolder extends PhotosFrom
+public class PhotosFromFolder extends AbstractPhotosFrom
 {
 	private String[] _folders;
 	

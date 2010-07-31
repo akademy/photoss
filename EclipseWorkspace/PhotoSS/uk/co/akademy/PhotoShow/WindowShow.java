@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
-public class WindowShow implements IShow
+public class WindowShow implements Show
 {
 	ArrayList<PhotoCanvas> _photoCanvasList = null;
 	ArrayList<JFrame> _windows = null;
@@ -79,7 +79,7 @@ public class WindowShow implements IShow
 		return true;
 	}
 
-	public void start( ArrayList<PhotosFrom> photosFromList )
+	public void start( ArrayList<AbstractPhotosFrom> photosFromList )
 	{
 		PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
 			

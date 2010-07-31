@@ -42,7 +42,7 @@ import com.aetrion.flickr.photosets.PhotosetsInterface;
  * @author Matthew
  *
  */
-public class PhotosFromFlickr extends PhotosFrom implements Observer
+public class PhotosFromFlickr extends AbstractPhotosFrom implements Observer
 {
 	static String DATA_FILE = "FlickrPhotos.data";
 	static String DOWNLOADS_FOLDER = "PhotosFromFlickrDownloads" + File.separator;

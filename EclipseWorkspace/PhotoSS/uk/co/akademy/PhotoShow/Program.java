@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Program
 {
 	static String PROPERTY_FILE = "PhotoSS.properties";
+	static String _propertiesFile = null;
 	static PropertyFetcher _properties = null;
 	
 	static public String getFolder()
@@ -34,6 +35,28 @@ public class Program
 	{
 		_properties.setProperty( property, value );
 	}
+
+	public static void loadProperties()
+	{
+		try
+		{
+			_properties.loadProperties( _propertiesFile );
+		}
+		catch (IOException e1) {}
+		finally
+		{
+			if( propertyDefaults() )
+			{
+				//TODO: Need to delete any old properties that have been removed or replaced in an earlier version.
+				_properties.saveProperties( _propertiesFile );
+			}
+		}
+	}
+	
+	public static void saveProperties()
+	{
+		_properties.saveProperties( _propertiesFile );
+	}
 	
 	/**
 	 * @param args
@@ -52,21 +75,9 @@ public class Program
 		// Load properties.
 		//
 		_properties = new PropertyFetcher();
-		String propertiesFile = programWorkingFolder + PROPERTY_FILE;
+		_propertiesFile = programWorkingFolder + PROPERTY_FILE;
 		
-		try
-		{
-			_properties.loadProperties( propertiesFile );
-		}
-		catch (IOException e1) {}
-		finally
-		{
-			if( propertyDefaults() )
-			{
-				//TODO: Need to delete any old properties that have been removed or replaced in an earlier version.
-				_properties.saveProperties( propertiesFile );
-			}
-		}
+		loadProperties();
 		
 		String launch = "";
 		
@@ -165,14 +176,14 @@ public class Program
 		
 		// Save properties.
 		// TODO: this should be left till the program closes, it falls here much earlier than that though
-		_properties.saveProperties( propertiesFile );
+		saveProperties();
 	}
 	
-	private static void show( IShow show )
+	private static void show( Show show )
 	{
 		if( show.initilise() )
 		{
-			ArrayList<PhotosFrom> photosFromList = new ArrayList<PhotosFrom>();
+			ArrayList<AbstractPhotosFrom> photosFromList = new ArrayList<AbstractPhotosFrom>();
 	
 			//photosFromList.add( new PhotosFromTest() );
 			photosFromList.add( new PhotosFromFolder() );

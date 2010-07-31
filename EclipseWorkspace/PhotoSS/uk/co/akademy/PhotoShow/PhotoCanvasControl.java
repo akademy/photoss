@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Random;
 
 /**
  * @author matthew
@@ -16,7 +15,7 @@ import java.util.Random;
 public class PhotoCanvasControl implements Runnable, Observer
 {
 	private ArrayList<PhotoCanvas> _photoCanvasList = null;
-	private ArrayList<PhotosFrom> _photosFromList = null;
+	private ArrayList<AbstractPhotosFrom> _photosFromList = null;
 
 	private ArrayList<Photo> _photos = null;
 	private ArrayList<Thread> _threads = null;
@@ -34,7 +33,7 @@ public class PhotoCanvasControl implements Runnable, Observer
 	 * @param pcs PhotoCanvas list to show the photos in
 	 * @param pff PhotosFrom Where we are getting the photos from 
 	 */
-	public PhotoCanvasControl( ArrayList<PhotoCanvas> photoCanvasList, ArrayList<PhotosFrom> photosFromList )
+	public PhotoCanvasControl( ArrayList<PhotoCanvas> photoCanvasList, ArrayList<AbstractPhotosFrom> photosFromList )
 	{
 		_photos = new ArrayList<Photo>();
 		_threads = new ArrayList<Thread>();
@@ -75,7 +74,7 @@ public class PhotoCanvasControl implements Runnable, Observer
 	 */
 	public void start()
 	{
-		for( PhotosFrom pf : _photosFromList )
+		for( AbstractPhotosFrom pf : _photosFromList )
 		{
 			if( pf.initilise() )
 			{

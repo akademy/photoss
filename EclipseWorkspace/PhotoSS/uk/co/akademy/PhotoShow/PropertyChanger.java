@@ -1,15 +1,27 @@
 package uk.co.akademy.PhotoShow;
 
+import java.util.ArrayList;
+
 public class PropertyChanger {
 
 	private PropertyChangerWindow _changer = null;
 	
 	public PropertyChanger( PropertyFetcher properties ) {
 		
-		_changer = new PropertyChangerWindow();
+		ArrayList<AbstractPhotosFromPanel> photosFromPanels = new ArrayList<AbstractPhotosFromPanel>();
 		
-		/*_changer.setFolder_folders( properties.getProperty("folder.folders") );*/
+		PhotosFromPanelFolder folder = new PhotosFromPanelFolder();
+		
+		photosFromPanels.add(folder);
+		
+		_changer = new PropertyChangerWindow( photosFromPanels );
+		_changer.initilise(properties);
 		
 		_changer.setVisible(true);
+		
+		// TODO 
+		for( AbstractPhotosFromPanel p : photosFromPanels )
+			p.updateProperties();
+		
 	}
 }

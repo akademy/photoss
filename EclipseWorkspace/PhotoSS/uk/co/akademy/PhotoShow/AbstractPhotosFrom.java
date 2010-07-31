@@ -9,7 +9,7 @@ import java.util.Observable;
  * @author Matthew
  *
  */
-public abstract class PhotosFrom extends Observable implements Runnable
+public abstract class AbstractPhotosFrom extends Observable implements Runnable
 {
 	/**
 	 * Do anything that needs doing to get the photos

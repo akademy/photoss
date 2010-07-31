@@ -5,7 +5,7 @@ package uk.co.akademy.PhotoShow;
 
 import java.util.ArrayList;
 
-public interface IShow {
+public interface Show {
 	/* 
 	 * Do all the setting up of the show, avoid any visible changes.
 	 */
@@ -14,5 +14,5 @@ public interface IShow {
 	/*
 	 * Display and start the show
 	 */
-	public void start( ArrayList<PhotosFrom> photosFromList );
+	public void start( ArrayList<AbstractPhotosFrom> photosFromList );
 }
