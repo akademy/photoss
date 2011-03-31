@@ -45,7 +45,11 @@ import com.aetrion.flickr.photosets.PhotosetsInterface;
 public class PhotosFromFlickr extends AbstractPhotosFrom implements Observer
 {
 	static String DATA_FILE = "FlickrPhotos.data";
-	static String DOWNLOADS_FOLDER = "PhotosFromFlickrDownloads" + File.separator;
+	static String STORE_FOLDER = "PhotosFromFlickrDownloads" + File.separator;
+	static String TEMP_FOLDER = "PhotosFromFlickrTemp" + File.separator;
+
+	private String _api_key = null;
+	private String _api_secret = null;
 	
 	private ArrayList<Download> _downloads = null;
 
@@ -64,8 +68,18 @@ public class PhotosFromFlickr extends AbstractPhotosFrom implements Observer
 	 */
 	public boolean initilise()
 	{
-		// TODO: Move Flickr code to initilise!
-		return true;
+		String apiKey = Program.getProperty( "flickr.apiKey" );
+		String apiSecret = Program.getProperty( "flickr.apiSecret" );
+		
+		if( ! apiKey.isEmpty() && ! apiSecret.isEmpty() )
+		{
+			this._api_key = apiKey;
+			this._api_secret = apiSecret;
+			
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public void run()
@@ -138,11 +152,21 @@ public class PhotosFromFlickr extends AbstractPhotosFrom implements Observer
 		//
 		// Add the photos, download if necessary?
 		//
-		String downloadFolder = programWorkingFolder + DOWNLOADS_FOLDER;
-		File downloads = new File( downloadFolder );
+		String storeFolder = programWorkingFolder + STORE_FOLDER;
+		String tempFolder = System.getProperty("java.io.tmpdir");
+		if( tempFolder.isEmpty() )
+			tempFolder = programWorkingFolder + TEMP_FOLDER;
+		else
+			tempFolder += File.separator + TEMP_FOLDER;
 		
-		if( !downloads.exists() )
-			downloads.mkdirs();
+		File checkFolder = new File( storeFolder );
+		if( !checkFolder.exists() )
+			checkFolder.mkdirs();
+		
+		checkFolder = new File( tempFolder );
+		if( !checkFolder.exists() )
+			checkFolder.mkdirs();
+		
 		
 		// TODO: Check if file already exists, but delete ones we aren't using any more.
 		// Should only be less than the number of photos allowed to be downloaded some 
@@ -169,11 +193,11 @@ public class PhotosFromFlickr extends AbstractPhotosFrom implements Observer
 			String fileName = url.getFile();
 			fileName = fileName.substring( fileName.lastIndexOf('/') + 1 );
 	    	
-			if( !addByFilename( downloadFolder + fileName ) )
+			if( !addByFilename( storeFolder + fileName ) )
 			{
 				// TODO: Limit numbers of simultaneous downloads.
-				// TODO: Check image has finished downloadingy.
-				Download dl = new Download( url, downloadFolder );
+				// TODO: Check image has finished downloading.
+				Download dl = new Download( url, tempFolder, storeFolder );
 				
 				_downloads.add( dl );
 				dl.addObserver(this);
@@ -189,11 +213,8 @@ public class PhotosFromFlickr extends AbstractPhotosFrom implements Observer
 	// Contact Flickr for new photo list
 	private PhotoList GetPhotoListFromFlickr()
 	{	
-		String apiKey = Program.getProperty( "flickr.apiKey" );
-		String apiSecret = Program.getProperty( "flickr.apiSecret" );
-
-		if( ( apiKey == null ) || ( apiSecret == null ) ||
-			( apiSecret == "" ) || ( apiKey == "" ) )
+		if( ( this._api_key == null ) || ( this._api_secret == null ) ||
+			( this._api_secret == "" ) || ( this._api_key == "" ) )
 		{
 			// TODO: Missing properties error handle.
 			return null;
@@ -259,7 +280,7 @@ public class PhotosFromFlickr extends AbstractPhotosFrom implements Observer
 		//
 	    // Connect to flickr
 	    //
-		Flickr flickr = new Flickr( apiKey, apiSecret, rest );
+		Flickr flickr = new Flickr( this._api_key, this._api_secret, rest );
 		
 		PhotoList newPhotoList = null;
 		
@@ -449,19 +470,28 @@ public class PhotosFromFlickr extends AbstractPhotosFrom implements Observer
 		{
 			case Download.DOWNLOADING:
 			//case Download.PAUSED:
-			case Download.CANCELLED:
 				break;
 				
+			case Download.CANCELLED:
 			case Download.ERROR:
-				// TODO: Do something with download error
-				break;
+			{
+				File file = new File( download.getDownloadedFilePosition() );
+				file.delete();
+			}
+			break;
 				
 			case Download.COMPLETE:
 			{
 				download.deleteObservers();
 				_downloads.remove(download);
 				
-				addByFilename( download.getDownloadedFilePosition() );
+				File from = new File( download.getDownloadedFilePosition() );
+				String storeFile = download.getStoreFilePosition();
+				File to = new File( storeFile );
+				
+				from.renameTo( to );
+				
+				addByFilename( storeFile );
 			}
 		}
 	}

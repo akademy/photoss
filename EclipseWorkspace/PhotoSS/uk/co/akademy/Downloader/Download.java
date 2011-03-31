@@ -26,15 +26,19 @@ public class Download extends Observable implements Runnable
 	
 
 	private String _downloadFolder; 
+	private String _storeFolder;
+	
 	private URL _url; // download URL
 	private int size; // size of download in bytes
 	private int downloaded; // number of bytes downloaded
 	private int status; // current status of download
 
+
 	// Constructor for Download.
-	public Download(URL url, String downloadFolder) {
+	public Download(URL url, String downloadFolder, String storeFolder) {
 		this._url = url;
 		this._downloadFolder = downloadFolder;
+		this._storeFolder = storeFolder;
 		
 		size = -1;
 		downloaded = 0;
@@ -75,6 +79,10 @@ public class Download extends Observable implements Runnable
 	public String getDownloadedFilePosition()
 	{
 		return _downloadFolder + getFileName( _url );
+	}
+	public String getStoreFilePosition()
+	{
+		return _storeFolder + getFileName( _url );
 	}
 	
 	// Pause this download.

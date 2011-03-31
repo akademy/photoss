@@ -31,7 +31,7 @@ java -jar PhotoSS.jar screensaver
 Screensaver Install
 -------------------
 To use as a screensaver drop both "PhotoSS.jar" and "PhotoSS.scr" files into your system folder, on WindowsXP or Windows7 :
-c:\windows\system32\
+c:\windows\system32\ (If you don't have access you can also drop it somewhere else and select "install" from the right click menu.
 
 (It's different on other systems, just find where the default screensavers are installed already and drop the two files in there.)
 
@@ -64,12 +64,12 @@ flickr.photosets=My Favourites;Derbyshire;Another Set;North Wales 2009
 Properties: folders
 ----------------------
 
-You can open photos from various folderson your computer 
+You can open photos from various folders on your computer 
 
- - folder.folders : add folder paths seperated by a semi-colon. This will not search sub folders unless they are specified.
+ - folder.folders : add folder paths seperated by a semi-colon. This will not search sub folders unless they are specified. Colons and backslashes must be escaped with additional backslashes (see example)
 
 Example settings
-folder.folders=/home/matthew;/home/matthew/Pictures
+folder.folders=C\:\\Pictures;D\:\\Docs\\Media
 
 Properties: general
 ---------------------
@@ -85,4 +85,4 @@ general.proxyPort=80
 
 
 ----------------------------------
-Copyright: (c) 2010. Akademy.co.uk
+Copyright: (c) 2011. Akademy.co.uk
