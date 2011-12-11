@@ -10,8 +10,10 @@
 #include <X11/extensions/scrnsaver.h>
 
 #define SECOND 1
-#define MINUTE 60 * SECOND
-#define SLEEP_TIME 1 * SECOND
+#define MINUTE (60 * SECOND)
+
+#define SLEEP_TIME (1 * SECOND)
+#define IDLE_TIME_DEFAULT_LIMIT (5 * MINUTE)
 
 int GetIdleTime () {
 	time_t idle_time;
@@ -29,13 +31,22 @@ int GetIdleTime () {
 }
 
 int main( int argCounts, char *argValues[] ) {
-	if( argCounts == 3 )
+
+	if( argCounts == 2 || argCounts == 3 )
 	{
-		char *sMinutes = argValues[1]; 
-		char *sProgram = argValues[2]; 
+		long lMinutes = 0;
+		char *sProgram = NULL;
 		
-		long lMinutes = strtol( sMinutes, NULL, 10 );
-		
+		if( argCounts == 2 )
+		{
+			lMinutes = IDLE_TIME_DEFAULT_LIMIT / 60;
+			sProgram = argValues[1];
+		}
+		else
+		{
+			lMinutes = strtol( argValues[1], NULL, 10 );
+			sProgram = argValues[2];
+		}
 		
 		for(;;) 
 		{
@@ -46,6 +57,6 @@ int main( int argCounts, char *argValues[] ) {
 	}
 	else
 	{
-		printf( "%s\n", "Need <Idetime in minutes> <Application name>" );
+		printf( "%s\n", "Need <Idletime in minutes (optional, 5 minute default)> <application position>" );
 	}
 }
