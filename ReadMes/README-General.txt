@@ -1,6 +1,6 @@
---------------------------
-**     PhotoSS  0.3.0   **
---------------------------
+----------------------------
+**     PhotoSS  0.3.1     **
+----------------------------
 
 Display all your photos.
 
@@ -12,31 +12,29 @@ Currently you can have photos from:
 * Running *
 -----------
 
-To run the program in a single window use:
+Usually you will run the program as:
 java -jar PhotoSS.jar
+
+this will create a single window to show your photos in.
 
 You can control if further with some command line parameters.
 
-To open 1 to 10 windows use this:
+To open 1 to 10 windows:
 java -jar PhotoSS.jar window <number>
 
-To run full screen like a screensaver use:
-java -jar PhotoSS.jar fullscreen
-or equivalently:
+To run full screen on single monitor indicating which:
+java -jar PhotoSS.jar fullscreen <number>
+
+To open on all screens and run like a screensaver:
 java -jar PhotoSS.jar screensaver
 
-
-Screensaver Install
--------------------
-You can use the idletime program to make PhotoSS run like a screensaver, like this:
-./idletime 5 "java -jar ./PhotoSS.jar screensaver"
-The 5 is the number of minutes of idletime detected before launching the screensaver.
 
 --------------
 * Properties *
 --------------
 
-This is an early version and currently has no setting dialog up. To adjust the settings open the text file in your user folder at /.akademy.co.uk/PhotoSS/PhotoSS.properties
+This is an early version and currently has no setting dialog up. To adjust the settings open the text file in your home user folder at <HOME>/.akademy.co.uk/PhotoSS/PhotoSS.properties
+The exact position will very depending operating system and its version.
 
 
 Properties: flickr 
