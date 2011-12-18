@@ -11,6 +11,7 @@
 
 #define SECOND 1
 #define MINUTE (60 * SECOND)
+#define MINUTES_TO_SECONDS 60
 
 #define SLEEP_TIME (10 * SECOND)
 #define IDLE_TIME_DEFAULT_LIMIT (5 * MINUTE)
@@ -20,16 +21,28 @@ int GetIdleTime () {
 	static XScreenSaverInfo *mit_info;
 	Display *display;
 	int screen;
+	
 	mit_info = XScreenSaverAllocInfo();
-	if((display=XOpenDisplay(NULL)) == NULL) { return(-1); }
+	
+	if((display=XOpenDisplay(NULL)) == NULL) 
+	{ 
+		return(-1);
+	}
+	
 	screen = DefaultScreen(display);
 	XScreenSaverQueryInfo(display, RootWindow(display,screen), mit_info);
 	idle_time = (mit_info->idle) / 1000;
 	XFree(mit_info);
 	XCloseDisplay(display); 
+	
 	return idle_time;
 }
 
+/*
+	Detect an idletime then launch a program.
+	
+	Use: idletime <idletime in minutes (optional, 5 minute default)> <command to run>
+*/
 int main( int argCounts, char *argValues[] )
 {
 	int debug = 0;
@@ -46,7 +59,10 @@ int main( int argCounts, char *argValues[] )
 		}
 		else
 		{
-			iSecondsOfIdle = strtol( argValues[1], NULL, 10 ) * 60;
+			iSecondsOfIdle = strtol( argValues[1], NULL, 10 ) * MINUTES_TO_SECONDS;
+			if( iSecondsOfIdle < 1 )
+				printf( "%s\n", "Error: idletime must be more than or equal to 1 minute. There is no maximum value." );
+				
 			sProgramToLaunch = argValues[2];
 		}
 		
@@ -71,6 +87,6 @@ int main( int argCounts, char *argValues[] )
 	}
 	else
 	{
-		printf( "%s\n", "Need <Idletime in minutes (optional, 5 minute default)> <command to run>" );
+		printf( "%s\n", "Use: idletime <Idletime in minutes (optional, 5 minute default)> <command to run>" );
 	}
 }
