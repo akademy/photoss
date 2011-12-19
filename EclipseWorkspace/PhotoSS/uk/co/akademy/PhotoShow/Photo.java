@@ -66,4 +66,12 @@ public class Photo
 	{
 		return _bytes;
 	}
+
+	/**
+	 * @return whether we have a file and it has a size greater than 0
+	 */
+	public boolean good()
+	{
+	 return _file != null && _file.length() > 0;
+	}
 }

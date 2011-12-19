@@ -148,8 +148,12 @@ public class PhotoCanvasControl implements Runnable, Observer
 					int photosToShow = Math.min( _photoCanvasCount, total - currentPhoto );
 	
 					int i;
-					for( i = 0; i < photosToShow; i++ )
+					for( i = 0; i < photosToShow; i++ ) {
+
+						  System.out.println(i+currentPhoto);
+
 						_photoCanvasList.get(i).setNextPhoto( photosCurrent.get(i+currentPhoto) );
+					 }
 					
 					for( i = 0; i < photosToShow; i++ )
 						_photoCanvasList.get(i).switchPhotoStart( 500 );
@@ -188,11 +192,14 @@ public class PhotoCanvasControl implements Runnable, Observer
 	{
 		Photo photo = (Photo)oPhoto;
 
-		synchronized( _photos ) {	
-			_photos.add( photo ); // TODO... technically we should be taking a deep copy of the photo, but while this is a simple case (with only one watcher) we can ignore this
-		}
-		
-		if( _waitForPhotos )
-			_waitForPhotos = false;
+		 if( photo.good() ) {
+			  
+			 synchronized( _photos ) {
+				 _photos.add( photo ); // TODO... technically we should be taking a deep copy of the photo, but while this is a simple case (with only one watcher) we can ignore this
+			 }
+
+			 if( _waitForPhotos )
+				 _waitForPhotos = false;
+		 }
 	}
 }

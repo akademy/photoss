@@ -69,8 +69,16 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 		} 
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			 if( _debug )
+				System.out.println("Caught IO exception!");
+			//e.printStackTrace();
 		}
+
+		if( _debug ) {
+			 if( _imageNext == null ) {
+					 System.out.println("_imageNext is null!");
+			 }
+		 }
 	}
 
 	public void switchPhotoStart( int fadeLength )
@@ -86,17 +94,24 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 		_adjusting = true;
 		
 		_image = null;
-		_widthImage = _imageNext.getWidth( null );
-		_heightImage = _imageNext.getHeight( null );
 		
-		calculateSizeAndPosition();
-		
-		_image = _imageNext;
-		
-		_adjusting = false;
-		
-		if( imagePrevious != null )
-			imagePrevious.flush();
+		if(_imageNext != null ) {
+			 _widthImage = _imageNext.getWidth( null );
+			 _heightImage = _imageNext.getHeight( null );
+
+			 calculateSizeAndPosition();
+
+			 _image = _imageNext;
+
+			 _adjusting = false;
+
+			 if( imagePrevious != null )
+				 imagePrevious.flush();
+		 }
+		  else {
+			 if( _debug )
+				System.out.println("Next image is null???");
+		 }
 	}
 	
 	public void calculateSizeAndPosition()
