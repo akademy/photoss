@@ -7,6 +7,6 @@ public abstract class AbstractPhotosFromPanel extends JPanel {
 
 	/*private static final long serialVersionUID = 1L;*/
 
-	abstract boolean initilise( PropertyFetcher properties );
+	abstract boolean initialise( PropertyFetcher properties );
 	abstract void updateProperties();
 }

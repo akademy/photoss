@@ -1,6 +1,7 @@
 package uk.co.akademy.PhotoShow;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -10,14 +11,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JFileChooser;
+import javax.swing.JButton;
 
 public class PropertyChangerWindow extends JFrame {
 
 	private static final long serialVersionUID = -3148895573914226334L;
-
-	/*private String general_proxyHost= "";
-	private int general_photoShowTime = 10000;
-	private int general_proxyPort = 8080;*/
 	
 	ArrayList<AbstractPhotosFromPanel> _photosFromPanels;
 	
@@ -25,17 +23,37 @@ public class PropertyChangerWindow extends JFrame {
 	{
 		_photosFromPanels = photosFromPanels;
 		
-	    this.setSize(500, 300);
+	    this.setSize(500, 400);
 	    this.setTitle("PhotoSS Properties");
 		
 	    // Handle window closing events.
 	    addWindowListener(new WindowAdapter() {
-	      public void windowClosing(WindowEvent e) {
-	        actionExit();
-	      }
+			@Override
+			public void windowClosing(WindowEvent e) {
+				actionExit( false );
+			}
 	    } );
 	    
 	    JTabbedPane tabPane = new JTabbedPane();
+		
+		JButton okButton  = new JButton();
+		JButton cancelButton = new JButton();
+
+		okButton.setText("OK");
+		cancelButton.setText("Cancel");
+
+		okButton.addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionExit( true );
+			}
+		});
+
+		cancelButton.addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionExit( false );
+			}
+		});
+
 	    JPanel generalPanel = new JPanel();
 	    
 	    // TODO : General setting
@@ -49,33 +67,31 @@ public class PropertyChangerWindow extends JFrame {
 	    
 	    for( AbstractPhotosFromPanel tab : photosFromPanels )
 	    	tabPane.addTab( tab.getName(), tab );
-	    
+
 	    this.add(tabPane);
+		
+	    this.add(cancelButton);
+	    this.add(okButton);
+		
+		
 	}
 	
 	public void initilise(PropertyFetcher properties)
 	{
-
 	    for( AbstractPhotosFromPanel tab : _photosFromPanels )
-	    	tab.initilise( properties );	
-	}
-	
-	public void actionPerformed(ActionEvent e) 
-	{
-		if( e.getActionCommand().equals("ChooseFolder") ) 
-		{
-			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.showDialog(/*panelFromFolders*/this, "Select folder");
-		}
+	    	tab.initialise( properties );
 	}
 	
 	// Exit this program.
-	private void actionExit()
+	private void actionExit( boolean commit )
 	{
-		for( AbstractPhotosFromPanel panel : _photosFromPanels )
-			panel.updateProperties();
-		
-		Program.saveProperties();
+		if( commit )
+		{
+			for( AbstractPhotosFromPanel panel : _photosFromPanels )
+				panel.updateProperties();
+
+			Program.saveProperties();
+		}
 			
 		System.exit(0);
 	}

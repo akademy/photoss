@@ -29,7 +29,7 @@ public class PhotosFromPanelFolder extends AbstractPhotosFromPanel{
 	}
 	
 	@Override
-	boolean initilise( PropertyFetcher properties ) {
+	boolean initialise( PropertyFetcher properties ) {
 
 		_folder_folders = properties.getProperty("folder.folders");
         _listFolders.setListData( _folder_folders.split(";") );

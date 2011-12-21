@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="apiKeyLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="apiSecretLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="userTokenLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="setsLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="photoCountLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="setsTextField" alignment="0" pref="261" max="32767" attributes="0"/>
+                  <Component id="apiSecretTextField" alignment="1" pref="261" max="32767" attributes="1"/>
+                  <Component id="userTokenTextField" alignment="1" pref="261" max="32767" attributes="0"/>
+                  <Component id="apiKeyTextField" alignment="1" pref="261" max="32767" attributes="1"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="photoCountSpinner" min="-2" pref="62" max="-2" attributes="0"/>
+                      <EmptySpace pref="89" max="32767" attributes="0"/>
+                      <Component id="updateButton" min="-2" pref="110" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="apiKeyLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="apiKeyTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="apiSecretTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="apiSecretLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="userTokenTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="userTokenLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="setsTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="setsLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="photoCountLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="photoCountSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="updateButton" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Component class="javax.swing.JButton" name="updateButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Update now"/>
+        <Property name="enabled" type="boolean" value="false"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JSpinner" name="photoCountSpinner">
+    </Component>
+    <Component class="javax.swing.JLabel" name="photoCountLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Photo Count"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="setsLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Sets"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="userTokenLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="User Token"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="userTokenTextField">
+    </Component>
+    <Component class="javax.swing.JTextField" name="apiSecretTextField">
+    </Component>
+    <Component class="javax.swing.JLabel" name="apiSecretLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="API Secret"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="apiKeyLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="API Key"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="apiKeyTextField">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="apiKeyTextField" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="setsTextField">
+    </Component>
+  </SubComponents>
+</Form>

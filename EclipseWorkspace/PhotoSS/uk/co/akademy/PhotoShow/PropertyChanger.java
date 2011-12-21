@@ -4,24 +4,18 @@ import java.util.ArrayList;
 
 public class PropertyChanger {
 
-	private PropertyChangerWindow _changer = null;
+	private PropertyChangerFrame _changer = null;
 	
 	public PropertyChanger( PropertyFetcher properties ) {
 		
 		ArrayList<AbstractPhotosFromPanel> photosFromPanels = new ArrayList<AbstractPhotosFromPanel>();
 		
-		PhotosFromPanelFolder folder = new PhotosFromPanelFolder();
-		
-		photosFromPanels.add(folder);
-		
-		_changer = new PropertyChangerWindow( photosFromPanels );
-		_changer.initilise(properties);
+		photosFromPanels.add( new PhotosFromPanelFolder() );
+		photosFromPanels.add( new PhotosFromPanel_Flickr() );
+
+		_changer = new PropertyChangerFrame( photosFromPanels );
+		_changer.initialise(properties);
 		
 		_changer.setVisible(true);
-		
-		// TODO: Need a better system to update properties.
-		//for( AbstractPhotosFromPanel p : photosFromPanels )
-			//p.updateProperties();
-		
 	}
 }
