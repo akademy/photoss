@@ -10,7 +10,7 @@ public class PropertyChanger {
 		
 		ArrayList<AbstractPhotosFromPanel> photosFromPanels = new ArrayList<AbstractPhotosFromPanel>();
 		
-		photosFromPanels.add( new PhotosFromPanelFolder() );
+		photosFromPanels.add( new PhotosFromPanel_Folder() );
 		photosFromPanels.add( new PhotosFromPanel_Flickr() );
 
 		_changer = new PropertyChangerFrame( photosFromPanels );
