@@ -33,6 +33,8 @@ public class PropertyChangerFrame extends javax.swing.JFrame {
 	    	tabbedPane.addTab( tab.getName(), tab );
 
 		tabbedPane.setSelectedIndex(0);
+
+		versionLabel.setText( versionLabel.getText().replace("VERSION", Program.VERSION) );
     }
 
     /** This method is called from within the constructor to
@@ -47,6 +49,8 @@ public class PropertyChangerFrame extends javax.swing.JFrame {
         tabbedPane = new javax.swing.JTabbedPane();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
+        versionLabel = new javax.swing.JLabel();
+        webLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("PhotoSS settings");
@@ -65,26 +69,39 @@ public class PropertyChangerFrame extends javax.swing.JFrame {
             }
         });
 
+        versionLabel.setText("PhotoSS vVERSION");
+
+        webLabel.setText("www.akademy.co.uk/software/photoss");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(239, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(webLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
                 .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
-            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 439, Short.MAX_VALUE)
+            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(versionLabel)
+                .addContainerGap(372, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(versionLabel)
+                .addGap(5, 5, 5)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(okButton)
-                    .addComponent(cancelButton))
+                    .addComponent(cancelButton)
+                    .addComponent(webLabel))
                 .addContainerGap())
         );
 
@@ -104,6 +121,8 @@ public class PropertyChangerFrame extends javax.swing.JFrame {
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton okButton;
     private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JLabel versionLabel;
+    private javax.swing.JLabel webLabel;
     // End of variables declaration//GEN-END:variables
 
 

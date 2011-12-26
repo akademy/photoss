@@ -13,6 +13,8 @@ import java.util.ArrayList;
  */
 public class Program
 {
+	static public String VERSION = "0.4.0.40";
+
 	static String PROPERTY_FILE = "PhotoSS.properties";
 	static String _propertiesFile = null;
 	static PropertyFetcher _properties = null;
@@ -63,6 +65,8 @@ public class Program
 	 */
 	public static void main( String[] args )
 	{		
+		outputInformation();
+
 		String programWorkingFolder = Program.getFolder();
 		
 		File programWorkingFolderFile = new File( programWorkingFolder );
@@ -164,12 +168,10 @@ public class Program
 		}
 		else if( launch.equals( "help" ) )
 		{
-			outputInformation();
 			outputHelp();
 		}
 		else
 		{
-			outputInformation();
 			System.err.println( "Error: Your command was not found.");
 			outputHelp();
 		}
@@ -195,13 +197,15 @@ public class Program
 	
 	private static void outputInformation()
 	{
-		System.out.println("PhotoSS : Photos everywhere. Copyright, akademy.co.uk 2010.");
+		System.out.println("PhotoSS : Photos everywhere. Version " + VERSION + ". Copyright, akademy.co.uk 2011.");
 	}
 	
 	private static void outputHelp()
 	{
-		System.out.println("Command line settings:");
+		System.out.println("Options:");
+		System.out.println("photoss settings - To edit the settings in a window.");
 		System.out.println("photoss fullscreen - To show in full screen.");
+		System.out.println("photoss screensaver - To show in full screen close with mouse or key.");
 		System.out.println("photoss window <number> - To show in one or more windows.");
 	}
 	
