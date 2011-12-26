@@ -200,7 +200,20 @@ public class PhotosFromPanel_Folder extends AbstractPhotosFromPanel {
 
 	@Override
 	void updateProperties() {
+		String folders = "";
+		int foldersListSize = foldersList.getModel().getSize();
 
+		if( foldersListSize > 0 ) {
+			folders += foldersList.getModel().getElementAt(0);
+
+			if( foldersListSize > 1 ) {
+				for(int i = 1; i < foldersListSize; i++) {
+					folders += ";" + foldersList.getModel().getElementAt(i);
+				}
+			}
+		}
+
+		Program.setProperty( "folder.folders", folders );
 	}
 
 	private java.util.ArrayList<String> getFolders() {
