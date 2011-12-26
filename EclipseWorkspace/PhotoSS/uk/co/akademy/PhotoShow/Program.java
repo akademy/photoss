@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class Program
 {
-	static public String VERSION = "0.4.0.40";
+	static public String VERSION = "0.4.0.42";
 
 	static String PROPERTY_FILE = "PhotoSS.properties";
 	static String _propertiesFile = null;
