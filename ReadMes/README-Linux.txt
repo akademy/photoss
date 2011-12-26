@@ -1,5 +1,5 @@
 --------------------------
-**     PhotoSS  0.3.0   **
+**     PhotoSS  _VERSION_REPLACE_   **
 --------------------------
 
 Display all your photos.
