@@ -150,8 +150,9 @@ public class PhotoCanvasControl implements Runnable, Observer
 					int i;
 					for( i = 0; i < photosToShow; i++ ) {
 
-						  System.out.println(i+currentPhoto);
-
+						if( _debug ) {
+						  System.out.println("Image number: " + (i+currentPhoto) );
+						}
 						_photoCanvasList.get(i).setNextPhoto( photosCurrent.get(i+currentPhoto) );
 					 }
 					
