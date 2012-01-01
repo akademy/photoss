@@ -115,7 +115,7 @@ public class Program
 			
 			if( windowCount != 0 )
 			{
-				show( new WindowShow( windowCount ) );
+				show( new Show_Window( windowCount ) );
 			}
 		}
 		else if( launch.equals( "fullscreen" ) )
@@ -131,7 +131,7 @@ public class Program
 				}
 			}
 			
-			show( new FullScreenShow( screenNumber ) );
+			show( new Show_FullScreen( screenNumber ) );
 		}
 		else if( launch.equals( "screensaver" ) )
 		{
@@ -149,7 +149,7 @@ public class Program
 			
 			if( showScreensaver )
 			{
-				show( new ScreensaverShow() );
+				show( new Show_Screensaver() );
 			}
 		}
 		else if( launch.equals( "settings" ) )
@@ -188,8 +188,8 @@ public class Program
 			ArrayList<AbstractPhotosFrom> photosFromList = new ArrayList<AbstractPhotosFrom>();
 	
 			//photosFromList.add( new PhotosFromTest() );
-			photosFromList.add( new PhotosFromFolder() );
-			photosFromList.add( new PhotosFromFlickr() );
+			photosFromList.add( new PhotosFrom_Folder() );
+			photosFromList.add( new PhotosFrom_Flickr() );
 			
 			show.start(photosFromList);
 		}

@@ -27,13 +27,13 @@ import javax.swing.SpringLayout;
  * @author Matthew
  *
  */
-public class ScreensaverShow implements Show
+public class Show_Screensaver implements Show
 {
 	ArrayList<JFrame> _screens = null;
 	ArrayList<PhotoCanvas> _photoCanvasList = null;
 	GraphicsDevice[] _graphicsDeviceArray = null;
 	
-	public ScreensaverShow() { }
+	public Show_Screensaver() { }
 
 	public boolean initilise()
 	{

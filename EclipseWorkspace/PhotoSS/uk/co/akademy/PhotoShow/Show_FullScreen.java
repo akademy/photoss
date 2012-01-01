@@ -20,7 +20,7 @@ import javax.swing.SpringLayout;
  * @author Matthew
  *
  */
-public class FullScreenShow implements Show
+public class Show_FullScreen implements Show
 {
 	JFrame _screen = null;
 	int _screenNumber = 1;
@@ -28,11 +28,11 @@ public class FullScreenShow implements Show
 	ArrayList<PhotoCanvas> _photoCanvasList = null;
 	GraphicsDevice[] _graphicsDeviceArray = null;
 	
-	public FullScreenShow(int screenNumber)
+	public Show_FullScreen(int screenNumber)
 	{
 		_screenNumber = screenNumber;
 	}	
-	public FullScreenShow() { }
+	public Show_FullScreen() { }
 
 
 	public boolean initilise()

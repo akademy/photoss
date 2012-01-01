@@ -10,11 +10,11 @@ import java.io.FileFilter;
  * @author matthew
  *
  */
-public class PhotosFromFolder extends AbstractPhotosFrom
+public class PhotosFrom_Folder extends AbstractPhotosFrom
 {
 	private String[] _folders;
 	
-	public PhotosFromFolder()
+	public PhotosFrom_Folder()
 	{
 		super();
 	}

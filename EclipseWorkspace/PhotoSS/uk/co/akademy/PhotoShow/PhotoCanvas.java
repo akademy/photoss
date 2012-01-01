@@ -28,7 +28,7 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 	private boolean _noPhotos = false;
 	
 	private int _widthCanvas = 0, _heightCanvas = 0;
-	private int _widthImage = 0, _heightImage = 0;
+	//private float _widthImage = 0, _heightImage = 0;
 	
 	private int _margin = 25;
 	private int _border = 5;
@@ -61,7 +61,11 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 	public void setDebugText( String debugText ) { _debugText = debugText; }
 	
 	public void setNoPhotos( boolean noPhotos ) { _noPhotos = noPhotos; repaint(); }
-	
+
+	/**
+	 * Set the next image to show (but don't show it yet)
+	 * @param photo - the next photo
+	 */
 	public void setNextPhoto( Photo photo )
 	{
 		try {
@@ -81,26 +85,27 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 		 }
 	}
 
+	/**
+	 * Switch to the next photo
+	 * @param fadeLength
+	 */
 	public void switchPhotoStart( int fadeLength )
 	{
 		showNextPhoto();
 		repaint();
 	}
 	
+	/**
+	 * Show the next photp
+	 */
 	private void showNextPhoto()
 	{
 		Image imagePrevious = _image;
 		
 		_adjusting = true;
 		
-		_image = null;
-		
 		if(_imageNext != null ) {
-			 _widthImage = _imageNext.getWidth( null );
-			 _heightImage = _imageNext.getHeight( null );
-
-			 calculateSizeAndPosition();
-
+			 setSizeAndPosition( _imageNext );
 			 _image = _imageNext;
 
 			 _adjusting = false;
@@ -108,28 +113,37 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 			 if( imagePrevious != null )
 				 imagePrevious.flush();
 		 }
-		  else {
+		 else {
+			_image = null;
+
 			 if( _debug )
 				System.out.println("Next image is null???");
 		 }
 	}
 	
-	public void calculateSizeAndPosition()
+	/**
+	 * Calculate the size and position of the image
+	 * @param image
+	 */
+	public void setSizeAndPosition( Image image )
 	{		
 		float 	drawWidth = 0, 
 				drawHeight = 0,
 				posX = 0, posY = 0;
 
-		float paintWidth = _widthImage + (_margin * 2),
-		      paintHeight = _heightImage + (_margin * 2 );
+		float imageWidth = image.getWidth(this),
+				imageHeight = image.getHeight(this);
+
+		float paintWidth = imageWidth + ( _margin * 2 ),
+		      paintHeight = imageHeight + ( _margin * 2 );
 
 		if( paintWidth <= _widthCanvas && paintHeight <= _heightCanvas )
 		{
 			// Image smaller
 			_debugText = "Image smaller";
 			
-			drawWidth = (float) _widthImage;
-			drawHeight = (float) _heightImage;
+			drawWidth = (float) imageWidth;
+			drawHeight = (float) imageHeight;
 			
 			posX = ( ( _widthCanvas - paintWidth ) / 2 ) + _margin;
 			posY = ( ( _heightCanvas - paintHeight ) / 2 ) + _margin;
@@ -144,23 +158,23 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 				{
 					_debugText += " - photo wide";
 					drawWidth = (float)(_widthCanvas - (_margin * 2));
-					drawHeight = _heightImage * ( drawWidth / _widthImage );
+					drawHeight = imageHeight * ( drawWidth / imageWidth );
 					
 					if( drawHeight + (_margin * 2) > _heightCanvas )
 					{
 						drawHeight = (float)_heightCanvas - (_margin * 2);
-						drawWidth = _widthImage * ( ((float)drawHeight) / _heightImage );
+						drawWidth = imageWidth * ( ((float)drawHeight) / imageHeight );
 					}
 				}
 				else // ( paintHeight > paintWidth )
 				{
 					drawHeight = (float)(_heightCanvas - (_margin * 2));
-					drawWidth = _widthImage * ( drawHeight / _heightImage );
+					drawWidth = imageWidth * ( drawHeight / imageHeight );
 					
 					if( drawWidth + (_margin * 2) > _widthCanvas )
 					{
 						drawWidth = (float)_widthCanvas - (_margin * 2);
-						drawHeight = _heightImage * ( ((float)drawWidth) / _widthImage );
+						drawHeight = imageHeight * ( ((float)drawWidth) / imageWidth );
 					}
 				}
 			}			
@@ -168,13 +182,13 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 			{
 				// Image wider
 				drawWidth = (float)(_widthCanvas - (_margin * 2) );
-				drawHeight = _heightImage * ( drawWidth / _widthImage );
+				drawHeight = imageHeight * ( drawWidth / imageWidth );
 			}
 			else if( paintHeight > _heightCanvas )
 			{
 				// Image taller
 				drawHeight = (float)( _heightCanvas - (_margin * 2) );
-				drawWidth = _widthImage * ( drawHeight / _heightImage );
+				drawWidth = imageWidth * ( drawHeight / imageHeight );
 			}
 
 			posX = ( ( _widthCanvas - drawWidth ) / 2 );
@@ -184,6 +198,9 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 		boolean adjust = _adjusting;
 
 		_adjusting = true;
+
+		//_widthImage = imageWidth;
+		//_heightImage = imageHeight;
 
 		_widthDraw = (int)drawWidth;
 		_heightDraw = (int)drawHeight;
@@ -203,50 +220,51 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 	{
 		// TODO: All the paint control should be done by the PhotoCanvasControl and not here.
 		//
-		if( _screenBuffer != null )
-		{
-			Graphics screenBufferGraphic = _screenBuffer.getGraphics();
-
-			//
-			// Draw the stuff off screen
-			//
-			//super.paint( screenBufferGraphic );
-			screenBufferGraphic.clearRect( 0, 0, _widthCanvas, _heightCanvas );
-
-			if( !_adjusting ) // Avoid flickering on move
-			{
-
-				if( _image != null )
-				{
-					screenBufferGraphic.setColor( Color.white );
-					screenBufferGraphic.drawRect(_posX - _border, _posY - _border, _widthDraw + _border * 2, _heightDraw + _border * 2);
-					screenBufferGraphic.drawImage( _image, _posX, _posY, _widthDraw, _heightDraw, null );
-				}
-				else if( _noPhotos )
-				{
-					screenBufferGraphic.setColor( Color.white );
-					screenBufferGraphic.drawString( "No PhotosFrom running.", 20, 20 );
-				}
-				else
-				{
-					screenBufferGraphic.setColor( Color.white );
-					screenBufferGraphic.drawString( "Getting photos...", 20, 20 );
-				}
-			}
-
-			if( _debug )
-			{
-				screenBufferGraphic.setXORMode( Color.red );
-				screenBufferGraphic.drawString( _debugText, 20, 40 );
-				screenBufferGraphic.drawString( "x:" + getWidth() + " y:" + getHeight(), 20, 60 );
-			}
-
-			//
-			// Paint to screen
-			//
-			graphic.drawImage( _screenBuffer, 0, 0, this );
-			screenBufferGraphic.dispose();
+		if( _screenBuffer == null ) {
+			createScreenBuffer();
 		}
+
+		Graphics screenBufferGraphic = _screenBuffer.getGraphics();
+
+		//
+		// Draw the stuff off screen
+		//
+		//super.paint( screenBufferGraphic );
+		screenBufferGraphic.clearRect( 0, 0, _widthCanvas, _heightCanvas );
+
+		if( !_adjusting ) // Avoid flickering on move
+		{
+
+			if( _image != null )
+			{
+				screenBufferGraphic.setColor( Color.white );
+				screenBufferGraphic.drawRect(_posX - _border, _posY - _border, _widthDraw + _border * 2, _heightDraw + _border * 2);
+				screenBufferGraphic.drawImage( _image, _posX, _posY, _widthDraw, _heightDraw, null );
+			}
+			else if( _noPhotos )
+			{
+				screenBufferGraphic.setColor( Color.red );
+				screenBufferGraphic.drawString( "No PhotosFrom running.", 20, 20 );
+			}
+			else
+			{
+				screenBufferGraphic.setColor( Color.green );
+				screenBufferGraphic.drawString( "Getting photos...", 20, 20 );
+			}
+		}
+
+		if( _debug )
+		{
+			screenBufferGraphic.setXORMode( Color.yellow );
+			screenBufferGraphic.drawString( _debugText, 20, 40 );
+			screenBufferGraphic.drawString( "x:" + getWidth() + " y:" + getHeight(), 20, 60 );
+		}
+
+		//
+		// Paint to screen
+		//
+		graphic.drawImage( _screenBuffer, 0, 0, this );
+		screenBufferGraphic.dispose();
 	}
 
 	//@Override
@@ -267,7 +285,9 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 			_heightCanvas = currentHeight;
 
 			createScreenBuffer();
-			calculateSizeAndPosition();
+			setSizeAndPosition( _image );
+			
+			repaint();
 		}
 	}
 

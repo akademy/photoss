@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
-public class WindowShow implements Show
+public class Show_Window implements Show
 {
 	ArrayList<PhotoCanvas> _photoCanvasList = null;
 	ArrayList<JFrame> _windows = null;
@@ -22,17 +22,17 @@ public class WindowShow implements Show
 	int _windowNumber = 1;
 	
 	
-	public WindowShow( int windowNumber, int width, int height )
+	public Show_Window( int windowNumber, int width, int height )
 	{
 		_windowNumber = windowNumber;
 		_width = width;
 		_height = height;
 	}	
-	public WindowShow( int windowNumber )
+	public Show_Window( int windowNumber )
 	{
 		_windowNumber = windowNumber;
 	}
-	public WindowShow() {}
+	public Show_Window() {}
 
 	
 	public boolean initilise() 
