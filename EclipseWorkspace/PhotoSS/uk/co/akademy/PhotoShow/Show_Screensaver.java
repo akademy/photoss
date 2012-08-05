@@ -16,6 +16,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -74,6 +75,16 @@ public class Show_Screensaver implements Show
 				public void mousePressed(MouseEvent event) {}
 				public void mouseReleased(MouseEvent event) {}
 			} );
+			
+			frame.addMouseMotionListener( new MouseMotionListener() {
+
+				public void mouseDragged(MouseEvent me) {}
+
+				public void mouseMoved(MouseEvent me) {
+					System.exit(0);					
+				}
+
+			} );			
 			
 			frame.setBackground(Color.black);
 			frame.setUndecorated(true);
