@@ -187,17 +187,43 @@ public class Program
 		{
 			ArrayList<AbstractPhotosFrom> photosFromList = new ArrayList<AbstractPhotosFrom>();
 	
-			//photosFromList.add( new PhotosFromTest() );
-			photosFromList.add( new PhotosFrom_Folder() );
-			photosFromList.add( new PhotosFrom_Flickr() );
+			// //photosFromList.add( new PhotosFrom_Test() );
+			//photosFromList.add( new PhotosFrom_Folder() );
+			//photosFromList.add( new PhotosFrom_Flickr() );
+                        
+                        // Dynamic load
+                        String[] photosFrom = {
+                            "uk.co.akademy.PhotoShow.PhotosFrom_Folder",
+                            "uk.co.akademy.PhotoShow.PhotosFrom_Flickr",
+                            //"uk.co.akademy.PhotoShow.PhotosFrom_Test"
+                        };
+                        
 			
+                        ClassLoader classLoader = Program.class.getClassLoader();
+
+                        try {
+                            for (int i = 0; i < photosFrom.length; i++) {
+                                Class photoFrom = classLoader.loadClass(photosFrom[i]);
+                                photosFromList.add( (AbstractPhotosFrom)photoFrom.newInstance() );
+                            }
+                        }
+                        catch ( IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                        catch ( InstantiationException e) {
+                            e.printStackTrace();
+                        }
+                        catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        
 			show.start(photosFromList);
 		}
 	}
 	
 	private static void outputInformation()
 	{
-		System.out.println("PhotoSS : Photos everywhere. Version " + VERSION + ". Copyright, akademy.co.uk 2011.");
+		System.out.println("PhotoSS : Photos everywhere. Version " + VERSION + ". Copyright, akademy.co.uk 2012.");
 	}
 	
 	private static void outputHelp()

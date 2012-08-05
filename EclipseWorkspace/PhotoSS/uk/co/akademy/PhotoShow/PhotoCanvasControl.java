@@ -25,9 +25,6 @@ public class PhotoCanvasControl implements Runnable, Observer
 
 	private boolean _debug = false;
 	
-	
-	private volatile boolean _waitForPhotos = false;
-	
 	/**
 	 * PhotoCanvasControl 
 	 * @param pcs PhotoCanvas list to show the photos in
@@ -46,8 +43,6 @@ public class PhotoCanvasControl implements Runnable, Observer
 		_photoShowTime = 8000;
 		
 		//_debug = true;
-		
-		_waitForPhotos = true;
 	}
 
 	/**
@@ -74,6 +69,7 @@ public class PhotoCanvasControl implements Runnable, Observer
 	 */
 	public void start()
 	{
+	    // Create a thread for each PhotoFrom to run in and collect photos
 		for( AbstractPhotosFrom pf : _photosFromList )
 		{
 			if( pf.initilise() )
@@ -87,17 +83,18 @@ public class PhotoCanvasControl implements Runnable, Observer
 			}
 		}
 		
+		// Set all canvases to visible
 		for( PhotoCanvas pc : _photoCanvasList )
 			pc.setVisible(true);
 		
+		// Run the main photo swapping page
 		new Thread( this ).start();
 			
+		
 		if( _threads.isEmpty() )
 		{			
 			for( PhotoCanvas pc : _photoCanvasList )
 				pc.setNoPhotos( true );
-			
-			_waitForPhotos = false;
 			
 			try {
 				Thread.sleep( _photoShowTime );
@@ -115,62 +112,70 @@ public class PhotoCanvasControl implements Runnable, Observer
 	 */
 	public void run()
 	{	
-		while( _waitForPhotos )
-		{
+		boolean havePhotos;
+		
+		// Wait for some photos
+		for(;;) {
+			synchronized( _photos ) {
+				havePhotos = !_photos.isEmpty();
+			}
+
+			if( havePhotos )
+				break;
+			
 			// Haven't got an image yet so sleep for a bit.
 			try {
 				Thread.sleep( 50 );
 			} catch (InterruptedException e) { }
 		}
-
-		if( !_photos.isEmpty() )
+		
+		ArrayList<Photo> photosCurrent =  null;
+		String error = "";
+		
+		// Now loop through our photos (it expands as more photos come available)
+		for(;;)
 		{
-			ArrayList<Photo> photosCurrent =  null;
-			
-			String error = "";
-			
-			for(;;)
-			{
-				synchronized( _photos ) {
-					photosCurrent = clonePhotos( _photos );
-				};
-				
-				Collections.shuffle( photosCurrent );
-				int total = photosCurrent.size();
-				
-				if( total < _photoCanvasCount )
-					Collections.shuffle( _photoCanvasList ); // Shuffle so all canvases eventually get a photo
-				
-				int currentPhoto = 0;
-				
-				while( currentPhoto < total )
-				{
-					int photosToShow = Math.min( _photoCanvasCount, total - currentPhoto );
-	
-					int i;
-					for( i = 0; i < photosToShow; i++ ) {
+			synchronized( _photos ) {
+				photosCurrent = clonePhotos( _photos );
+			};
 
-						if( _debug ) {
-						  System.out.println("Image number: " + (i+currentPhoto) );
-						}
-						_photoCanvasList.get(i).setNextPhoto( photosCurrent.get(i+currentPhoto) );
-					 }
-					
-					for( i = 0; i < photosToShow; i++ )
-						_photoCanvasList.get(i).switchPhotoStart( 500 );
-					
-					currentPhoto += photosToShow;
-					
-					if( _debug )
-					{
-						for( PhotoCanvas pc : _photoCanvasList )			
-							pc.setDebugText(error);
-					}	
-					
-					try {
-						Thread.sleep( _photoShowTime );
-					} catch (InterruptedException e) { }
-				}
+			Collections.shuffle( photosCurrent );
+
+			int total = photosCurrent.size();
+			if( total < _photoCanvasCount )
+				Collections.shuffle( _photoCanvasList ); // Shuffle so all canvases eventually get a photo if there's less photos than canvases
+
+			int currentPhoto = 0;
+
+			while( currentPhoto < total )
+			{
+				int photosToShow = Math.min( _photoCanvasCount, total - currentPhoto );
+
+				int i;
+				// Set a photo to show next
+				for( i = 0; i < photosToShow; i++ ) {
+
+					if( _debug ) {
+					  System.out.println("Image number: " + (i+currentPhoto) );
+					}
+					_photoCanvasList.get(i).setNextPhoto( photosCurrent.get(i+currentPhoto) );
+				 }
+
+				// Switch the next photo to the current one
+				for( i = 0; i < photosToShow; i++ )
+					_photoCanvasList.get(i).switchPhotoStart( 500 );
+
+				currentPhoto += photosToShow;
+
+				if( _debug )
+				{
+					for( PhotoCanvas pc : _photoCanvasList )			
+						pc.setDebugText(error);
+				}	
+
+				try {
+					Thread.sleep( _photoShowTime );
+				} catch (InterruptedException e) { }
 			}
 		}
 	}
@@ -193,14 +198,11 @@ public class PhotoCanvasControl implements Runnable, Observer
 	{
 		Photo photo = (Photo)oPhoto;
 
-		 if( photo.good() ) {
+		if( photo.good() ) {
 			  
-			 synchronized( _photos ) {
-				 _photos.add( photo ); // TODO... technically we should be taking a deep copy of the photo, but while this is a simple case (with only one watcher) we can ignore this
-			 }
-
-			 if( _waitForPhotos )
-				 _waitForPhotos = false;
-		 }
+			synchronized( _photos ) {
+				_photos.add( photo ); // TODO... technically we should be taking a deep copy of the photo, but while this is a simple case (with only one watcher) we can ignore this
+			}
+		}
 	}
 }

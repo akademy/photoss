@@ -51,11 +51,11 @@ public class Show_Screensaver implements Show
 		{
 			JFrame frame = new JFrame("PhotoSS screensaver-"+(i+1));
 			
-	        frame.addWindowListener( new WindowAdapter() {
-	            public void windowClosing(WindowEvent e) {
-	                System.exit(0);
-	            }
-	        } ); 
+			frame.addWindowListener( new WindowAdapter() {
+				public void windowClosing(WindowEvent e) {
+				    System.exit(0);
+				}
+			} ); 
 	        
 			frame.addKeyListener( new KeyListener() {
 				public void keyPressed(KeyEvent event) {}

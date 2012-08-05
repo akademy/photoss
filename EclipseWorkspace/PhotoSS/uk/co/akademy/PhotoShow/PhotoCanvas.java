@@ -8,7 +8,10 @@ import java.awt.Color;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -236,7 +239,21 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 		{
 
 			if( _image != null )
-			{
+			{			
+				// Attempting a semi transparent fill around image... not working though
+				//float[] scales = { 1f, 1f, 1f, 0.5f };
+				//float[] offsets = new float[4];
+				//RescaleOp rop = new RescaleOp(scales, offsets, null);
+				
+				//BufferedImage bi2 = new BufferedImage(_widthCanvas, _heightCanvas, BufferedImage.TYPE_INT_RGB);
+                //Graphics big = bi2.getGraphics();
+                //big.drawImage(_image, 0, 0, _widthCanvas, _heightCanvas, null);
+				
+				//Graphics2D screenBufferGraphic2D = (Graphics2D) screenBufferGraphic;
+				//screenBufferGraphic2D.drawImage( bi2, rop, 0, 0 );
+				
+				screenBufferGraphic.drawImage(_image, 0, 0, _widthCanvas, _heightCanvas, null);
+				
 				screenBufferGraphic.setColor( Color.white );
 				screenBufferGraphic.drawRect(_posX - _border, _posY - _border, _widthDraw + _border * 2, _heightDraw + _border * 2);
 				screenBufferGraphic.drawImage( _image, _posX, _posY, _widthDraw, _heightDraw, null );
