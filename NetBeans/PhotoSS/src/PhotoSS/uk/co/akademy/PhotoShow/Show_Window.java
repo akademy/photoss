@@ -12,9 +12,8 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
-public class Show_Window implements Show
+public class Show_Window extends Show
 {
-	ArrayList<PhotoCanvas> _photoCanvasList = null;
 	ArrayList<JFrame> _windows = null;
 	
 	int _width = 600;
@@ -34,11 +33,10 @@ public class Show_Window implements Show
 	}
 	public Show_Window() {}
 
-	
+	@Override
 	public boolean initilise() 
 	{
 		_windows = new ArrayList<JFrame>(_windowNumber);
-		_photoCanvasList = new ArrayList<PhotoCanvas>(_windowNumber);
 		
 		for( int i = 0; i<_windowNumber; i++ )
 		{
@@ -56,7 +54,7 @@ public class Show_Window implements Show
 				public void keyReleased(KeyEvent event) {
 					//if (event.getKeyChar() == KeyEvent.VK_ESCAPE)
 					{
-						System.exit(0);
+						//System.exit(0);
 					}
 				}
 				public void keyTyped(KeyEvent event) {}
@@ -79,14 +77,12 @@ public class Show_Window implements Show
 		return true;
 	}
 
+	@Override
 	public void start( ArrayList<AbstractPhotosFrom> photosFromList )
-	{
-		PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
-			
+	{		
 		for( JFrame frame : _windows )
 			frame.setVisible(true);
-			
-		pcc.initialise();
-		pcc.start();
+
+		super.start(photosFromList);
 	}
 }

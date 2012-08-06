@@ -15,17 +15,17 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.SpringLayout;
+import sun.misc.BASE64Decoder;
 
 /**
  * @author Matthew
  *
  */
-public class Show_FullScreen implements Show
+public class Show_FullScreen extends Show
 {
 	JFrame _screen = null;
 	int _screenNumber = 1;
 	
-	ArrayList<PhotoCanvas> _photoCanvasList = null;
 	GraphicsDevice[] _graphicsDeviceArray = null;
 	
 	public Show_FullScreen(int screenNumber)
@@ -34,11 +34,9 @@ public class Show_FullScreen implements Show
 	}	
 	public Show_FullScreen() { }
 
-
+	@Override
 	public boolean initilise()
 	{
-		_photoCanvasList = new ArrayList<PhotoCanvas>();
-
 		GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		_graphicsDeviceArray = graphicsEnvironment.getScreenDevices();
 
@@ -90,13 +88,11 @@ public class Show_FullScreen implements Show
 		return true;
 	}
 
+	@Override
 	public void start( ArrayList<AbstractPhotosFrom> photosFromList )
 	{
-		PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
-		
 		_graphicsDeviceArray[_screenNumber-1].setFullScreenWindow( _screen );
-		
-		pcc.initialise();
-		pcc.start();
+
+		super.start(photosFromList);
 	}
 }

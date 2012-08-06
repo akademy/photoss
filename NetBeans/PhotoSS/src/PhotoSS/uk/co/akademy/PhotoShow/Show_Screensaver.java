@@ -28,18 +28,17 @@ import javax.swing.SpringLayout;
  * @author Matthew
  *
  */
-public class Show_Screensaver implements Show
+public class Show_Screensaver extends Show
 {
 	ArrayList<JFrame> _screens = null;
-	ArrayList<PhotoCanvas> _photoCanvasList = null;
+	
 	GraphicsDevice[] _graphicsDeviceArray = null;
 	
 	public Show_Screensaver() { }
 
+	@Override
 	public boolean initilise()
 	{
-		_photoCanvasList = new ArrayList<PhotoCanvas>();
-
 		_screens = new ArrayList<JFrame>();
 
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -96,10 +95,10 @@ public class Show_Screensaver implements Show
 			
 			_photoCanvasList.add( pc );
 
+			pc.setVisible(false);
+
 			frame.add( pc, SpringLayout.WEST );
 			frame.pack();
-
-			pc.setVisible(false);
 			
 			frame.setVisible(false);
 			frame.setAlwaysOnTop(true); // Hard to debug!
@@ -136,14 +135,12 @@ public class Show_Screensaver implements Show
 		return true;
 	}
 
+	@Override
 	public void start( ArrayList<AbstractPhotosFrom> photosFromList )
 	{
-		PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
-		
 		for( int i=0; i<_graphicsDeviceArray.length; i++ )
 			_graphicsDeviceArray[i].setFullScreenWindow( _screens.get(i) );
-		
-		pcc.initialise();
-		pcc.start();
+
+		super.start(photosFromList);
 	}
 }
