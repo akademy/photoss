@@ -21,9 +21,9 @@ sed -i "s/_VERSION_REPLACE_/$VERSION/g" general/README
 sed -i "s/_VERSION_REPLACE_/$VERSION/g" linux/README
 sed -i "s/_VERSION_REPLACE_/$VERSION/g" windows/README
 
-cp ../NetBeansWorkspace/dist/PhotoSS.jar general/
-cp ../NetBeansWorkspace/dist/PhotoSS.jar linux/
-cp ../NetBeansWorkspace/dist/PhotoSS.jar windows/
+cp ../NetBeans/PhotoSS/dist/PhotoSSWithLib.jar general/PhotoSS.jar
+cp ../NetBeans/PhotoSS/dist/PhotoSSWithLib.jar linux/PhotoSS.jar
+cp ../NetBeans/PhotoSS/dist/PhotoSSWithLib.jar windows/PhotoSS.jar
 
 # Need to check if we have new launchers
 cp ../Launchers/idletime linux/

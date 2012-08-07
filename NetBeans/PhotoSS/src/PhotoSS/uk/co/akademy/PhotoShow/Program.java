@@ -191,31 +191,31 @@ public class Program
 			//photosFromList.add( new PhotosFrom_Folder() );
 			//photosFromList.add( new PhotosFrom_Flickr() );
                         
-                        // Dynamic load
-                        String[] photosFrom = {
-                            "uk.co.akademy.PhotoShow.PhotosFrom_Folder",
-                            //"uk.co.akademy.PhotoShow.PhotosFrom_Flickr",
-                            //"uk.co.akademy.PhotoShow.PhotosFrom_Test"
-                        };
-                        
-			
-                        ClassLoader classLoader = Program.class.getClassLoader();
+			// Dynamic load
+			String[] photosFrom = {
+				"uk.co.akademy.PhotoShow.PhotosFrom_Folder",
+				"uk.co.akademy.PhotoShow.PhotosFrom_Flickr",
+				//"uk.co.akademy.PhotoShow.PhotosFrom_Test"
+			};
 
-                        try {
-                            for (int i = 0; i < photosFrom.length; i++) {
-                                Class photoFrom = classLoader.loadClass(photosFrom[i]);
-                                photosFromList.add( (AbstractPhotosFrom)photoFrom.newInstance() );
-                            }
-                        }
-                        catch ( IllegalAccessException e) {
-                            e.printStackTrace();
-                        }
-                        catch ( InstantiationException e) {
-                            e.printStackTrace();
-                        }
-                        catch (ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
+
+			ClassLoader classLoader = Program.class.getClassLoader();
+
+			try {
+				for (int i = 0; i < photosFrom.length; i++) {
+					Class photoFrom = classLoader.loadClass(photosFrom[i]);
+					photosFromList.add( (AbstractPhotosFrom)photoFrom.newInstance() );
+				}
+			}
+			catch ( IllegalAccessException e) {
+				e.printStackTrace();
+			}
+			catch ( InstantiationException e) {
+				e.printStackTrace();
+			}
+			catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
                         
 			show.start(photosFromList);
 		}

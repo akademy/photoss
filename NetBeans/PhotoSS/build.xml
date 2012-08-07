@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!-- You may freely edit this file. See commented blocks below for --><!-- some examples of how to customize the build. --><!-- (If you delete it and reopen the project it will be recreated.) --><!-- By default, only the Clean and Build commands use this build script. --><!-- Commands such as Run, Debug, and Test only use this build script if --><!-- the Compile on Save feature is turned off for the project. --><!-- You can turn off the Compile on Save (or Deploy on Save) setting --><!-- in the project's Project Properties dialog box.--><project name="PhotoSS" default="default" basedir=".">
     <description>Builds, tests, and runs the project PhotoSS.</description>
     <import file="nbproject/build-impl.xml"/>
+    <import file="nbproject/profiler-build-impl.xml"/>
     <!--
 
     There exist several targets which are by default empty and which can be 
@@ -67,12 +68,12 @@
 
 			<zipfileset src="${dist.jar}" excludes="META-INF/*" />
 			
-			<zipfileset src="dist/lib/axis.jar" excludes="META-INF/*" />
-			<zipfileset src="dist/lib/jaxrpc.jar" excludes="META-INF/*" />
-			<zipfileset src="dist/lib/commons-discovery-0.2.jar" excludes="META-INF/*" />
-			<zipfileset src="dist/lib/commons-logging-1.0.4.jar" excludes="META-INF/*" />
-			<zipfileset src="dist/lib/log4j-1.2.8.jar" excludes="META-INF/*" />
-			<zipfileset src="dist/lib/saaj.jar" excludes="META-INF/*" />
+			<zipfileset src="src/FlickrJ/lib/axis.jar" excludes="META-INF/*" />
+			<zipfileset src="src/FlickrJ/lib/jaxrpc.jar" excludes="META-INF/*" />
+			<zipfileset src="src/FlickrJ/lib/commons-discovery-0.2.jar" excludes="META-INF/*" />
+			<zipfileset src="src/FlickrJ/lib/commons-logging-1.0.4.jar" excludes="META-INF/*" />
+			<zipfileset src="src/FlickrJ/lib/log4j-1.2.8.jar" excludes="META-INF/*" />
+			<zipfileset src="src/FlickrJ/lib/saaj.jar" excludes="META-INF/*" />
 
 			<manifest>
 				<attribute name="Main-Class" value="uk.co.akademy.PhotoShow.Program"/>

@@ -30,13 +30,14 @@ public class Show_FullScreen extends Show
 	
 	public Show_FullScreen(int screenNumber)
 	{
-		_screenNumber = screenNumber;
+		_screenNumber = 1;//screenNumber; // TODO: THis class only copes with a single screen it needs to cope with multiple ones
 	}	
 	public Show_FullScreen() { }
 
 	@Override
 	public boolean initilise()
 	{
+		
 		GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		_graphicsDeviceArray = graphicsEnvironment.getScreenDevices();
 

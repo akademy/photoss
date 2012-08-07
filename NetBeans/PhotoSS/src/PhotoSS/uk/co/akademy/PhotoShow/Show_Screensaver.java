@@ -33,6 +33,7 @@ public class Show_Screensaver extends Show
 	ArrayList<JFrame> _screens = null;
 	
 	GraphicsDevice[] _graphicsDeviceArray = null;
+	int _screenNumber = 0;
 	
 	public Show_Screensaver() { }
 
@@ -44,10 +45,10 @@ public class Show_Screensaver extends Show
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		_graphicsDeviceArray = ge.getScreenDevices();
 
-		int screens = _graphicsDeviceArray.length;
-		// screens = 1;
+		_screenNumber = _graphicsDeviceArray.length;
+		//_screenNumber = 1;
 		
-		for( int i = 0; i < screens; i++ )
+		for( int i = 0; i < _screenNumber; i++ )
 		{
 			JFrame frame = new JFrame("PhotoSS screensaver-"+(i+1));
 			
@@ -75,15 +76,7 @@ public class Show_Screensaver extends Show
 				public void mouseReleased(MouseEvent event) {}
 			} );
 			
-			frame.addMouseMotionListener( new MouseMotionListener() {
-
-				public void mouseDragged(MouseEvent me) {}
-
-				public void mouseMoved(MouseEvent me) {
-					System.exit(0);					
-				}
-
-			} );			
+			frame.addMouseMotionListener( new Show_Screensaver_MouseMotion() );
 			
 			frame.setBackground(Color.black);
 			frame.setUndecorated(true);
@@ -95,11 +88,11 @@ public class Show_Screensaver extends Show
 			
 			_photoCanvasList.add( pc );
 
-			pc.setVisible(false);
-
 			frame.add( pc, SpringLayout.WEST );
 			frame.pack();
 			
+			pc.setVisible(false);
+
 			frame.setVisible(false);
 			frame.setAlwaysOnTop(true); // Hard to debug!
 
@@ -138,9 +131,43 @@ public class Show_Screensaver extends Show
 	@Override
 	public void start( ArrayList<AbstractPhotosFrom> photosFromList )
 	{
-		for( int i=0; i<_graphicsDeviceArray.length; i++ )
+		for( int i=0; i<_screenNumber; i++ )
 			_graphicsDeviceArray[i].setFullScreenWindow( _screens.get(i) );
+
+		//_graphicsDeviceArray[_screenNumber-1].setFullScreenWindow( _screens.get(0) );
 
 		super.start(photosFromList);
 	}
+}
+
+class Show_Screensaver_MouseMotion implements MouseMotionListener {
+
+	static final int mouseAllowed = 7;
+	int mouseStartX = -1;
+	int mouseStartY = -1;
+	
+	public void mouseDragged(MouseEvent me) {
+	}
+
+	public void mouseMoved(MouseEvent me) {
+		int mouseCurrentX = (int) me.getPoint().getX();
+		int mouseCurrentY = (int) me.getPoint().getY();
+
+		if( mouseStartX == -1 && mouseStartY == -1 )
+		{
+			mouseStartX = mouseCurrentX;
+			mouseStartY = mouseCurrentY;
+		}
+		else {
+			if( mouseCurrentX > mouseStartX + mouseAllowed ||
+					mouseCurrentX < mouseStartX - mouseAllowed ||
+					mouseCurrentY > mouseStartY + mouseAllowed ||
+					mouseCurrentY < mouseStartY - mouseAllowed ) {
+				System.exit(0);
+			}
+		}
+		
+		
+	}
+	
 }
