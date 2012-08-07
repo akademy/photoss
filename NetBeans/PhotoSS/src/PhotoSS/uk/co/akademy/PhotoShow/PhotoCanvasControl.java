@@ -45,6 +45,18 @@ public class PhotoCanvasControl implements Runnable, Observer
 		//_debug = true;
 	}
 
+	public PhotoCanvasControl( ArrayList<PhotoCanvas> photoCanvasList, int showTime )
+	{
+		_photos = new ArrayList<Photo>();
+
+		_photoCanvasList = photoCanvasList;
+		_photoCanvasCount = _photoCanvasList.size();
+		
+		_photoShowTime = showTime;
+		
+		//_debug = true;
+	}
+
 	/**
 	 * Initialise all the PhotosFrom list
 	 */
