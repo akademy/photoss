@@ -194,7 +194,7 @@ public class Program
                         // Dynamic load
                         String[] photosFrom = {
                             "uk.co.akademy.PhotoShow.PhotosFrom_Folder",
-                            "uk.co.akademy.PhotoShow.PhotosFrom_Flickr",
+                            //"uk.co.akademy.PhotoShow.PhotosFrom_Flickr",
                             //"uk.co.akademy.PhotoShow.PhotosFrom_Test"
                         };
                         

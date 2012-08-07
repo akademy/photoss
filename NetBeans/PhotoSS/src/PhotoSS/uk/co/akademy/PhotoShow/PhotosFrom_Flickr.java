@@ -5,7 +5,6 @@ package uk.co.akademy.PhotoShow;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -25,6 +24,8 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -37,6 +38,8 @@ import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photosets.Photoset;
 import com.aetrion.flickr.photosets.Photosets;
 import com.aetrion.flickr.photosets.PhotosetsInterface;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * @author Matthew
@@ -488,13 +491,52 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 				File from = new File( download.getDownloadedFilePosition() );
 				String storeFile = download.getStoreFilePosition();
 				File to = new File( storeFile );
-				
-				from.renameTo( to );
+
+				try {
+					customBufferStreamCopy(from, to);
+					from.delete();
+				} catch (IOException ex) {
+					Logger.getLogger(PhotosFrom_Flickr.class.getName()).log(Level.SEVERE, null, ex);
+				}
 				
 				addByFilename( storeFile );
 			}
 		}
 	}
+
+		// http://www.baptiste-wicht.com/2010/08/file-copy-in-java-benchmark/5/
+	private static final int BUFFER = 8192;
+    private void customBufferStreamCopy( File from, File to) throws IOException {
+        InputStream fis = null;
+        OutputStream fos = null;
+        try {
+            fis = new FileInputStream(from);
+            fos = new FileOutputStream(to);
+
+            byte[] buf = new byte[BUFFER];
+
+            int i;
+            while ((i = fis.read(buf)) != -1) {
+                fos.write(buf, 0, i);
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            try {
+                fis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 	
 	private boolean addByFilename( String filename )
 	{

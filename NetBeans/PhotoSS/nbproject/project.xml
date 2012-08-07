@@ -4,6 +4,7 @@
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>PhotoSS</name>
             <source-roots>
+                <root id="src.ImageProcess.dir"/>
                 <root id="src.PhotoSS.dir"/>
                 <root id="src.FlickrJ.dir"/>
             </source-roots>
