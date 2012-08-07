@@ -47,9 +47,11 @@ import java.io.OutputStream;
  */
 public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 {
-	static String DATA_FILE = "FlickrPhotos.data";
-	static String STORE_FOLDER = "PhotosFromFlickrDownloads" + File.separator;
-	static String TEMP_FOLDER = "PhotosFromFlickrTemp" + File.separator;
+	static final String DATA_FILE = "FlickrPhotos.data";
+	static final String STORE_FOLDER = "PhotosFromFlickrDownloads" + File.separator;
+	static final String TEMP_FOLDER = "PhotosFromFlickrTemp" + File.separator;
+	static final int NO_PHOTO_FILE_SIZE = 9218;
+
 
 	private String _api_key = null;
 	private String _api_secret = null;
@@ -545,7 +547,7 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 	
 	private boolean addByFile( File file )
 	{
-		if( file != null && file.exists() && file.length() != 3386/*2900*/ ) // TODO: File size of the dummy file that is returned if the real one is not available, need a better way!
+		if( file != null && file.exists() && file.length() != NO_PHOTO_FILE_SIZE ) // TODO: File size of the dummy file that is returned if the real one is not available, need a better way!
 		{
 			uk.co.akademy.PhotoShow.Photo photo = new uk.co.akademy.PhotoShow.Photo(file);
 			

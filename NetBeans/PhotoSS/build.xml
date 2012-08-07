@@ -62,4 +62,22 @@
     nbproject/build-impl.xml file. 
 
     -->
+	<target name="-post-jar">
+		<jar jarfile="dist/PhotoSSWithLib.jar">
+
+			<zipfileset src="${dist.jar}" excludes="META-INF/*" />
+			
+			<zipfileset src="dist/lib/axis.jar" excludes="META-INF/*" />
+			<zipfileset src="dist/lib/jaxrpc.jar" excludes="META-INF/*" />
+			<zipfileset src="dist/lib/commons-discovery-0.2.jar" excludes="META-INF/*" />
+			<zipfileset src="dist/lib/commons-logging-1.0.4.jar" excludes="META-INF/*" />
+			<zipfileset src="dist/lib/log4j-1.2.8.jar" excludes="META-INF/*" />
+			<zipfileset src="dist/lib/saaj.jar" excludes="META-INF/*" />
+
+			<manifest>
+				<attribute name="Main-Class" value="uk.co.akademy.PhotoShow.Program"/>
+			</manifest>
+
+		</jar>
+	</target>
 </project>
