@@ -24,10 +24,13 @@ public class Show {
 	 */
 	public void start( ArrayList<AbstractPhotosFrom> photosFromList ) {
 		if( !_photoCanvasList.isEmpty() ) {
-			PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
+			ShowControl sc = new ShowControl( _photoCanvasList, photosFromList );
 
-			pcc.initialise();
-			pcc.start();
+			sc.start();
+			//PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
+
+			//pcc.initialise();
+			//pcc.start();
 		}
 	};
 }

@@ -253,7 +253,7 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 				
 				screenBufferGraphic.drawImage(_image, 0, 0, _widthCanvas, _heightCanvas, null);
 
-				float alpha = 0.5f;
+				float alpha = 0.6f;
 				int type = AlphaComposite.SRC_OVER; 
 				AlphaComposite composite = 
 						AlphaComposite.getInstance(type, alpha);
