@@ -27,10 +27,6 @@ public class Show {
 			ShowControl sc = new ShowControl( _photoCanvasList, photosFromList );
 
 			sc.start();
-			//PhotoCanvasControl pcc = new PhotoCanvasControl( _photoCanvasList, photosFromList );
-
-			//pcc.initialise();
-			//pcc.start();
 		}
 	};
 }

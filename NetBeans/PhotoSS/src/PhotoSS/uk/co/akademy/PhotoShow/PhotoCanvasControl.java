@@ -4,9 +4,7 @@
 package uk.co.akademy.PhotoShow;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Observable;
-import java.util.Observer;
+
 
 /**
  * @author matthew
@@ -84,36 +82,65 @@ public class PhotoCanvasControl implements Runnable
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run()
-	{	
+	{
 		ArrayList<Photo> photosCurrent =  null;
 		String debugText = "";
-		
-		for(;;)
-		{
+
+		for(;;) {
+			// wait for at least one photo
 			photosCurrent = _showControl.photoRequest( _photoCanvasCount, false );
 
-			int photosToShow = photosCurrent.size();
-
-			int i;
-
-			// Set a photo to show next
-			for( i = 0; i < photosToShow; i++ ) {
-				_photoCanvasList.get(i).setNextPhoto( photosCurrent.get(i) );
-			 }
+			if( photosCurrent.isEmpty() ) {
+				try {
+						Thread.sleep( 50 );
+				} catch (InterruptedException e) { }
+			}
+			else {
+				break;
+			}
+		}
+		
+		setNext( photosCurrent );
+		
+		for(;;)	{
 
 			// Switch the next photo to the current one
-			for( i = 0; i < photosToShow; i++ )
-				_photoCanvasList.get(i).switchPhotoStart( 500 );
+			for( PhotoCanvas pc : _photoCanvasList ) {
+				pc.switchPhotoStart( 500 );
+			}
 
-			if( _debug )
-			{
+			long startTime = System.currentTimeMillis();
+
+			if( _debug ) {
 				for( PhotoCanvas pc : _photoCanvasList )
 					pc.setDebugText(debugText);
 			}
 
+			photosCurrent = _showControl.photoRequest( _photoCanvasCount, false );
+
+			setNext( photosCurrent );
+
+			long endTime = System.currentTimeMillis();
+			
 			try {
-				Thread.sleep( _photoShowTime );
+				Thread.sleep( _photoShowTime - (endTime - startTime) );
 			} catch (InterruptedException e) { }
+
+		}
+	}
+
+	private void setNext( ArrayList<Photo> photosCurrent ) {
+
+		if( photosCurrent.isEmpty() ) {
+
+			// Set a photo to show next
+			int iPhotos = photosCurrent.size();
+			int iPhoto = 0;
+
+			for( PhotoCanvas pc : _photoCanvasList ) {
+				pc.setNextPhoto( photosCurrent.get( iPhoto % iPhotos ) );
+				iPhoto++;
+			}
 		}
 	}
 }
