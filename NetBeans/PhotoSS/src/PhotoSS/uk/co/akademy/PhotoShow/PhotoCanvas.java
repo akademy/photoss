@@ -128,88 +128,90 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 	 * @param image
 	 */
 	public void setSizeAndPosition( Image image )
-	{		
-		float 	drawWidth = 0, 
-				drawHeight = 0,
-				posX = 0, posY = 0;
+	{
+		if( image != null ) {
+			float 	drawWidth = 0,
+					drawHeight = 0,
+					posX = 0, posY = 0;
 
-		float imageWidth = image.getWidth(this),
-				imageHeight = image.getHeight(this);
+			float imageWidth = image.getWidth(this),
+					imageHeight = image.getHeight(this);
 
-		float paintWidth = imageWidth + ( _margin * 2 ),
-		      paintHeight = imageHeight + ( _margin * 2 );
+			float paintWidth = imageWidth + ( _margin * 2 ),
+				  paintHeight = imageHeight + ( _margin * 2 );
 
-		if( paintWidth <= _widthCanvas && paintHeight <= _heightCanvas )
-		{
-			// Image smaller
-			_debugText = "Image smaller";
-			
-			drawWidth = (float) imageWidth;
-			drawHeight = (float) imageHeight;
-			
-			posX = ( ( _widthCanvas - paintWidth ) / 2 ) + _margin;
-			posY = ( ( _heightCanvas - paintHeight ) / 2 ) + _margin;
-		}
-		else 
-		{
-			if( paintWidth > _widthCanvas && paintHeight > _heightCanvas )
+			if( paintWidth <= _widthCanvas && paintHeight <= _heightCanvas )
 			{
-				// Image wider and taller
-				
-				if( paintWidth > paintHeight )
+				// Image smaller
+				_debugText = "Image smaller";
+
+				drawWidth = (float) imageWidth;
+				drawHeight = (float) imageHeight;
+
+				posX = ( ( _widthCanvas - paintWidth ) / 2 ) + _margin;
+				posY = ( ( _heightCanvas - paintHeight ) / 2 ) + _margin;
+			}
+			else
+			{
+				if( paintWidth > _widthCanvas && paintHeight > _heightCanvas )
 				{
-					_debugText += " - photo wide";
-					drawWidth = (float)(_widthCanvas - (_margin * 2));
+					// Image wider and taller
+
+					if( paintWidth > paintHeight )
+					{
+						_debugText += " - photo wide";
+						drawWidth = (float)(_widthCanvas - (_margin * 2));
+						drawHeight = imageHeight * ( drawWidth / imageWidth );
+
+						if( drawHeight + (_margin * 2) > _heightCanvas )
+						{
+							drawHeight = (float)_heightCanvas - (_margin * 2);
+							drawWidth = imageWidth * ( ((float)drawHeight) / imageHeight );
+						}
+					}
+					else // ( paintHeight > paintWidth )
+					{
+						drawHeight = (float)(_heightCanvas - (_margin * 2));
+						drawWidth = imageWidth * ( drawHeight / imageHeight );
+
+						if( drawWidth + (_margin * 2) > _widthCanvas )
+						{
+							drawWidth = (float)_widthCanvas - (_margin * 2);
+							drawHeight = imageHeight * ( ((float)drawWidth) / imageWidth );
+						}
+					}
+				}
+				else if( paintWidth > _widthCanvas )
+				{
+					// Image wider
+					drawWidth = (float)(_widthCanvas - (_margin * 2) );
 					drawHeight = imageHeight * ( drawWidth / imageWidth );
-					
-					if( drawHeight + (_margin * 2) > _heightCanvas )
-					{
-						drawHeight = (float)_heightCanvas - (_margin * 2);
-						drawWidth = imageWidth * ( ((float)drawHeight) / imageHeight );
-					}
 				}
-				else // ( paintHeight > paintWidth )
+				else if( paintHeight > _heightCanvas )
 				{
-					drawHeight = (float)(_heightCanvas - (_margin * 2));
+					// Image taller
+					drawHeight = (float)( _heightCanvas - (_margin * 2) );
 					drawWidth = imageWidth * ( drawHeight / imageHeight );
-					
-					if( drawWidth + (_margin * 2) > _widthCanvas )
-					{
-						drawWidth = (float)_widthCanvas - (_margin * 2);
-						drawHeight = imageHeight * ( ((float)drawWidth) / imageWidth );
-					}
 				}
-			}			
-			else if( paintWidth > _widthCanvas )
-			{
-				// Image wider
-				drawWidth = (float)(_widthCanvas - (_margin * 2) );
-				drawHeight = imageHeight * ( drawWidth / imageWidth );
-			}
-			else if( paintHeight > _heightCanvas )
-			{
-				// Image taller
-				drawHeight = (float)( _heightCanvas - (_margin * 2) );
-				drawWidth = imageWidth * ( drawHeight / imageHeight );
+
+				posX = ( ( _widthCanvas - drawWidth ) / 2 );
+				posY = ( ( _heightCanvas - drawHeight ) / 2 );
 			}
 
-			posX = ( ( _widthCanvas - drawWidth ) / 2 );
-			posY = ( ( _heightCanvas - drawHeight ) / 2 );
+			boolean adjust = _adjusting;
+
+			_adjusting = true;
+
+			//_widthImage = imageWidth;
+			//_heightImage = imageHeight;
+
+			_widthDraw = (int)drawWidth;
+			_heightDraw = (int)drawHeight;
+			_posX = (int)posX;
+			_posY = (int)posY;
+
+			_adjusting = adjust;
 		}
-
-		boolean adjust = _adjusting;
-
-		_adjusting = true;
-
-		//_widthImage = imageWidth;
-		//_heightImage = imageHeight;
-
-		_widthDraw = (int)drawWidth;
-		_heightDraw = (int)drawHeight;
-		_posX = (int)posX;
-		_posY = (int)posY;
-
-		_adjusting = adjust;
 	}
 	
 	@Override public boolean isDoubleBuffered() { return true; }

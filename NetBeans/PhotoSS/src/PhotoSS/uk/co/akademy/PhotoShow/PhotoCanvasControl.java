@@ -122,16 +122,19 @@ public class PhotoCanvasControl implements Runnable
 
 			long endTime = System.currentTimeMillis();
 			
-			try {
-				Thread.sleep( _photoShowTime - (endTime - startTime) );
-			} catch (InterruptedException e) { }
+			long timeLeft = _photoShowTime - (endTime - startTime);
 
+			if( timeLeft > 0 ) {
+				try {
+					Thread.sleep( timeLeft );
+				} catch (InterruptedException e) { }
+			}
 		}
 	}
 
 	private void setNext( ArrayList<Photo> photosCurrent ) {
 
-		if( photosCurrent.isEmpty() ) {
+		if( !photosCurrent.isEmpty() ) {
 
 			// Set a photo to show next
 			int iPhotos = photosCurrent.size();

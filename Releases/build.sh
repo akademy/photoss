@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=0.4.0.42
+VERSION=0.4.1.53
 
 echo "Creating release files `date`"
 echo "Version is $VERSION"
