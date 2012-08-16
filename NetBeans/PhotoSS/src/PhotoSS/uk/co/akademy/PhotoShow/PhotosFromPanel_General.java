@@ -92,7 +92,7 @@ public class PhotosFromPanel_General extends AbstractPhotosFromPanel {
     }// </editor-fold>//GEN-END:initComponents
 
 	@Override
-	boolean initialise(PropertyFetcher properties) {
+	protected boolean initialise(PropertyFetcher properties) {
 
 		photoTimeSpinner.setValue( Integer.parseInt( properties.getProperty("general.photoShowTime") ) );
 		proxyHostTextField.setText( properties.getProperty("general.proxyHost") );
@@ -102,7 +102,7 @@ public class PhotosFromPanel_General extends AbstractPhotosFromPanel {
 	}
 
 	@Override
-	void updateProperties() {
+	protected void updateProperties() {
 		Program.setProperty( "general.photoShowTime", photoTimeSpinner.getValue().toString() );
 		Program.setProperty( "general.proxyHost", proxyHostTextField.getText() );
 		Program.setProperty( "general.proxyPort", proxyPortTextField.getText() );

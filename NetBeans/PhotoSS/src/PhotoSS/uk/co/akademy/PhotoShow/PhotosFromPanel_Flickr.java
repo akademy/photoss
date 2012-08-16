@@ -128,7 +128,7 @@ public class PhotosFromPanel_Flickr extends AbstractPhotosFromPanel {
     // End of variables declaration//GEN-END:variables
 
 	@Override
-	boolean initialise(PropertyFetcher properties) {
+	protected boolean initialise(PropertyFetcher properties) {
 
 		String apiKey = properties.getProperty("flickr.apiKey");
 		apiKeyTextField.setText(apiKey);
@@ -152,7 +152,7 @@ public class PhotosFromPanel_Flickr extends AbstractPhotosFromPanel {
 	}
 
 	@Override
-	void updateProperties() {
+	protected void updateProperties() {
 		Program.setProperty( "flickr.apiKey", apiKeyTextField.getText() );
 		Program.setProperty( "flickr.apiSecret", apiSecretTextField.getText() );
 

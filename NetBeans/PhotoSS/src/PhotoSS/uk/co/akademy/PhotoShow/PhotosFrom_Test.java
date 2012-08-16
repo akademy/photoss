@@ -18,8 +18,8 @@ public class PhotosFrom_Test extends AbstractPhotosFrom {
 		String fileName1 = "test1.jpg";
 		String fileName2 = "test2.jpg";
 		
-                File file = new File(fileName1);
-                File file2 = new File(fileName2);
+		File file = new File(fileName1);
+		File file2 = new File(fileName2);
 
 		Photo photo1 = new Photo(file);
 		Photo photo2 = new Photo(file2);

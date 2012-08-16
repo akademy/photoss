@@ -191,7 +191,7 @@ public class PhotosFromPanel_Folder extends AbstractPhotosFromPanel {
     // End of variables declaration//GEN-END:variables
 
 	@Override
-	boolean initialise(PropertyFetcher properties) {
+	protected boolean initialise(PropertyFetcher properties) {
 		String folders = properties.getProperty("folder.folders");
         foldersList.setListData( folders.split(";") );
 
@@ -199,7 +199,7 @@ public class PhotosFromPanel_Folder extends AbstractPhotosFromPanel {
 	}
 
 	@Override
-	void updateProperties() {
+	protected void updateProperties() {
 		String folders = "";
 		int foldersListSize = foldersList.getModel().getSize();
 

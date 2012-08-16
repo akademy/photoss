@@ -186,15 +186,13 @@ public class Program
 		if( show.initilise() )
 		{
 			ArrayList<AbstractPhotosFrom> photosFromList = new ArrayList<AbstractPhotosFrom>();
-	
-			// //photosFromList.add( new PhotosFrom_Test() );
-			//photosFromList.add( new PhotosFrom_Folder() );
-			//photosFromList.add( new PhotosFrom_Flickr() );
                         
 			// Dynamic load
 			String[] photosFrom = {
 				"uk.co.akademy.PhotoShow.PhotosFrom_Folder",
 				"uk.co.akademy.PhotoShow.PhotosFrom_Flickr",
+				//"uk.co.akademy.PhotosFrom.Webpage.PhotosFrom_Webpage",
+				//"uk.co.akademy.PhotosFrom.Example.PhotosFrom_Example"
 				//"uk.co.akademy.PhotoShow.PhotosFrom_Test"
 			};
 

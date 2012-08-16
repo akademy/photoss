@@ -14,13 +14,14 @@ public abstract class AbstractPhotosFrom extends Observable implements Runnable
 	/**
 	 * Do anything that needs doing to get the photos
 	 */
-	abstract boolean initilise();
+	abstract public boolean initilise();
+	abstract public void run(); // From Runnable
 	
 	/**
 	 * Notify anything that is watching that we have a photo.
 	 * @param photo
 	 */
-	void havePhoto( Photo photo )
+	public void havePhoto( Photo photo )
 	{
 		if( photo != null )
 		{
