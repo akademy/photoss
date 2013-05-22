@@ -192,7 +192,7 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 			} 
 	    	catch (MalformedURLException e)
 			{
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 	    	
 			String fileName = url.getFile();
@@ -219,7 +219,7 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 	private PhotoList GetPhotoListFromFlickr()
 	{	
 		if( ( this._api_key == null ) || ( this._api_secret == null ) ||
-			( this._api_secret == "" ) || ( this._api_key == "" ) )
+			( this._api_secret.isEmpty() ) || ( this._api_key.isEmpty() ) )
 		{
 			// TODO: Missing properties error handle.
 			return null;
@@ -232,7 +232,7 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 		}
 		catch (ParserConfigurationException e)
 		{
-			e.printStackTrace();
+			//e.printStackTrace();
 			return null;
 		}
 		
@@ -244,7 +244,7 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 	    String proxyHost = Program.getProperty("general.proxyHost");
 	    String proxyPortString = "";
 	    
-	    if( proxyHost != null && proxyHost != "" )
+	    if( proxyHost != null && !proxyHost.isEmpty()  )
 	    {
 	    	proxyPortString = Program.getProperty("general.proxyPort");
 	    }
@@ -254,7 +254,7 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 	    	proxyPortString = (String) systemSettings.get("http.proxyPort");
 	    }
 	    
-	    if( proxyHost != null && proxyHost != "" )
+	    if( proxyHost != null && !proxyHost.isEmpty() )
 	    {
 			int proxyPort;
 			try
@@ -292,7 +292,7 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 		String userToken = Program.getProperty( "flickr.userToken" );
 		String sPhotosets = Program.getProperty( "flickr.photosets" );
 		
-		if( sPhotosets != "" )
+		if( !sPhotosets.isEmpty() )
 		{
 			PhotosetsInterface photosetsI = flickr.getPhotosetsInterface();
 			
@@ -304,7 +304,7 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 			}
 			catch (Exception e) //IOException e2, SAXException e2, FlickrException e2) {
 			{
-				e.printStackTrace();
+				//e.printStackTrace();
 				return null;
 			}
 			
@@ -325,7 +325,7 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 					String photosetName = photoset.getTitle();
 					for( int i = 0; i<photosetsNamesArray.length;i++)
 					{
-						if( photosetsNamesArray[i] != "" && 
+						if( ! photosetsNamesArray[i].isEmpty() &&
 								photosetsNamesArray[i].compareToIgnoreCase(photosetName) == 0 )
 						{
 							PhotoList photoList = null;
@@ -335,7 +335,7 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 							}
 							catch( Exception e) //catch (IOException e), catch (SAXException e), catch (FlickrException e)
 							{
-								e.printStackTrace();
+								//e.printStackTrace();
 								return null;
 							}
 							
@@ -373,7 +373,7 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 			}
 			catch( Exception e) //catch (IOException e), catch (SAXException e), catch (FlickrException e)
 			{
-				e.printStackTrace();
+				//e.printStackTrace();
 				return null;
 			}
 		}
@@ -386,7 +386,7 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 	{
 		boolean pastDate = false;
 		
-		if( lastConnection == "" )
+		if( lastConnection.isEmpty() )
 		{
 			// No date of last connections
 			pastDate = true;
@@ -523,18 +523,18 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
             }
         }
         catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             throw e;
         } finally {
             try {
                 fis.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             } finally {
                 try {
                     fos.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         }

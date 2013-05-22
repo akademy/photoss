@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.1" encoding="UTF-8" ?>
 
 <Form version="1.3" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <AuxValues>
@@ -27,13 +27,13 @@
               </Group>
               <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="setsTextField" alignment="0" pref="261" max="32767" attributes="0"/>
-                  <Component id="apiSecretTextField" alignment="1" pref="261" max="32767" attributes="1"/>
-                  <Component id="userTokenTextField" alignment="1" pref="261" max="32767" attributes="0"/>
-                  <Component id="apiKeyTextField" alignment="1" pref="261" max="32767" attributes="1"/>
+                  <Component id="setsTextField" alignment="0" pref="218" max="32767" attributes="0"/>
+                  <Component id="apiSecretTextField" alignment="1" pref="218" max="32767" attributes="1"/>
+                  <Component id="userTokenTextField" alignment="1" pref="218" max="32767" attributes="0"/>
+                  <Component id="apiKeyTextField" alignment="1" pref="218" max="32767" attributes="1"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="photoCountSpinner" min="-2" pref="62" max="-2" attributes="0"/>
-                      <EmptySpace pref="89" max="32767" attributes="0"/>
+                      <EmptySpace pref="46" max="32767" attributes="0"/>
                       <Component id="updateButton" min="-2" pref="110" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -91,7 +91,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="setsLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Sets"/>
+        <Property name="text" type="java.lang.String" value="Sets  seperated by ;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="userTokenLabel">
