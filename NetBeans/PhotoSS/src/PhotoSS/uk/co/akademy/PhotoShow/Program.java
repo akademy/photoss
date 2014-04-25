@@ -221,7 +221,7 @@ public class Program
 	
 	private static void outputInformation()
 	{
-		System.out.println("PhotoSS : Photos everywhere. Version " + VERSION + ". Copyright, akademy.co.uk 2012.");
+		System.out.println("PhotoSS : Photos everywhere. Version " + VERSION + ". Copyright, akademy.co.uk 2014.");
 	}
 	
 	private static void outputHelp()
