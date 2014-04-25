@@ -1,9 +1,10 @@
 /**
- * SHow the photos in fullscreen across mutliple screens
+ * Show the photos in fullscreen across multiple screens
  */
 package uk.co.akademy.PhotoShow;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
@@ -20,7 +21,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-
 import javax.swing.JFrame;
 import javax.swing.SpringLayout;
 
@@ -51,31 +51,16 @@ public class Show_Screensaver extends Show
 		for( int i = 0; i < _screenNumber; i++ )
 		{
 			JFrame frame = new JFrame("PhotoSS screensaver-"+(i+1));
-			
+			//Component glassPane = frame.getGlassPane();
+
 			frame.addWindowListener( new WindowAdapter() {
 				public void windowClosing(WindowEvent e) {
 				    System.exit(0);
 				}
 			} ); 
 	        
-			frame.addKeyListener( new KeyListener() {
-				public void keyPressed(KeyEvent event) {}
-				public void keyReleased(KeyEvent event) {
-					System.exit(0);
-				}
-				public void keyTyped(KeyEvent event) {}
-			} );
-	        
-			frame.addMouseListener( new MouseListener() {
-				public void mouseClicked(MouseEvent event) {
-					System.exit(0);
-				}
-				public void mouseEntered(MouseEvent event) {}
-				public void mouseExited(MouseEvent event) {}
-				public void mousePressed(MouseEvent event) {}
-				public void mouseReleased(MouseEvent event) {}
-			} );
-			
+			frame.addKeyListener( new Show_Screensaver_Key() );
+			frame.addMouseListener( new Show_Screensaver_Mouse() );
 			frame.addMouseMotionListener( new Show_Screensaver_MouseMotion() );
 			
 			frame.setBackground(Color.black);
@@ -86,6 +71,10 @@ public class Show_Screensaver extends Show
 			
 			PhotoCanvas pc = new PhotoCanvas( dm.getWidth(), dm.getHeight() );
 			
+                        pc.addMouseMotionListener(new Show_Screensaver_MouseMotion() );
+			pc.addKeyListener( new Show_Screensaver_Key() );
+			pc.addMouseListener( new Show_Screensaver_Mouse() );
+                        
 			_photoCanvasList.add( pc );
 
 			frame.add( pc, SpringLayout.WEST );
@@ -98,6 +87,8 @@ public class Show_Screensaver extends Show
 
 			_screens.add( frame );
 		}
+                
+                
 
 		//
 		// Hide cursor (From http://sevensoft.livejournal.com/23460.html)
@@ -140,34 +131,53 @@ public class Show_Screensaver extends Show
 	}
 }
 
+
+class Show_Screensaver_Key implements KeyListener {
+    public void keyPressed(KeyEvent event) {}
+    public void keyReleased(KeyEvent event) {
+	System.exit(0);
+    }
+    public void keyTyped(KeyEvent event) {}
+}
+
+class Show_Screensaver_Mouse implements MouseListener {
+
+    public void mouseClicked(MouseEvent event) {
+	System.exit(0);
+    }
+    public void mouseEntered(MouseEvent event) {}
+    public void mouseExited(MouseEvent event) {}
+    public void mousePressed(MouseEvent event) {}
+    public void mouseReleased(MouseEvent event) {}
+}
+
 class Show_Screensaver_MouseMotion implements MouseMotionListener {
 
-	static final int mouseAllowed = 7;
-	int mouseStartX = -1;
-	int mouseStartY = -1;
-	
-	public void mouseDragged(MouseEvent me) {
+    static final int mouseAllowed = 7;
+    int mouseStartX = -1;
+    int mouseStartY = -1;
+
+    public void mouseDragged(MouseEvent me) {}
+
+    public void mouseMoved(MouseEvent me) {
+	int mouseCurrentX = (int) me.getPoint().getX();
+	int mouseCurrentY = (int) me.getPoint().getY();
+
+	if( mouseStartX == -1 && mouseStartY == -1 )
+	{
+	    mouseStartX = mouseCurrentX;
+	    mouseStartY = mouseCurrentY;
+	}
+	else {
+	    if( mouseCurrentX > mouseStartX + mouseAllowed ||
+				mouseCurrentX < mouseStartX - mouseAllowed ||
+				mouseCurrentY > mouseStartY + mouseAllowed ||
+				mouseCurrentY < mouseStartY - mouseAllowed ) {
+		System.exit(0);
+	    }
 	}
 
-	public void mouseMoved(MouseEvent me) {
-		int mouseCurrentX = (int) me.getPoint().getX();
-		int mouseCurrentY = (int) me.getPoint().getY();
 
-		if( mouseStartX == -1 && mouseStartY == -1 )
-		{
-			mouseStartX = mouseCurrentX;
-			mouseStartY = mouseCurrentY;
-		}
-		else {
-			if( mouseCurrentX > mouseStartX + mouseAllowed ||
-					mouseCurrentX < mouseStartX - mouseAllowed ||
-					mouseCurrentY > mouseStartY + mouseAllowed ||
-					mouseCurrentY < mouseStartY - mouseAllowed ) {
-				System.exit(0);
-			}
-		}
-		
-		
-	}
+    }
 	
 }

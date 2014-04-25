@@ -32,8 +32,8 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 	private int _widthCanvas = 0, _heightCanvas = 0;
 	//private float _widthImage = 0, _heightImage = 0;
 	
-	private int _margin = 25;
-	private int _border = 5;
+	private final int _margin = 25;
+	private final int _border = 5;
 	
 	private int _widthDraw = 0, _heightDraw = 0;
 	private int _posX = 0, _posY = 0;
@@ -49,7 +49,7 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 		
 		this.setSize( width, height );
 		
-		this.setEnabled(false);
+		//this.setEnabled(false);
 		this.enableInputMethods(false);
 		this.setFocusable(false);
 		
@@ -217,7 +217,8 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 	@Override public boolean isDoubleBuffered() { return true; }
 
 	/**
-	 *  @see java.awt.Canvas#paint(java.awt.Graphics)
+         * @param graphic
+	 * @see java.awt.Canvas#paint(java.awt.Graphics)
 	 */
 	@Override
 	public void paint(Graphics graphic)

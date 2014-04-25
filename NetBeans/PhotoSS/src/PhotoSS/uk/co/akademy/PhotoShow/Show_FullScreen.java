@@ -49,22 +49,11 @@ public class Show_FullScreen extends Show
 		JFrame frame = new JFrame( "PhotoSS fullscreen-" + _screenNumber );
 			
 		frame.addWindowListener( new WindowAdapter() {
+			@Override
 			public void windowClosing(WindowEvent e) { System.exit(0); }
 		} ); 
         
-		frame.addKeyListener( new KeyListener() 
-		{
-			public void keyPressed(KeyEvent event) {}
-			public void keyReleased(KeyEvent event) {
-				if (event.getKeyChar() == KeyEvent.VK_ESCAPE)
-				{
-					System.exit(0);
-				}
-				
-				// TODO: Add navigation keys so that you can move through the photos
-			}
-			public void keyTyped(KeyEvent event) {}
-		} );
+		frame.addKeyListener( new Show_FullscreenKey() ) ;
         
 		frame.setBackground(Color.black);
 		frame.setUndecorated(true);
@@ -74,6 +63,8 @@ public class Show_FullScreen extends Show
 		
 		PhotoCanvas pc = new PhotoCanvas( dm.getWidth(), dm.getHeight() );
 		
+		pc.addKeyListener( new Show_FullscreenKey() ) ;
+                
 		_photoCanvasList.add( pc );
 
 		frame.add( pc, SpringLayout.WEST );
@@ -96,4 +87,18 @@ public class Show_FullScreen extends Show
 
 		super.start(photosFromList);
 	}
+}
+
+class Show_FullscreenKey implements KeyListener {
+    
+    public void keyPressed(KeyEvent event) {}
+    public void keyReleased(KeyEvent event) {
+            if (event.getKeyChar() == KeyEvent.VK_ESCAPE)
+            {
+                    System.exit(0);
+            }
+
+            // TODO: Add navigation keys so that you can move through the photos
+    }
+    public void keyTyped(KeyEvent event) {}
 }
