@@ -15,6 +15,7 @@ import java.util.Observer;
  * @author matthew
  */
 public class ShowControl implements Observer {
+	
 	private ArrayList<AbstractPhotosFrom> _photosFromList = null;
 
 	private final ArrayList<Photo> _photos = new ArrayList<Photo>();
@@ -25,21 +26,18 @@ public class ShowControl implements Observer {
 	private PhotoCanvasControl _photoCanvasControl;
 
 	private boolean _debug = false;
+	private Show _show = null;
 
-	/**
-	 * PhotoCanvasControl
-	 * @param pcs PhotoCanvas list to show the photos in
-	 * @param pff PhotosFrom Where we are getting the photos from
-	 */
-	public ShowControl( ArrayList<PhotoCanvas> photoCanvasList, ArrayList<AbstractPhotosFrom> photosFromList )
+
+	public ShowControl( Show show, ArrayList<AbstractPhotosFrom> photosFromList )
 	{
-		_photoCanvasControl = new PhotoCanvasControl(this, photoCanvasList, 8000);
-
+		_show = show;
+		_photosFromList = photosFromList;
+		
 		_photosQueue = new ArrayList<Photo>(0);
 
 		_threads = new ArrayList<Thread>();
 
-		_photosFromList = photosFromList;
 
 		//_debug = true;
 	}
@@ -47,9 +45,16 @@ public class ShowControl implements Observer {
 	/**
 	 * Start up the main loop
 	 */
-	public void start()
+	public boolean start()
 	{
-	    // Create a thread for each PhotoFrom to run in and collect photos
+		if( _show.getPhotoCanvasList().isEmpty() || _photosFromList.isEmpty() ) {
+			
+			return false;
+		}
+		
+		_photoCanvasControl = new PhotoCanvasControl(this, _show.getPhotoCanvasList(), 8000);
+
+		// Create a thread for each PhotoFrom to run in and collect photos
 		for( AbstractPhotosFrom pf : _photosFromList )
 		{
 			if( pf.initilise() )
@@ -64,8 +69,11 @@ public class ShowControl implements Observer {
 		}
 
 		_photoCanvasControl.initialise();
-
 		_photoCanvasControl.start();
+		
+		_show.start();	
+		
+		return true;
 	}
 
 

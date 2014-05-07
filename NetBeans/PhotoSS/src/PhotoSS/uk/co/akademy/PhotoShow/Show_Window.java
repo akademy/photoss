@@ -78,12 +78,9 @@ public class Show_Window extends Show
 		return true;
 	}
 
-	@Override
-	public void start( ArrayList<AbstractPhotosFrom> photosFromList )
+	public void start()
 	{		
 		for( JFrame frame : _windows )
 			frame.setVisible(true);
-
-		super.start(photosFromList);
 	}
 }

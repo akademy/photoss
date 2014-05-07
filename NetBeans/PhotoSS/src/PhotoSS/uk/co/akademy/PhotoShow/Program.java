@@ -209,7 +209,12 @@ public class Program
 			catch (ClassNotFoundException e) {
 			}
                         
-			show.start(photosFromList);
+			ShowControl sc = new ShowControl( show, photosFromList );
+
+			if( !sc.start() ) {
+				System.out.println("Error: Nothing to show");
+			}
+			
 		}
 	}
 	

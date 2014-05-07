@@ -80,12 +80,9 @@ public class Show_FullScreen extends Show
 		return true;
 	}
 
-	@Override
-	public void start( ArrayList<AbstractPhotosFrom> photosFromList )
+	public void start()
 	{
 		_graphicsDeviceArray[_screenNumber-1].setFullScreenWindow( _screen );
-
-		super.start(photosFromList);
 	}
 }
 

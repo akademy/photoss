@@ -119,15 +119,12 @@ public class Show_Screensaver extends Show
 		return true;
 	}
 
-	@Override
-	public void start( ArrayList<AbstractPhotosFrom> photosFromList )
+	public void start(  )
 	{
 		for( int i=0; i<_screenNumber; i++ )
 			_graphicsDeviceArray[i].setFullScreenWindow( _screens.get(i) );
 
 		//_graphicsDeviceArray[_screenNumber-1].setFullScreenWindow( _screens.get(0) );
-
-		super.start(photosFromList);
 	}
 }
 
