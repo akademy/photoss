@@ -99,34 +99,31 @@ public class Program
 		{
 			int windowCount = 1;
 			
-			if( args.length > 1 )
+			if( args != null && args.length > 1 )
 			{
 				try {
-					windowCount = Integer.parseInt( args[1] ); }
-				catch( Exception e ) {
+					int windowCountCmd = Integer.parseInt( args[1] ); 
+					
+					if( windowCountCmd <= 10 && windowCountCmd > 0) {
+						windowCount = windowCountCmd;
+					}
+				}
+				catch( NumberFormatException e ) {
 					System.err.println( "Error: You need to pass in a number: photoss window <number>.");
 				}
-				
-				if( windowCount > 10 )
-					windowCount = 10;
-				else if( windowCount < 0 )
-					windowCount = 0;
 			}
 			
-			if( windowCount != 0 )
-			{
-				show( new Show_Window( windowCount ) );
-			}
+			show( new Show_Window( windowCount ) );
 		}
 		else if( launch.equals( "fullscreen" ) )
 		{
 			int screenNumber = 1;
 			
-			if( args.length > 1 )
+			if( args != null && args.length > 1 )
 			{
 				try {
 					screenNumber = Integer.parseInt( args[1] ); }
-				catch( Exception e ) {
+				catch( NumberFormatException e ) {
 					System.err.println( "Error: You need to pass in a number: photoss fullscreen <number>.");
 				}
 			}
@@ -137,7 +134,7 @@ public class Program
 		{
 			boolean showScreensaver = true;
 			
-			if( args.length > 1 )
+			if( args != null && args.length > 1 )
 			{
 				if( args[1].equals( "preview" ) )
 				{
@@ -156,7 +153,7 @@ public class Program
 		{
 			// Open settings dialog
 			// - We may need different settings for each way to launch it...
-			if( args.length > 1 )
+			if( args != null && args.length > 1 )
 			{
 				if( args[1].equals( "screensaver" ) )
 				{
@@ -164,7 +161,7 @@ public class Program
 				}
 			}
 			
-			new PropertyChanger( _properties );
+			PropertyChanger ignoreReturn = new PropertyChanger( _properties );
 		}
 		else if( launch.equals( "help" ) )
 		{
@@ -187,7 +184,7 @@ public class Program
 		{
 			ArrayList<AbstractPhotosFrom> photosFromList = new ArrayList<AbstractPhotosFrom>();
                         
-			// Dynamic load
+			// Dynamic load (kind of)
 			String[] photosFrom = {
 				"uk.co.akademy.PhotoShow.PhotosFrom_Folder",
 				"uk.co.akademy.PhotoShow.PhotosFrom_Flickr",
@@ -200,19 +197,16 @@ public class Program
 			ClassLoader classLoader = Program.class.getClassLoader();
 
 			try {
-				for (int i = 0; i < photosFrom.length; i++) {
-					Class photoFrom = classLoader.loadClass(photosFrom[i]);
+				for (String photosFrom1 : photosFrom) {
+					Class photoFrom = classLoader.loadClass(photosFrom1);
 					photosFromList.add( (AbstractPhotosFrom)photoFrom.newInstance() );
 				}
 			}
 			catch ( IllegalAccessException e) {
-				e.printStackTrace();
 			}
 			catch ( InstantiationException e) {
-				e.printStackTrace();
 			}
 			catch (ClassNotFoundException e) {
-				e.printStackTrace();
 			}
                         
 			show.start(photosFromList);
