@@ -42,12 +42,13 @@ public class Show_Window extends Show
 		{
 			JFrame frame = new JFrame( "PhotoSS window-" + (i+1) );
 			
-	        frame.addWindowListener( new WindowAdapter() {
-	            public void windowClosing(WindowEvent e) {
-	                System.exit(0);
-	            }
-	        } ); 
-	        
+			frame.addWindowListener( new WindowAdapter() {
+			    @Override
+			    public void windowClosing(WindowEvent e) {
+				 System.exit(0);
+			    }
+			} ); 
+	
 			frame.addKeyListener( new KeyListener() 
 			{
 				public void keyPressed(KeyEvent event) {}
@@ -59,7 +60,7 @@ public class Show_Window extends Show
 				}
 				public void keyTyped(KeyEvent event) {}
 			} );
-	        
+	
 			frame.setBackground(Color.black);
 
 			PhotoCanvas pc = new PhotoCanvas( _width, _height );
