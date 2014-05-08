@@ -86,6 +86,7 @@ public class PhotoCanvasControl implements Runnable
 		ArrayList<Photo> photosCurrent =  null;
 		String debugText = "";
 
+		// TODO : implement a wait / notify system rather than polling photosCurrent
 		for(;;) {
 			// wait for at least one photo
 			photosCurrent = _showControl.photoRequest( _photoCanvasCount, false );

@@ -20,12 +20,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Properties;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -38,14 +34,12 @@ import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photosets.Photoset;
 import com.aetrion.flickr.photosets.Photosets;
 import com.aetrion.flickr.photosets.PhotosetsInterface;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * @author Matthew
  *
  */
-public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
+public class PhotosFrom_Flickr extends AbstractPhotosFrom
 {
 	static final String DATA_FILE = "FlickrPhotos.data";
 	static final String STORE_FOLDER = "PhotosFromFlickrDownloads" + File.separator;
@@ -180,17 +174,17 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 		@SuppressWarnings("unchecked")
 		Iterator<com.aetrion.flickr.photos.Photo> i = (Iterator<com.aetrion.flickr.photos.Photo>)photoListToShow.iterator();
 		
-	    for(; i.hasNext();)
-	    {
-	    	com.aetrion.flickr.photos.Photo photo = i.next();
+		for(; i.hasNext();)
+		{
+			com.aetrion.flickr.photos.Photo photo = i.next();
 	    	
-	    	URL url = null;
+			URL url = null;
 	    	
-	    	try
+			try
 			{
 				url = new URL( photo.getLargeUrl() );//photo.getOriginalUrl() );
 			} 
-	    	catch (MalformedURLException e)
+			catch (MalformedURLException e)
 			{
 				//e.printStackTrace();
 			}
@@ -198,18 +192,14 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 			String fileName = url.getFile();
 			fileName = fileName.substring( fileName.lastIndexOf('/') + 1 );
 	    	
-			if( !addByFilename( storeFolder + fileName ) )
-			{
-				// TODO: Limit numbers of simultaneous downloads.
-				// TODO: Check image has finished downloading.
-				Download dl = new Download( url, tempFolder, storeFolder );
-				
-				_downloads.add( dl );
-				dl.addObserver(this);
-				
-				dl.download();
-			}
-	    }
+			File photoFile = new File( storeFolder + fileName );
+
+			if( photoFile.exists() && photoFile.length() != NO_PHOTO_FILE_SIZE ) // TODO: File size of the dummy file that is returned if the real one is not available, need a better way!
+				havePhoto( new uk.co.akademy.PhotoShow.Photo(photoFile) );
+			else
+				havePhoto( new Download( url, storeFolder ) );
+			
+		}
 
 	    
 		return;
@@ -463,99 +453,5 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom implements Observer
 		
 		return photoList;
 	}
-
-	/* (non-Javadoc)
-	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-	 */
-	public void update(Observable o, Object arg)
-	{
-		Download download = _downloads.get( _downloads.indexOf(o) );
-		
-		switch( download.getStatus() )	
-		{
-			case Download.DOWNLOADING:
-			//case Download.PAUSED:
-				break;
-				
-			case Download.CANCELLED:
-			case Download.ERROR:
-			{
-				File file = new File( download.getDownloadedFilePosition() );
-				file.delete();
-			}
-			break;
-				
-			case Download.COMPLETE:
-			{
-				download.deleteObservers();
-				_downloads.remove(download);
-				
-				File from = new File( download.getDownloadedFilePosition() );
-				String storeFile = download.getStoreFilePosition();
-				File to = new File( storeFile );
-
-				try {
-					customBufferStreamCopy(from, to);
-					from.delete();
-				} catch (IOException ex) {
-					Logger.getLogger(PhotosFrom_Flickr.class.getName()).log(Level.SEVERE, null, ex);
-				}
-				
-				addByFilename( storeFile );
-			}
-		}
-	}
-
-		// http://www.baptiste-wicht.com/2010/08/file-copy-in-java-benchmark/5/
-	private static final int BUFFER = 8192;
-    private void customBufferStreamCopy( File from, File to) throws IOException {
-        InputStream fis = null;
-        OutputStream fos = null;
-        try {
-            fis = new FileInputStream(from);
-            fos = new FileOutputStream(to);
-
-            byte[] buf = new byte[BUFFER];
-
-            int i;
-            while ((i = fis.read(buf)) != -1) {
-                fos.write(buf, 0, i);
-            }
-        }
-        catch (IOException e) {
-            //e.printStackTrace();
-            throw e;
-        } finally {
-            try {
-                fis.close();
-            } catch (IOException e) {
-                //e.printStackTrace();
-            } finally {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    //e.printStackTrace();
-                }
-            }
-        }
-    }
 	
-	private boolean addByFilename( String filename )
-	{
-		return addByFile( new File( filename ) );
-	}
-	
-	private boolean addByFile( File file )
-	{
-		if( file != null && file.exists() && file.length() != NO_PHOTO_FILE_SIZE ) // TODO: File size of the dummy file that is returned if the real one is not available, need a better way!
-		{
-			uk.co.akademy.PhotoShow.Photo photo = new uk.co.akademy.PhotoShow.Photo(file);
-			
-			havePhoto(photo);
-			
-			return true;
-		}
-		
-		return false;
-	}
 }

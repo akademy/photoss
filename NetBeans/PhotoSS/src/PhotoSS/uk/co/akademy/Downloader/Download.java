@@ -32,12 +32,9 @@ public class Download extends Observable implements Runnable
 	private int size; // size of download in bytes
 	private int downloaded; // number of bytes downloaded
 	private int status; // current status of download
-
-
-	// Constructor for Download.
-	public Download(URL url, String downloadFolder, String storeFolder) {
+	
+	public Download( URL url, String storeFolder ) {
 		this._url = url;
-		this._downloadFolder = downloadFolder;
 		this._storeFolder = storeFolder;
 		
 		size = -1;
@@ -204,5 +201,9 @@ public class Download extends Observable implements Runnable
 	private void stateChanged() {
 		setChanged();
 		notifyObservers();
+	}
+
+	void setDownloadFolder( String downloadFolder ) {
+		_downloadFolder = downloadFolder;
 	}
 }
