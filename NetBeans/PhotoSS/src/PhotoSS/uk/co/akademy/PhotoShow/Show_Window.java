@@ -4,12 +4,12 @@
 package uk.co.akademy.PhotoShow;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-
 import javax.swing.JFrame;
 
 public class Show_Window extends Show
@@ -62,6 +62,10 @@ public class Show_Window extends Show
 			} );
 	
 			frame.setBackground(Color.black);
+			
+			Point loca = frame.getLocation();
+			loca.translate( i*50, i*20 );
+			frame.setLocation( loca );
 
 			PhotoCanvas pc = new PhotoCanvas( _width, _height );
 			
