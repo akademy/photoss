@@ -9,7 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import com.aetrion.flickr.util.IOUtilities;
+import com.flickr4java.flickr.util.IOUtilities;
 
 /**
  * @author Matthew

@@ -67,12 +67,12 @@
 
 			<zipfileset src="${dist.jar}" excludes="META-INF/*" />
 			
-			<zipfileset src="src/FlickrJ/lib/axis.jar" excludes="META-INF/*" />
-			<zipfileset src="src/FlickrJ/lib/jaxrpc.jar" excludes="META-INF/*" />
-			<zipfileset src="src/FlickrJ/lib/commons-discovery-0.2.jar" excludes="META-INF/*" />
-			<zipfileset src="src/FlickrJ/lib/commons-logging-1.0.4.jar" excludes="META-INF/*" />
-			<zipfileset src="src/FlickrJ/lib/log4j-1.2.8.jar" excludes="META-INF/*" />
-			<zipfileset src="src/FlickrJ/lib/saaj.jar" excludes="META-INF/*" />
+			<zipfileset src="src/Flickr4Java/lib/axis.jar" excludes="META-INF/*" />
+			<zipfileset src="src/Flickr4Java/lib/jaxrpc.jar" excludes="META-INF/*" />
+			<zipfileset src="src/Flickr4Java/lib/commons-discovery-0.2.jar" excludes="META-INF/*" />
+			<zipfileset src="src/Flickr4Java/lib/commons-logging-1.0.4.jar" excludes="META-INF/*" />
+			<zipfileset src="src/Flickr4Java/lib/log4j-1.2.8.jar" excludes="META-INF/*" />
+			<zipfileset src="src/Flickr4Java/lib/saaj.jar" excludes="META-INF/*" />
 
 			<manifest>
 				<attribute name="Main-Class" value="uk.co.akademy.PhotoShow.Program"/>

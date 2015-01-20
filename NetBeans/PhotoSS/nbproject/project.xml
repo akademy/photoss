@@ -9,7 +9,6 @@
                 <root id="src.Flickr4Java.dir"/>
                 <root id="src.ImageProcess.dir"/>
                 <root id="src.PhotoSS.dir"/>
-                <root id="src.FlickrJ.dir"/>
             </source-roots>
             <test-roots>
                 <root id="test.src.dir"/>
