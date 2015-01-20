@@ -27,13 +27,13 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import uk.co.akademy.Downloader.Download;
 
-import com.aetrion.flickr.Flickr;
-import com.aetrion.flickr.REST;
-import com.aetrion.flickr.people.PeopleInterface;
-import com.aetrion.flickr.photos.PhotoList;
-import com.aetrion.flickr.photosets.Photoset;
-import com.aetrion.flickr.photosets.Photosets;
-import com.aetrion.flickr.photosets.PhotosetsInterface;
+import com.flickr4java.flickr.Flickr;
+import com.flickr4java.flickr.REST;
+import com.flickr4java.flickr.people.PeopleInterface;
+import com.flickr4java.flickr.photos.PhotoList;
+import com.flickr4java.flickr.photosets.Photoset;
+import com.flickr4java.flickr.photosets.Photosets;
+import com.flickr4java.flickr.photosets.PhotosetsInterface;
 
 /**
  * @author Matthew
@@ -172,11 +172,11 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom
 		// may need to delete before downloading 
 		
 		@SuppressWarnings("unchecked")
-		Iterator<com.aetrion.flickr.photos.Photo> i = (Iterator<com.aetrion.flickr.photos.Photo>)photoListToShow.iterator();
+		Iterator<com.flickr4java.flickr.photos.Photo> i = (Iterator<com.flickr4java.flickr.photos.Photo>)photoListToShow.iterator();
 		
 		for(; i.hasNext();)
 		{
-			com.aetrion.flickr.photos.Photo photo = i.next();
+			com.flickr4java.flickr.photos.Photo photo = i.next();
 	    	
 			URL url = null;
 	    	
@@ -216,15 +216,7 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom
 		}
 
 		REST rest = null;
-		try
-		{
-			rest = new REST();
-		}
-		catch (ParserConfigurationException e)
-		{
-			//e.printStackTrace();
-			return null;
-		}
+                rest = new REST();
 		
 	    Properties systemSettings = System.getProperties();
 	    
@@ -332,12 +324,12 @@ public class PhotosFrom_Flickr extends AbstractPhotosFrom
 							if( photoList != null )
 							{
 								@SuppressWarnings("unchecked")
-								Iterator<com.aetrion.flickr.photos.Photo> p = (Iterator<com.aetrion.flickr.photos.Photo>)photoList.iterator();
+								Iterator<com.flickr4java.flickr.photos.Photo> p = (Iterator<com.flickr4java.flickr.photos.Photo>)photoList.iterator();
 								
 								int photosAdded = 0;
 							    for(; p.hasNext();)
 							    {
-							    	com.aetrion.flickr.photos.Photo photo = p.next();
+							    	com.flickr4java.flickr.photos.Photo photo = p.next();
 							    	if( ! photosetsPhotoList.contains(photo) )
 							    	{
 							    		photosetsPhotoList.add(photo);
