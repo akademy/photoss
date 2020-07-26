@@ -116,8 +116,55 @@ public class Download extends Observable implements Runnable
 		thread.start();
 	}
 
-	// Download file.
 	public void run() {
+		BufferedInputStream in = null;
+		try {
+			in = new BufferedInputStream( _url.openStream() );
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		FileOutputStream fileOutputStream = null;
+		try {
+			fileOutputStream = new FileOutputStream(_downloadFolder + getFileName(_url) );
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		byte dataBuffer[] = new byte[1024];
+		int bytesRead;
+		
+		try {
+			while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+				fileOutputStream.write(dataBuffer, 0, bytesRead);
+			}
+			
+			if (status == DOWNLOADING) {
+				status = COMPLETE;
+				stateChanged();
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			error();
+		} finally {
+			try {
+				fileOutputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try {
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+
+	}
+	
+	// Download file.
+	public void run2() {
 		RandomAccessFile file = null;
 		InputStream stream = null;
 
@@ -126,8 +173,11 @@ public class Download extends Observable implements Runnable
 			HttpURLConnection connection = (HttpURLConnection) _url.openConnection();
 			
 			// Specify what portion of file to download.
-			connection.setRequestProperty("Range", "bytes=" + downloaded + "-");
-
+			//connection.setRequestProperty("Range", "bytes=" + downloaded + "-");
+			
+			connection.setDoOutput(true);
+			connection.setChunkedStreamingMode(MAX_BUFFER_SIZE);
+			
 			// Connect to server.
 			connection.connect();
 
@@ -138,13 +188,18 @@ public class Download extends Observable implements Runnable
 
 			// Check for valid content length.
 			int contentLength = connection.getContentLength();
-			if (contentLength < 1) {
-				error();
-			}
+			//if (contentLength < 1) {
+			//	error();
+			//}
 
 			/* Set the size for this download if it hasn't been already set. */
 			if (size == -1) {
-				size = contentLength;
+				if( contentLength == -1 ) {
+					size = MAX_BUFFER_SIZE;
+				}
+				else {
+					size = contentLength;
+				}
 				stateChanged();
 			}
 
@@ -156,11 +211,12 @@ public class Download extends Observable implements Runnable
 			while (status == DOWNLOADING) {
 				/* Size buffer according to how much of the file is left to download. */
 				byte buffer[];
-				if (size - downloaded > MAX_BUFFER_SIZE) {
-					buffer = new byte[MAX_BUFFER_SIZE];
-				} else {
-					buffer = new byte[size - downloaded];
-				}
+//				if (size - downloaded > MAX_BUFFER_SIZE) {
+//					buffer = new byte[MAX_BUFFER_SIZE];
+//				} else {
+//					buffer = new byte[size - downloaded];
+//				}
+				buffer = new byte[MAX_BUFFER_SIZE];
 
 				// Read from server into buffer.
 				int read = stream.read(buffer);
