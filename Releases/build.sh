@@ -1,5 +1,9 @@
 #!/bin/bash
-VERSION=0.4.1.53
+
+VERSION=0.4.2.54
+JAR=/mnt/d/Mega/Projects/photoss/NetBeans/PhotoSS/out/artifacts/PhotoSS_jar/PhotoSS.jar
+
+set -e
 
 echo "Creating release files `date`"
 echo "Version is $VERSION"
@@ -12,18 +16,21 @@ rm -f photoss-*-*.*
 mkdir general windows linux
 
 # Copy readme files
-cp ../ReadMes/README-General.txt general/README
-cp ../ReadMes/README-Linux.txt linux/README
-cp ../ReadMes/README-Windows.txt windows/README
+# cp ../ReadMes/README-General.txt general/README
+# cp ../ReadMes/README-Linux.txt linux/README
+# cp ../ReadMes/README-Windows.txt windows/README
+cp ../ReadMes/* .
 
-#Set version number into readme files.
-sed -i "s/_VERSION_REPLACE_/$VERSION/g" general/README
-sed -i "s/_VERSION_REPLACE_/$VERSION/g" linux/README
-sed -i "s/_VERSION_REPLACE_/$VERSION/g" windows/README
+# Set version number into readme files.
+sed "s/_VERSION_REPLACE_/${VERSION}/g" README-General.txt > general/README
+sed "s/_VERSION_REPLACE_/${VERSION}/g" README-Linux.txt > linux/README
+sed "s/_VERSION_REPLACE_/${VERSION}/g" README-Windows.txt > windows/README
 
-cp ../NetBeans/PhotoSS/dist/PhotoSSWithLib.jar general/PhotoSS.jar
-cp ../NetBeans/PhotoSS/dist/PhotoSSWithLib.jar linux/PhotoSS.jar
-cp ../NetBeans/PhotoSS/dist/PhotoSSWithLib.jar windows/PhotoSS.jar
+rm -f README-*.txt
+
+cp ${JAR} general/PhotoSS.jar
+cp ${JAR} linux/PhotoSS.jar
+cp ${JAR} windows/PhotoSS.jar
 
 # Need to check if we have new launchers
 cp ../Launchers/idletime linux/

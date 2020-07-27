@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class Program
 {
-	static public String VERSION = "0.4.1.53";
+	static public String VERSION = "0.4.2.54";
 
 	static String PROPERTY_FILE = "PhotoSS.properties";
 	static String _propertiesFile = null;
@@ -221,7 +221,7 @@ public class Program
 	
 	private static void outputInformation()
 	{
-		System.out.println("PhotoSS : Photos everywhere. Version " + VERSION + ". Copyright, akademy.co.uk 2014.");
+		System.out.println("PhotoSS : Photos everywhere. Version " + VERSION + ". Copyright, akademy.co.uk 2020.");
 	}
 	
 	private static void outputHelp()
