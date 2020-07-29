@@ -39,6 +39,11 @@ public class Show_FullScreen extends Show
 		GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		_graphicsDeviceArray = graphicsEnvironment.getScreenDevices();
 
+		// Get screen DPI scaled value
+		GraphicsConfiguration defaultConfiguration = graphicsEnvironment.getDefaultScreenDevice().getDefaultConfiguration();
+		double xScale = defaultConfiguration.getDefaultTransform().getScaleX();
+		double yScale = defaultConfiguration.getDefaultTransform().getScaleY();
+		
 		int screens = _graphicsDeviceArray.length;
 
 		if( _screenNumber > screens )
@@ -51,15 +56,20 @@ public class Show_FullScreen extends Show
 			public void windowClosing(WindowEvent e) { System.exit(0); }
 		} ); 
         
-		frame.addKeyListener( new Show_FullscreenKey() ) ;
+		frame.addKeyListener( new Show_FullscreenKey() );
         
 		frame.setBackground(Color.black);
 		frame.setUndecorated(true);
 
+		_graphicsDeviceArray[_screenNumber-1].setFullScreenWindow( frame );
 		DisplayMode dm = _graphicsDeviceArray[_screenNumber-1].getDisplayMode();
-		frame.setSize(dm.getWidth(), dm.getHeight());
 		
-		PhotoCanvas pc = new PhotoCanvas( dm.getWidth(), dm.getHeight() );
+		int width = dm.getWidth(),
+				height = dm.getHeight();
+		
+		frame.setSize( width, height );
+		
+		PhotoCanvas pc = new PhotoCanvas( width, height, xScale, yScale );
 		
 		pc.addKeyListener( new Show_FullscreenKey() ) ;
                 
@@ -68,9 +78,9 @@ public class Show_FullScreen extends Show
 		frame.add( pc, SpringLayout.WEST );
 		frame.pack();
 
-		pc.setVisible(false);
+
 		
-		frame.setVisible(false);
+		
 		frame.setAlwaysOnTop(true); // Hard to debug!
 
 		_screen = frame;
@@ -80,7 +90,6 @@ public class Show_FullScreen extends Show
 
 	public void start()
 	{
-		_graphicsDeviceArray[_screenNumber-1].setFullScreenWindow( _screen );
 	}
 }
 

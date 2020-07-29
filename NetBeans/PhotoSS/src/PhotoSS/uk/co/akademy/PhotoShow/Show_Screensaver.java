@@ -45,6 +45,11 @@ public class Show_Screensaver extends Show
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		_graphicsDeviceArray = ge.getScreenDevices();
 
+		// Get screen DPI scaled value (assumed same on each screen)
+		GraphicsConfiguration defaultConfiguration = ge.getDefaultScreenDevice().getDefaultConfiguration();
+		double xScale = defaultConfiguration.getDefaultTransform().getScaleX();
+		double yScale = defaultConfiguration.getDefaultTransform().getScaleY();
+		
 		_screenNumber = _graphicsDeviceArray.length;
 		//_screenNumber = 1;
 		
@@ -66,12 +71,16 @@ public class Show_Screensaver extends Show
 			frame.setBackground(Color.black);
 			frame.setUndecorated(true);
 
+			_graphicsDeviceArray[i].setFullScreenWindow( frame );
 			DisplayMode dm = _graphicsDeviceArray[i].getDisplayMode();
-			frame.setSize(dm.getWidth(), dm.getHeight());
+			int width = dm.getWidth(),
+					height = dm.getHeight();
 			
-			PhotoCanvas pc = new PhotoCanvas( dm.getWidth(), dm.getHeight() );
+			frame.setSize(width, height);
 			
-                        pc.addMouseMotionListener(new Show_Screensaver_MouseMotion() );
+			PhotoCanvas pc = new PhotoCanvas( width, height, xScale, yScale );
+			
+            pc.addMouseMotionListener(new Show_Screensaver_MouseMotion() );
 			pc.addKeyListener( new Show_Screensaver_Key() );
 			pc.addMouseListener( new Show_Screensaver_Mouse() );
                         
@@ -80,15 +89,14 @@ public class Show_Screensaver extends Show
 			frame.add( pc, SpringLayout.WEST );
 			frame.pack();
 			
-			pc.setVisible(false);
+			pc.setVisible(true);
 
-			frame.setVisible(false);
+			frame.setVisible(true);
 			frame.setAlwaysOnTop(true); // Hard to debug!
 
 			_screens.add( frame );
 		}
-                
-                
+		
 
 		//
 		// Hide cursor (From http://sevensoft.livejournal.com/23460.html)
@@ -121,10 +129,7 @@ public class Show_Screensaver extends Show
 
 	public void start(  )
 	{
-		for( int i=0; i<_screenNumber; i++ )
-			_graphicsDeviceArray[i].setFullScreenWindow( _screens.get(i) );
 
-		//_graphicsDeviceArray[_screenNumber-1].setFullScreenWindow( _screens.get(0) );
 	}
 }
 

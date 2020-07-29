@@ -23,17 +23,22 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 {
 	private static final long serialVersionUID = 8302867124480794953L;
 
+	private static final int _margin = 25;
+	private static final int _border = 5;
+	
 	private String _debugText = ""; 
 	private boolean _debug = false;
 	
 	private boolean _adjusting = false;
 	private boolean _noPhotos = false;
 	
-	private int _widthCanvas = 0, _heightCanvas = 0;
+	private int _widthCanvas = 0,
+			_heightCanvas = 0;
+	private double _xScale,
+			_yScale;
+	
 	//private float _widthImage = 0, _heightImage = 0;
 	
-	private final int _margin = 25;
-	private final int _border = 5;
 	
 	private int _widthDraw = 0, _heightDraw = 0;
 	private int _posX = 0, _posY = 0;
@@ -41,7 +46,12 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 	private Image _screenBuffer = null;
 	private Image _image = null, _imageNext = null;
 
-	public PhotoCanvas( int width, int height )
+
+	public PhotoCanvas( int width, int height ) {
+		this( width, height, 1.0, 1.0 );
+	}
+	
+	public PhotoCanvas( int width, int height, double xScale, double yScale )
 	{
 		this.addComponentListener(this);
 		
@@ -55,6 +65,9 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 		
 		_widthCanvas = width;
 		_heightCanvas = height;
+		
+		_xScale = xScale;
+		_yScale = yScale;
 	}
 	
 	public void setController( PhotoCanvasControl pcc ) {}
@@ -229,8 +242,9 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 			createScreenBuffer();
 		}
 
+		
 		Graphics screenBufferGraphic = _screenBuffer.getGraphics();
-
+		
 		//
 		// Draw the stuff off screen
 		//
@@ -254,6 +268,8 @@ public class PhotoCanvas extends Canvas implements ComponentListener
 				Graphics2D screenBufferGraphic2D = (Graphics2D) screenBufferGraphic;
 				//screenBufferGraphic2D.drawImage( bi2, rop, 0, 0 );
 				
+				screenBufferGraphic2D.scale(1/_xScale, 1/_yScale );
+						
 				screenBufferGraphic.drawImage(_image, 0, 0, _widthCanvas, _heightCanvas, null);
 
 				float alpha = 0.6f;
